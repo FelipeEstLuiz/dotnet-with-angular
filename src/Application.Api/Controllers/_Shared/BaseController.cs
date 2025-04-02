@@ -39,13 +39,9 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
             return ErrorResponse(httpStatusCode, result.Errors);
         }
 
-        if (!result.IsSuccess)
-            return ErrorResponse(HttpStatusCode.BadRequest, result.Errors);
-
-        return StatusCode((int)statusCode, new Response(
-            result.Data,
-            protocol: _protocol.ToString()
-        ));
+        return result.IsSuccess
+            ? StatusCode((int)statusCode, new Response(result.Data, protocol: _protocol.ToString()))
+            : ErrorResponse(HttpStatusCode.BadRequest, result.Errors);
     }
 
     protected IActionResult ErrorResponse(HttpStatusCode statusCode, IEnumerable<string> errors)

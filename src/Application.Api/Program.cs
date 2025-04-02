@@ -1,4 +1,5 @@
 using Application.Api.Extensions;
+using Application.Infraestructure.IOC;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services
     .AddGlobalExceptionMiddleware()
     .AddHttpClient()
     .AddApplicationServices();
+
+builder.Services.AddInfrastructure(builder.Configuration?.GetConnectionString("PostgresDb"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
