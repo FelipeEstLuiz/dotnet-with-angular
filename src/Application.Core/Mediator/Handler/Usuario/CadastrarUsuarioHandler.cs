@@ -12,9 +12,22 @@ public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
     public async Task<Result<bool>> Handle(
         CadastrarUsuarioCommand request,
         CancellationToken cancellationToken
-    ) => await usuarioRepository.InsertAsync(Domain.Entities.Usuario.Create(
-        nome: request.Nome,
-        email: request.Email,
-        password: PasswordHasher.HashPassword(request.Senha)
-    ), cancellationToken);
+    )
+    {
+        Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
+            request.Email,
+            cancellationToken
+        );
+
+        if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
+            return Result<bool>.Failure("E-mail já cadastrado");
+        else if (resultUsuario.IsFailure)
+            return Result<bool>.Failure(resultUsuario.Errors);
+
+        return await usuarioRepository.InsertAsync(Domain.Entities.Usuario.Create(
+            nome: request.Nome,
+            email: request.Email,
+            password: PasswordHasher.HashPassword(request.Senha)
+        ), cancellationToken);
+    }
 }

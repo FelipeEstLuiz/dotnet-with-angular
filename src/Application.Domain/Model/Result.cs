@@ -17,38 +17,44 @@ public class Result<TResponse>(bool isSuccess)
 
     public static implicit operator Result<TResponse>(TResponse value) => Success(value);
 
-    public Result<U> SetResult<U>(Func<TResponse, Result<U>> func)
-        => IsSuccess ? func(Data!) : Result<U>.Failure(Errors);
+    //public Result<U> SetResult<U>(Func<TResponse, Result<U>> func)
+    //    => IsSuccess ? func(Data!) : Result<U>.Failure(Errors);
 
-    public static Result<TResponse> Failure(
-        string message,
-        params object[] parameters
-    ) => Failure(message, ResponseCodes.NONE, parameters);
+    public Result<U> SetResult<U>(Func<TResponse, U> func)
+    {
+        if (IsSuccess)
+        {
+            Result<U> result = func(Data!);
+            return result;
+        }
 
-    public static Result<TResponse> Failure(string message, ResponseCodes responseCode, params object[] parameters)
-        => new Result<TResponse>(false).AddError(message, responseCode, parameters);
+        return Result<U>.Failure(Errors, ResponseCode);
+    }
+
+    public Result<U> SetResult<U>() => Result<U>.Failure(Errors, ResponseCode);
+
+    public static Result<TResponse> Failure(string message) => Failure(message, ResponseCodes.NONE);
+
+    public static Result<TResponse> Failure(string message, ResponseCodes responseCode)
+        => new Result<TResponse>(false).AddError(message, responseCode);
 
     public static Result<TResponse> Failure(
         IEnumerable<string> messages,
-        ResponseCodes responseCode,
-        params object[] parameters
-    ) => new Result<TResponse>(false).AddError(messages, responseCode, parameters);
+        ResponseCodes responseCode
+    ) => new Result<TResponse>(false).AddError(messages, responseCode);
 
-    public static Result<TResponse> Failure(IEnumerable<string> messages, params object[] parameters)
-        => Failure(messages, ResponseCodes.NONE, parameters);
+    public static Result<TResponse> Failure(IEnumerable<string> messages)
+        => Failure(messages, ResponseCodes.NONE);
 
-    private Result<TResponse> AddError(string message, ResponseCodes responseCode, params object[] parameters)
+    private Result<TResponse> AddError(string message, ResponseCodes responseCode)
     {
-        AddError(message, parameters);
+        AddError(message);
         ResponseCode = responseCode;
         return this;
     }
 
-    private Result<TResponse> AddError(string message, params object[] parameters)
+    private Result<TResponse> AddError(string message)
     {
-        if (parameters != null && parameters.Length > 0)
-            message = string.Format(message, parameters);
-
         if (!_messages.Contains(message))
             _messages.Add(message);
 
@@ -57,12 +63,11 @@ public class Result<TResponse>(bool isSuccess)
 
     private Result<TResponse> AddError(
         IEnumerable<string> messages,
-        ResponseCodes responseCode,
-        params object[] parameters
+        ResponseCodes responseCode
     )
     {
         foreach (string message in messages)
-            AddError(message, responseCode, parameters);
+            AddError(message, responseCode);
 
         return this;
     }

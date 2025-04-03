@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{FD1B2BC4-C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{3FED7B27-3B0B-4AA3-94C4-F1451EAE0868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Api", "src\Application.Api\Application.Api.csproj", "{5BAEFA8C-06BC-4B09-80ED-0373B41B8CEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Api", "src\Application.Api\Application.Api.csproj", "{5BAEFA8C-06BC-4B09-80ED-0373B41B8CEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Core", "src\Application.Core\Application.Core.csproj", "{561F9E89-2844-4CC6-A7DF-0176F3A6DD8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Core", "src\Application.Core\Application.Core.csproj", "{561F9E89-2844-4CC6-A7DF-0176F3A6DD8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Domain", "src\Application.Domain\Application.Domain.csproj", "{4A72F5CC-9153-44B2-958D-812079DEA8C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Domain", "src\Application.Domain\Application.Domain.csproj", "{4A72F5CC-9153-44B2-958D-812079DEA8C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Infraestructure.Data", "src\Application.Infraestructure.Data\Application.Infraestructure.Data.csproj", "{3718C1A5-8A41-4149-8837-53D46E3969F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Infraestructure.Data", "src\Application.Infraestructure.Data\Application.Infraestructure.Data.csproj", "{3718C1A5-8A41-4149-8837-53D46E3969F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Infraestructure.IOC", "src\Application.Infraestructure.IoC\Application.Infraestructure.IOC.csproj", "{BFBC945C-02A6-4714-9ADF-81FEC131ACB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Infraestructure.IOC", "src\Application.Infraestructure.IoC\Application.Infraestructure.IOC.csproj", "{BFBC945C-02A6-4714-9ADF-81FEC131ACB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Domain.Tests", "src\Application.Domain.Tests\Application.Domain.Tests.csproj", "{91F9C284-8800-40A9-A630-2F98BECDC31F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{BFBC945C-02A6-4714-9ADF-81FEC131ACB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFBC945C-02A6-4714-9ADF-81FEC131ACB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFBC945C-02A6-4714-9ADF-81FEC131ACB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F9C284-8800-40A9-A630-2F98BECDC31F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F9C284-8800-40A9-A630-2F98BECDC31F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F9C284-8800-40A9-A630-2F98BECDC31F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F9C284-8800-40A9-A630-2F98BECDC31F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{4A72F5CC-9153-44B2-958D-812079DEA8C3} = {FD1B2BC4-C090-4D97-8227-7AE08C2471DE}
 		{3718C1A5-8A41-4149-8837-53D46E3969F6} = {3FED7B27-3B0B-4AA3-94C4-F1451EAE0868}
 		{BFBC945C-02A6-4714-9ADF-81FEC131ACB0} = {3FED7B27-3B0B-4AA3-94C4-F1451EAE0868}
+		{91F9C284-8800-40A9-A630-2F98BECDC31F} = {FD1B2BC4-C090-4D97-8227-7AE08C2471DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59BBBEDA-2C03-4D5B-A699-930F84DCB1D2}

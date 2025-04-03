@@ -34,6 +34,9 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
                 case ResponseCodes.BAD_REQUEST:
                     httpStatusCode = HttpStatusCode.BadRequest;
                     break;
+                case ResponseCodes.NOT_FOUND:
+                    httpStatusCode = HttpStatusCode.NotFound;
+                    break;
             }
 
             return ErrorResponse(httpStatusCode, result.Errors);
