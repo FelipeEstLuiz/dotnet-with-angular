@@ -2,7 +2,6 @@ using Application.Domain.Enums;
 using Application.Domain.Model;
 using Bogus;
 using FluentAssertions;
-using static Application.Domain.Tests.ResultTests;
 
 namespace Application.Domain.Tests;
 
