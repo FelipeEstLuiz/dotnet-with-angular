@@ -5,7 +5,7 @@ namespace Application.Domain.Converter;
 
 public class CustomLongDateTimeConverter : IsoDateTimeConverter
 {
-    public CustomLongDateTimeConverter() => DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+    public CustomLongDateTimeConverter() => DateTimeFormat = "dd/MM/yyyy HH:mm:ss";
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {

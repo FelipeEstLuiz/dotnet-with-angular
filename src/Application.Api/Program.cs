@@ -1,20 +1,9 @@
 using Application.Api.Extensions;
 using Application.Infraestructure.IOC;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-       builder =>
-       {
-           builder.AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader();
-       });
-});
 
 builder.Services
     .AddCommunicationProtocol()
@@ -27,20 +16,41 @@ builder.Services
     .AddHttpClient()
     .AddApplicationServices();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+       builder =>
+       {
+           builder.AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+       });
+});
+
 builder.Services.AddInfrastructure(builder.Configuration?.GetConnectionString("PostgresDb"));
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 WebApplication app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+    app.UseDeveloperExceptionPage();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 
 app.UseCors(x => x
