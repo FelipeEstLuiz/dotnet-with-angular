@@ -23,10 +23,10 @@ public class UsuarioController(CommunicationProtocol protocol, IMediator mediato
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UsuarioDto>>))]
     public async Task<IActionResult> GetAllAsync()
-        => HandlerResponse(HttpStatusCode.Created, await mediator.Send(new GetAllUsuarioQuery()));
+        => HandlerResponse(HttpStatusCode.OK, await mediator.Send(new GetAllUsuarioQuery()));
 
     [HttpGet("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UsuarioDto>>))]
     public async Task<IActionResult> GetByIdAsync(int id)
-        => HandlerResponse(HttpStatusCode.Created, await mediator.Send(new GetUsuarioByIdQuery(id)));
+        => HandlerResponse(HttpStatusCode.OK, await mediator.Send(new GetUsuarioByIdQuery(id)));
 }
