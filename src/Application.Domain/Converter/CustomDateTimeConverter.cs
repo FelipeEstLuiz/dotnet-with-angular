@@ -5,7 +5,7 @@ namespace Application.Domain.Converter;
 
 public class CustomDateTimeConverter : IsoDateTimeConverter
 {
-    public CustomDateTimeConverter() => DateTimeFormat = "yyyy-MM-dd";
+    public CustomDateTimeConverter() => DateTimeFormat = "dd/MM/yyyy";
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
