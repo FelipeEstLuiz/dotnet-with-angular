@@ -1,5 +1,5 @@
-﻿using Application.Domain.Interfaces.Repositories;
-using Application.Infraestructure.Data.Repositories;
+﻿using Application.Infraestructure.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -7,10 +7,9 @@ namespace Application.Infraestructure.IOC;
 
 internal static class DependencyInjectionDatabase
 {
-    internal static IServiceCollection AddDatabase(this IServiceCollection services)
+    internal static IServiceCollection AddDatabase(this IServiceCollection services, string? connectionString)
     {
-        services.AddSingleton<IDatabaseConnection, DatabaseConnection>();
-
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
         return services;
     }
 }

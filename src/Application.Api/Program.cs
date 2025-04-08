@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
        });
 });
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("PostgresDb"));
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {

@@ -1,26 +1,20 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Model;
-using Application.Infraestructure.Data.Extensions;
-using Application.Infraestructure.Data.Repositories.Scripts;
-using Dapper;
+using Application.Infraestructure.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Data;
 
 namespace Application.Infraestructure.Data.Repositories;
 
-public class UsuarioRepository(IDatabaseConnection database, ILogger<UsuarioRepository> logger) : IUsuarioRepository
+public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepository> logger) : IUsuarioRepository
 {
     public async Task<Result<bool>> InsertAsync(Usuario request, CancellationToken cancellationToken)
     {
         try
         {
-            using IDbConnection connection = database.CreateConnection();
-            await connection.ExecuteScalarAsync<Guid>(new CommandDefinition(
-                SqlUsuario.InsertUsuario,
-                request,
-                cancellationToken: cancellationToken
-            ));
+            await context.Usuarios.AddAsync(request, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);
         }
@@ -35,15 +29,8 @@ public class UsuarioRepository(IDatabaseConnection database, ILogger<UsuarioRepo
     {
         try
         {
-            DynamicParameters dynamicParameters = new();
-
-            string query = SqlUsuario.SelectUsuario;
-
-            query = query.MountEqual("email", email, ref dynamicParameters);
-
-            return await GetUsuarioAsync(
-                query,
-                dynamicParameters,
+            return await context.Usuarios.FirstOrDefaultAsync(
+                x => x.Email == email,
                 cancellationToken: cancellationToken
             );
         }
@@ -58,17 +45,7 @@ public class UsuarioRepository(IDatabaseConnection database, ILogger<UsuarioRepo
     {
         try
         {
-            DynamicParameters dynamicParameters = new();
-
-            string query = SqlUsuario.SelectUsuario;
-
-            query = query.MountEqual("id", id, ref dynamicParameters);
-
-            return await GetUsuarioAsync(
-                query,
-                dynamicParameters,
-                cancellationToken: cancellationToken
-            );
+            return await context.Usuarios.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
@@ -77,29 +54,13 @@ public class UsuarioRepository(IDatabaseConnection database, ILogger<UsuarioRepo
         }
     }
 
-    public async Task<Result<Usuario?>> GetUsuarioAsync(
-        string query,
-        DynamicParameters dynamicParameters,
-        CancellationToken cancellationToken
-    )
-    {
-        using IDbConnection connection = database.CreateConnection();
-        return await connection.QueryFirstOrDefaultAsync<Usuario?>(new CommandDefinition(
-            query,
-            dynamicParameters,
-            cancellationToken: cancellationToken
-        ));
-    }
-
     public async Task<Result<IEnumerable<Usuario>>> GetAllAsync(CancellationToken cancellationToken)
     {
         try
         {
-            using IDbConnection connection = database.CreateConnection();
-            return Result<IEnumerable<Usuario>>.Success(await connection.QueryAsync<Usuario>(new CommandDefinition(
-                SqlUsuario.SelectUsuario,
+            return Result<IEnumerable<Usuario>>.Success(await context.Usuarios.ToListAsync(
                 cancellationToken: cancellationToken
-            )));
+            ));
         }
         catch (Exception ex)
         {

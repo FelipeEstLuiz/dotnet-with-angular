@@ -3,29 +3,29 @@
 public class Usuario
 {
     public Guid Id { get; set; }
-    public string User_Name { get; set; } = string.Empty;
-    public string Normalized_User_Name { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string NormalizedUserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Normalized_Email { get; set; } = string.Empty;
-    public bool Email_Confirmed { get; set; }
-    public string Password_Hash { get; set; } = string.Empty;
-    public string Security_Stamp { get; set; } = Guid.NewGuid().ToString();
-    public string Concurrency_Stamp { get; set; } = Guid.NewGuid().ToString();
-    public string? Phone_Number { get; set; }
-    public bool Phone_Number_Confirmed { get; set; }
-    public bool Two_Factor_Enabled { get; set; }
-    public DateTimeOffset? Lockout_End { get; set; }
-    public bool Lockout_Enabled { get; set; }
-    public int Access_Failed_Count { get; set; }
-    public DateTime Criado_Em { get; set; } = DateTime.UtcNow;
+    public string NormalizedEmail { get; set; } = string.Empty;
+    public bool EmailConfirmed { get; set; }
+    public string PasswordHash { get; set; } = string.Empty;
+    public string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
+    public string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
+    public string? PhoneNumber { get; set; }
+    public bool PhoneNumberConfirmed { get; set; }
+    public bool TwoFactorEnabled { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
+    public bool LockoutEnabled { get; set; }
+    public int AccessFailedCount { get; set; }
+    public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 
 
     public static Usuario Create(string nome, string email) => new()
     {
         Id = Guid.NewGuid(),
         Email = email,
-        Normalized_Email = email.ToUpperInvariant(),
-        User_Name = nome,
-        Normalized_User_Name = nome.ToUpperInvariant()
+        NormalizedEmail = email.ToUpperInvariant(),
+        UserName = nome,
+        NormalizedUserName = nome.ToUpperInvariant()
     };
 }

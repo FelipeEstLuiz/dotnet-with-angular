@@ -14,8 +14,8 @@ public record UsuarioDto
     public static UsuarioDto Map(Domain.Entities.Usuario usuario) => new()
     {
         Email = usuario.Email,
-        Nome = usuario.User_Name,
+        Nome = usuario.UserName,
         Id = usuario.Id,
-        DataCadastro = usuario.Criado_Em
+        DataCadastro = usuario.CriadoEm
     };
 }
