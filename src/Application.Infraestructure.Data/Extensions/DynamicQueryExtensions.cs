@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Application.Infraestructure.Data.Extensions;
 
-internal static class DynamicQueryExtensions
+public static class DynamicQueryExtensions
 {
     public static string MountEqual(this string sql, string column, object value, ref DynamicParameters parameters)
         => MountQuery(sql, column, column, value, "=", ref parameters);
@@ -97,9 +97,9 @@ internal static class DynamicQueryExtensions
         StringBuilder query = new(sql);
 
         if (sql.Contains("WHERE"))
-            query.Append(" AND ");
+            query.Append("AND");
         else
-            query.Append(" WHERE ");
+            query.Append("WHERE");
 
         query.Append($" {column} {condition} @{parameter} ");
 

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Core.Mediator.Query.Usuario;
 
-public class GetUsuarioByIdQuery(int Id) : IRequest<Result<UsuarioDto?>>
+public class GetUsuarioByIdQuery(Guid Id) : IRequest<Result<UsuarioDto?>>
 {
-    public int Id { get; } = Id;
+    public Guid Id { get; } = Id;
 }

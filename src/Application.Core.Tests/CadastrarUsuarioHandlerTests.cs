@@ -57,8 +57,7 @@ public class CadastrarUsuarioHandlerTests
 
         Usuario usuarioMock = Usuario.Create(
             command.Nome,
-            command.Email,
-            command.Senha
+            command.Email
         );
 
         _usuarioRepositoryMock

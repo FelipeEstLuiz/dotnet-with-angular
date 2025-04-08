@@ -1,8 +1,8 @@
 ﻿using Application.Core.Mediator.Command.Usuario;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Model;
-using Application.Domain.Util;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Core.Mediator.Handler.Usuario;
 
@@ -24,10 +24,15 @@ public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
         else if (resultUsuario.IsFailure)
             return Result<bool>.Failure(resultUsuario.Errors);
 
-        return await usuarioRepository.InsertAsync(Domain.Entities.Usuario.Create(
+        Domain.Entities.Usuario usuario = Domain.Entities.Usuario.Create(
             nome: request.Nome,
-            email: request.Email,
-            password: PasswordHasher.HashPassword(request.Senha)
-        ), cancellationToken);
+            email: request.Email
+        );
+
+        PasswordHasher<Domain.Entities.Usuario> hasher = new();
+
+        usuario.Password_Hash = hasher.HashPassword(usuario, request.Senha);
+
+        return await usuarioRepository.InsertAsync(usuario, cancellationToken);
     }
 }

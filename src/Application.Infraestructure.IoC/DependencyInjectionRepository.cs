@@ -7,7 +7,7 @@ namespace Application.Infraestructure.IOC;
 internal static class DependencyInjectionRepository
 {
     internal static IServiceCollection AddRepository(this IServiceCollection services)
-    {
+    {        
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         return services;
     }
