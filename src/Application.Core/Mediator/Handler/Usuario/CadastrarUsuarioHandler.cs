@@ -31,7 +31,7 @@ public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
 
         PasswordHasher<Domain.Entities.Usuario> hasher = new();
 
-        usuario.PasswordHash = hasher.HashPassword(usuario, request.Senha);
+        usuario.SetPassword(hasher.HashPassword(usuario, request.Senha));
 
         return await usuarioRepository.InsertAsync(usuario, cancellationToken);
     }

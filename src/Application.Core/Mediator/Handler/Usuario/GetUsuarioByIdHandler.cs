@@ -14,7 +14,7 @@ public class GetUsuarioByIdHandler(IUsuarioRepository usuarioRepository)
         Result<Domain.Entities.Usuario?> usuario = await usuarioRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (usuario.IsSuccess && usuario.Data is not null)
-            return Result<UsuarioDto?>.Success(UsuarioDto.Map(usuario.Data));
+            return UsuarioDto.Map(usuario.Data);
         else if (usuario.IsFailure)
             return Result<UsuarioDto?>.Failure(usuario.Errors);
 

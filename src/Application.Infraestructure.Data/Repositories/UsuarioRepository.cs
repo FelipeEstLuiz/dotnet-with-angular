@@ -29,10 +29,12 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
     {
         try
         {
+#pragma warning disable CA1862
             return await context.Usuarios.FirstOrDefaultAsync(
-                x => x.Email == email,
+                x => x.Email.ToLower() == email.ToLower(),
                 cancellationToken: cancellationToken
             );
+#pragma warning restore CA1862
         }
         catch (Exception ex)
         {

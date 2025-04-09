@@ -1,8 +1,7 @@
 ﻿namespace Application.Domain.Entities;
 
-public class Usuario
+public class Usuario : Entity
 {
-    public Guid Id { get; set; }
     public string UserName { get; set; } = string.Empty;
     public string NormalizedUserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -17,7 +16,6 @@ public class Usuario
     public DateTimeOffset? LockoutEnd { get; set; }
     public bool LockoutEnabled { get; set; }
     public int AccessFailedCount { get; set; }
-    public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 
 
     public static Usuario Create(string nome, string email) => new()
@@ -28,4 +26,6 @@ public class Usuario
         UserName = nome,
         NormalizedUserName = nome.ToUpperInvariant()
     };
+
+    public void SetPassword(string password) => PasswordHash = password;
 }
