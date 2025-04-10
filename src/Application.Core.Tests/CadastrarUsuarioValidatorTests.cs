@@ -37,10 +37,10 @@ public class CadastrarUsuarioValidatorTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Nome" && e.ErrorMessage.Contains("Obrigatório"));
-        Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Inválido"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Nome" && e.ErrorMessage.Contains("Obrigatorio"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalido"));
         Assert.Contains(result.Errors, e => e.PropertyName == "Senha" && e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
-        Assert.Contains(result.Errors, e => e.PropertyName == "SenhaConfirmacao" && e.ErrorMessage.Contains("não corresponde"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "SenhaConfirmacao" && e.ErrorMessage.Contains("nao corresponde"));
     }
 
 
@@ -87,7 +87,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Obrigatório"));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Obrigatorio"));
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um número."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um numero."));
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra maiúscula."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra maiuscula."));
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra minúscula."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra minuscula."));
     }
 
     [Fact]

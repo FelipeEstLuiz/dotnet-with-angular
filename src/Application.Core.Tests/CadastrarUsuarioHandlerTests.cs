@@ -4,6 +4,7 @@ using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
+using Application.Domain.Util;
 using Bogus;
 using NSubstitute;
 
@@ -48,7 +49,7 @@ public class CadastrarUsuarioHandlerTests
         Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.True(result.Data.Token == "token");
+        Assert.True(result.Data?.Token == "token");
     }
 
     [Fact]
@@ -74,6 +75,6 @@ public class CadastrarUsuarioHandlerTests
         Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsFailure);
-        Assert.Contains("E-mail já cadastrado", result.Errors);
+        Assert.Contains("E-mail ja cadastrado", result.Errors);
     }    
 }

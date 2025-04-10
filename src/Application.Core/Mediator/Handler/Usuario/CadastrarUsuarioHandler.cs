@@ -3,6 +3,7 @@ using Application.Core.Mediator.Command.Usuario;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
+using Application.Domain.Util;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -24,7 +25,7 @@ public class CadastrarUsuarioHandler(
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
-            return Result<LoginDto>.Failure("E-mail já cadastrado");
+            return Result<LoginDto>.Failure("E-mail ja cadastrado");
         else if (resultUsuario.IsFailure)
             return Result<LoginDto>.Failure(resultUsuario.Errors);
 
