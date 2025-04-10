@@ -9,7 +9,4 @@ public static class ApplicationBuilderExtensions
 
     public static void UseGlobalExceptionMiddleware(this IApplicationBuilder app)
         => app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
-    public static void UseBearerTokenMiddleware(this IApplicationBuilder app)
-        => app.UseMiddleware<BearerTokenAuthenticationMiddleware>();
 }

@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
             .AddHttpContextAccessor()
             .AddVersioning()
             .AddGlobalExceptionMiddleware()
-            .AddFilters()
+            //.AddFilters()
             .AddHttpClient()
             .AddApplicationServices();
 

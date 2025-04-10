@@ -56,8 +56,6 @@ app.UseCommunicationProtocolMiddleware();
 app.UseResponseCompression();
 app.UseGlobalExceptionMiddleware();
 
-app.UseBearerTokenMiddleware();
-
 app.UseRouting()
     .UseEndpoints(r =>
     {
