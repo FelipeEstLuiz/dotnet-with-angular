@@ -1,7 +1,6 @@
 using Application.Api.Controllers._Shared;
 using Application.Domain.Enums;
 using Application.Domain.Model;
-using Application.Domain.Util;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -41,29 +40,33 @@ public class BaseControllerTests
     [Fact]
     public void HandlerResponse_Deve_Retornar_400_Se_Failure_Sem_Codigo_Especifico()
     {
+        string mensagem = "Erro genérico";
+
         TestController controller = new(protocol);
-        Result<string> result = Result<string>.Failure("Erro genérico");
+        Result<string> result = Result<string>.Failure(mensagem);
 
         IActionResult response = controller.CallHandlerResponse(HttpStatusCode.OK, result);
 
         ObjectResult objectResult = Assert.IsType<ObjectResult>(response);
         Assert.Equal(400, objectResult.StatusCode);
         Response responseData = Assert.IsType<Response>(objectResult.Value);
-        Assert.Contains("Erro genérico", responseData.Errors);
+        Assert.Contains(mensagem, responseData.Errors);
     }
 
     [Fact]
     public void HandlerResponse_Deve_Retornar_403_Se_Nao_Tem_Permissao()
     {
+        string mensagem = "Sem permissão";
+
         TestController controller = new(protocol);
-        Result<string> result = Result<string>.Failure("Sem permissão", ResponseCodes.USER_NOT_HAVE_PERMISSION);
+        Result<string> result = Result<string>.Failure(mensagem, ResponseCodes.USER_NOT_HAVE_PERMISSION);
 
         IActionResult response = controller.CallHandlerResponse(HttpStatusCode.OK, result);
 
         ObjectResult objectResult = Assert.IsType<ObjectResult>(response);
         Assert.Equal(403, objectResult.StatusCode);
         Response responseData = Assert.IsType<Response>(objectResult.Value);
-        Assert.Contains("Sem permissão", responseData.Errors);
+        Assert.Contains(mensagem, responseData.Errors);
     }
 
     [Theory]

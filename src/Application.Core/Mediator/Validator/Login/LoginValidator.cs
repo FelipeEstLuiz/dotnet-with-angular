@@ -9,11 +9,11 @@ public class LoginValidator: AbstractValidator<LoginCommand>
     {
         RuleFor(x => x.Email)
             .Cascade(CascadeMode.Stop)
-            .NotEmpty().WithMessage("Obrigatório")
-            .EmailAddress().WithMessage("Inválido")
-            .MaximumLength(150).WithMessage("Pode ter no máximo 150 caracteres.");
+            .NotEmpty().WithMessage("Obrigatorio")
+            .EmailAddress().WithMessage("Invalido")
+            .MaximumLength(150).WithMessage("Pode ter no maximo 150 caracteres.");
 
         RuleFor(x => x.Senha)
-            .NotEmpty().WithMessage("Obrigatório");
+            .NotEmpty().WithMessage("Obrigatorio");
     }
 }
