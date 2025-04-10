@@ -1,12 +1,17 @@
 ﻿using Application.Api.Controllers._Shared;
+using Application.Api.Filter;
 using Application.Api.Middleware;
 using Application.Api.Util;
 using Application.Core.Behaviours;
+using Application.Domain.Util;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -17,7 +22,52 @@ namespace Application.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection ConfigureMvc(this IServiceCollection services)
+    public static IServiceCollection ConfigureExtensions(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        services
+            .AddCommunicationProtocol()
+            .ConfigureMvc()
+            .ConfigureJwt(configuration)
+            .AddSwagger()
+            .AddCompression()
+            .AddHttpContextAccessor()
+            .AddVersioning()
+            .AddGlobalExceptionMiddleware()
+            .AddFilters()
+            .AddHttpClient()
+            .AddApplicationServices();
+
+        return services;
+    }
+
+    private static IServiceCollection ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(x =>
+        {
+            x.RequireHttpsMetadata = false;
+            x.SaveToken = true;
+            x.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(ClsGlobal.GetTokenKey(configuration)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true
+            };
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection ConfigureMvc(this IServiceCollection services)
     {
         services.AddCors();
 
@@ -42,7 +92,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         services.AddValidatorsFromAssemblies(assemblies);
@@ -52,13 +102,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddGlobalExceptionMiddleware(this IServiceCollection services)
+    private static IServiceCollection AddFilters(this IServiceCollection services)
+       => services.AddScoped<CustomAuthorizationFilter>();
+
+    private static IServiceCollection AddGlobalExceptionMiddleware(this IServiceCollection services)
         => services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
-    public static IServiceCollection AddCommunicationProtocol(this IServiceCollection services)
+    private static IServiceCollection AddCommunicationProtocol(this IServiceCollection services)
         => services.AddScoped<CommunicationProtocol>();
 
-    public static IServiceCollection AddCompression(this IServiceCollection services)
+    private static IServiceCollection AddCompression(this IServiceCollection services)
     {
         services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
@@ -71,7 +124,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddVersioning(this IServiceCollection services)
+    private static IServiceCollection AddVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(options =>
         {
@@ -87,13 +140,39 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
         services.AddSwaggerGen(options =>
         {
             options.EnableAnnotations();
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] " +
+                "and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\""
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
 
             options.TagActionsBy(api =>
             {

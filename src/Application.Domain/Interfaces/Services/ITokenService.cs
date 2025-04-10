@@ -4,5 +4,5 @@ namespace Application.Domain.Interfaces.Services;
 
 public interface ITokenService
 {
-    string GerarToken(Usuario usuario);
+    Task<string> GerarToken(Usuario usuario);
 }

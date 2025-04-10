@@ -5,17 +5,6 @@ using Newtonsoft.Json.Serialization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddCommunicationProtocol()
-    .ConfigureMvc()
-    .AddSwagger()
-    .AddCompression()
-    .AddHttpContextAccessor()
-    .AddVersioning()
-    .AddGlobalExceptionMiddleware()
-    .AddHttpClient()
-    .AddApplicationServices();
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -26,6 +15,8 @@ builder.Services.AddCors(options =>
           .AllowAnyHeader();
        });
 });
+
+builder.Services.ConfigureExtensions(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("PostgresDb"));
 
@@ -58,14 +49,14 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader());
 
-app.UseGlobalExceptionMiddleware();
-app.UseCommunicationProtocolMiddleware();
-
-app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCommunicationProtocolMiddleware();
 app.UseResponseCompression();
+app.UseGlobalExceptionMiddleware();
+
+app.UseBearerTokenMiddleware();
 
 app.UseRouting()
     .UseEndpoints(r =>

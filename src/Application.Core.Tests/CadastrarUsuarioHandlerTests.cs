@@ -2,6 +2,7 @@ using Application.Core.Mediator.Command.Usuario;
 using Application.Core.Mediator.Handler.Usuario;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Bogus;
 using NSubstitute;
@@ -12,11 +13,13 @@ public class CadastrarUsuarioHandlerTests
 {
     public readonly CadastrarUsuarioHandler _cadastrarUsuarioHandler;
     public readonly IUsuarioRepository _usuarioRepositoryMock;
+    public readonly ITokenService _tokenServiceMock;
 
     public CadastrarUsuarioHandlerTests()
     {
         _usuarioRepositoryMock = Substitute.For<IUsuarioRepository>();
-        _cadastrarUsuarioHandler = new(_usuarioRepositoryMock);
+        _tokenServiceMock = Substitute.For<ITokenService>();
+        _cadastrarUsuarioHandler = new(_usuarioRepositoryMock, _tokenServiceMock);
     }
 
     [Fact]
@@ -38,10 +41,14 @@ public class CadastrarUsuarioHandlerTests
             .InsertAsync(Arg.Any<Usuario>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<bool>.Success(true)));
 
-        Result<bool> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
+        _tokenServiceMock
+            .GerarToken(Arg.Any<Usuario>())
+            .Returns(Task.FromResult("token"));
+
+        Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.True(result.Data);
+        Assert.True(result.Data.Token == "token");
     }
 
     [Fact]
@@ -64,7 +71,7 @@ public class CadastrarUsuarioHandlerTests
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<Usuario?>.Success(usuarioMock)));
 
-        Result<bool> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
+        Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("E-mail já cadastrado", result.Errors);

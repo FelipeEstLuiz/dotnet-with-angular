@@ -1,16 +1,19 @@
 ﻿using Application.Core.DTO.Usuario;
 using Application.Core.Mediator.Command.Login;
-using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Core.Mediator.Handler.Login;
 
-public class LoginHandler(IUsuarioRepository usuarioRepository) : IRequestHandler<LoginCommand, Result<UsuarioDto?>>
+public class LoginHandler(
+    IUsuarioRepository usuarioRepository,
+    ITokenService tokenService
+) : IRequestHandler<LoginCommand, Result<LoginDto?>>
 {
-    public async Task<Result<UsuarioDto?>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<LoginDto?>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,
@@ -19,12 +22,12 @@ public class LoginHandler(IUsuarioRepository usuarioRepository) : IRequestHandle
 
         return resultUsuario.IsSuccess
             ? resultUsuario.Data is null
-                ? Result<UsuarioDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
-                : ValidarPasswordAsync(resultUsuario.Data, request.Senha)
-            : Result<UsuarioDto?>.Failure(resultUsuario.Errors);
+                ? Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
+                : await ValidarPasswordAsync(resultUsuario.Data, request.Senha)
+            : Result<LoginDto?>.Failure(resultUsuario.Errors);
     }
 
-    private static Result<UsuarioDto?> ValidarPasswordAsync(Domain.Entities.Usuario usuario, string senha)
+    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.Usuario usuario, string senha)
     {
         PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.Usuario>().VerifyHashedPassword(
             usuario,
@@ -33,7 +36,11 @@ public class LoginHandler(IUsuarioRepository usuarioRepository) : IRequestHandle
         );
 
         return resultado == PasswordVerificationResult.Failed
-            ? Result<UsuarioDto?>.Failure("Senha inválida", Domain.Enums.ResponseCodes.UNAUTHORIZED)
-            : UsuarioDto.Map(usuario);
+            ? Result<LoginDto?>.Failure("Senha inválida", Domain.Enums.ResponseCodes.UNAUTHORIZED)
+            : Result<LoginDto?>.Success(new LoginDto(
+                usuario.UserName,
+                usuario.Email,
+                await tokenService.GerarToken(usuario)
+            ));
     }
 }

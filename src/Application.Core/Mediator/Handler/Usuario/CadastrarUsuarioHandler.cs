@@ -1,15 +1,19 @@
-﻿using Application.Core.Mediator.Command.Usuario;
+﻿using Application.Core.DTO.Usuario;
+using Application.Core.Mediator.Command.Usuario;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.Core.Mediator.Handler.Usuario;
 
-public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
-    : IRequestHandler<CadastrarUsuarioCommand, Result<bool>>
+public class CadastrarUsuarioHandler(
+    IUsuarioRepository usuarioRepository,
+    ITokenService tokenService
+) : IRequestHandler<CadastrarUsuarioCommand, Result<LoginDto>>
 {
-    public async Task<Result<bool>> Handle(
+    public async Task<Result<LoginDto>> Handle(
         CadastrarUsuarioCommand request,
         CancellationToken cancellationToken
     )
@@ -20,9 +24,9 @@ public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
-            return Result<bool>.Failure("E-mail já cadastrado");
+            return Result<LoginDto>.Failure("E-mail já cadastrado");
         else if (resultUsuario.IsFailure)
-            return Result<bool>.Failure(resultUsuario.Errors);
+            return Result<LoginDto>.Failure(resultUsuario.Errors);
 
         Domain.Entities.Usuario usuario = Domain.Entities.Usuario.Create(
             nome: request.Nome,
@@ -33,6 +37,10 @@ public class CadastrarUsuarioHandler(IUsuarioRepository usuarioRepository)
 
         usuario.SetPassword(hasher.HashPassword(usuario, request.Senha));
 
-        return await usuarioRepository.InsertAsync(usuario, cancellationToken);
+        Result<bool> resultInsert = await usuarioRepository.InsertAsync(usuario, cancellationToken);
+
+        return resultInsert.IsSuccess
+            ? Result<LoginDto>.Success(new LoginDto(usuario.UserName, usuario.Email, await tokenService.GerarToken(usuario)))
+            : Result<LoginDto>.Failure(resultInsert.Errors);
     }
 }

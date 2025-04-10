@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Api.Filter;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Application.Api.Controllers._Shared;
@@ -10,6 +11,7 @@ namespace Application.Api.Controllers._Shared;
 [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(Response))]
 [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(Response))]
 [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(Response))]
+[TypeFilter(typeof(CustomAuthorizationFilter))]
 public class BaseApplicationController(CommunicationProtocol protocol) : BaseController(protocol)
 {
 }
