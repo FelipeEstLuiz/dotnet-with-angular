@@ -13,7 +13,7 @@ public static class ClsGlobal
 
         ValidationException.When(
             secretKey.Length < 64,
-            "Token de autenticação inválido.O tamanho mínimo é 64 caracteres."
+            "Token de autenticacao invalido.O tamanho minimo e 64 caracteres."
         );
 
         return Encoding.ASCII.GetBytes(secretKey);

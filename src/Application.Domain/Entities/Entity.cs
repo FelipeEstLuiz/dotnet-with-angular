@@ -3,5 +3,5 @@
 public class Entity
 {
     public Guid Id { get; set; }
-    public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
+    public DateTime CriadoEm { get; set; }
 }
