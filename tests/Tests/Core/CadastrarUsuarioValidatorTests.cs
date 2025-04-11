@@ -2,7 +2,7 @@
 using Application.Core.Mediator.Validator.Usuario;
 using Bogus;
 
-namespace Application.Core.Tests;
+namespace Tests.Core;
 
 public class CadastrarUsuarioValidatorTests
 {
@@ -22,7 +22,6 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void Deve_Retornar_Erros_Se_Command_For_Invalido()
     {
-        // Arrange
         CadastrarUsuarioValidator validator = new();
         CadastrarUsuarioCommand command = new()
         {
@@ -32,10 +31,8 @@ public class CadastrarUsuarioValidatorTests
             SenhaConfirmacao = "diferente"
         };
 
-        // Act
         FluentValidation.Results.ValidationResult result = validator.Validate(command);
 
-        // Assert
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Nome" && e.ErrorMessage.Contains("Obrigatorio"));
         Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalido"));

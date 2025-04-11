@@ -1,10 +1,10 @@
-using Application.Api.Controllers._Shared;
+Ôªøusing Application.Api.Controllers._Shared;
 using Application.Domain.Enums;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Application.Api.Tets;
+namespace Tests.Api;
 
 public class BaseControllerTests
 {
@@ -40,7 +40,7 @@ public class BaseControllerTests
     [Fact]
     public void HandlerResponse_Deve_Retornar_400_Se_Failure_Sem_Codigo_Especifico()
     {
-        string mensagem = "Erro genÈrico";
+        string mensagem = "Erro gen√©rico";
 
         TestController controller = new(protocol);
         Result<string> result = Result<string>.Failure(mensagem);
@@ -56,7 +56,7 @@ public class BaseControllerTests
     [Fact]
     public void HandlerResponse_Deve_Retornar_403_Se_Nao_Tem_Permissao()
     {
-        string mensagem = "Sem permiss„o";
+        string mensagem = "Sem permiss√£o";
 
         TestController controller = new(protocol);
         Result<string> result = Result<string>.Failure(mensagem, ResponseCodes.USER_NOT_HAVE_PERMISSION);

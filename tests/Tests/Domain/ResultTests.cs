@@ -1,9 +1,8 @@
-using Application.Domain.Enums;
+﻿using Application.Domain.Enums;
 using Application.Domain.Model;
 using Bogus;
-using FluentAssertions;
 
-namespace Application.Domain.Tests;
+namespace Tests.Domain;
 
 public class ResultTests
 {
@@ -12,10 +11,10 @@ public class ResultTests
     {
         Result<bool> result = Result<bool>.Success(true);
 
-        result.IsSuccess.Should().BeTrue();
-        result.IsFailure.Should().BeFalse();
-        result.Errors.Should().BeEmpty();
-        result.ResponseCode.Should().Be(ResponseCodes.NONE);
+        Assert.True(result.IsSuccess);
+        Assert.False(result.IsFailure);
+        Assert.False(result.Errors.Any());
+        Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
     }
 
     [Fact(DisplayName = "Result com - IsSuccess = false, IsFailure = true, Errors array com valor, Errors com o erro informado e ResponseCode = default (None)")]
@@ -24,11 +23,11 @@ public class ResultTests
         string mensagemErro = "Erro";
         Result<bool> result = Result<bool>.Failure(mensagemErro);
 
-        result.IsSuccess.Should().BeFalse();
-        result.IsFailure.Should().BeTrue();
-        result.Errors.Should().NotBeEmpty();
-        result.Errors.Should().Contain(mensagemErro);
-        result.ResponseCode.Should().Be(ResponseCodes.NONE);
+        Assert.False(result.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.True(result.Errors.Any());
+        Assert.Contains(mensagemErro, result.Errors);
+        Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true, Errors com multiplas mensagens")]
@@ -38,9 +37,9 @@ public class ResultTests
         string mensagemErro2 = "Erro 2";
         Result<bool> result = Result<bool>.Failure([mensagemErro1, mensagemErro2]);
 
-        result.IsFailure.Should().BeTrue();
-        result.Errors.Should().Contain(mensagemErro1);
-        result.Errors.Should().Contain(mensagemErro2);
+        Assert.True(result.IsFailure);
+        Assert.Contains(mensagemErro1, result.Errors);
+        Assert.Contains(mensagemErro2, result.Errors);
     }
 
     [Theory(DisplayName = "Result com - ResponseCodes com valor informado")]
@@ -50,7 +49,7 @@ public class ResultTests
     {
         Result<bool> result = Result<bool>.Failure("Erro", responseCodes);
 
-        result.ResponseCode.Should().Be(responseCodes);
+        Assert.Equal(responseCodes, result.ResponseCode);
     }
 
     [Fact(DisplayName = "Result com - IsSuccess = true e metodo ToString() retornando mensagem de sucesso")]
@@ -58,8 +57,8 @@ public class ResultTests
     {
         Result<bool> result = Result<bool>.Success(true);
 
-        result.IsSuccess.Should().BeTrue();
-        result.ToString().Should().Be("Success");
+        Assert.True(result.IsSuccess);
+        Assert.Equal("Success", result.ToString());
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true e metodo ToString() retornando mensagem de erro")]
@@ -69,8 +68,8 @@ public class ResultTests
 
         Result<bool> result = Result<bool>.Failure(mensagemErro);
 
-        result.IsFailure.Should().BeTrue();
-        result.ToString().Should().Contain(mensagemErro);
+        Assert.True(result.IsFailure);
+        Assert.Equal(mensagemErro, result.ToString());
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true e metodo ToString() retornando mensagens dos erros")]
@@ -81,10 +80,10 @@ public class ResultTests
 
         Result<bool> result = Result<bool>.Failure([mensagemErro1, mensagemErro2]);
 
-        result.IsFailure.Should().BeTrue();
-        result.ToString().Should().Contain(mensagemErro1);
-        result.ToString().Should().Contain(mensagemErro2);
-        result.ToString().Should().Contain(";");
+        Assert.True(result.IsFailure);
+        Assert.Contains(mensagemErro1, result.ToString());
+        Assert.Contains(mensagemErro2, result.ToString());
+        Assert.Contains(";", result.ToString());
     }
 
     [Theory(DisplayName = "Result com - IsSuccess = true, Data = boolean")]
@@ -94,8 +93,8 @@ public class ResultTests
     {
         Result<bool> result = Result<bool>.Success(dataValue);
 
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().Be(dataValue);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(dataValue, result.Data);
     }
 
     [Theory(DisplayName = "Result com - IsSuccess = true, Data = object")]
@@ -104,10 +103,10 @@ public class ResultTests
     {
         Result<Cliente> result = Result<Cliente>.Success(cliente);
 
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().NotBeNull();
-        result.Data.Nome.Should().NotBeNull();
-        result.Data.Idade.Should().BeGreaterThanOrEqualTo(0);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Data);
+        Assert.NotEmpty(result.Data.Nome);
+        Assert.True(result.Data.Idade >= 0);        
     }
 
     [Theory(DisplayName = "Result com implicit operator - IsSuccess = true, Data = object")]
@@ -116,10 +115,10 @@ public class ResultTests
     {
         Result<Cliente> result = cliente;
 
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().NotBeNull();
-        result.Data.Nome.Should().NotBeNull();
-        result.Data.Idade.Should().BeGreaterThanOrEqualTo(0);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Data);
+        Assert.NotEmpty(result.Data.Nome);
+        Assert.True(result.Data.Idade >= 0);
     }
 
     [Theory(DisplayName = "Result SetResult com - IsSuccess = true, Data = object")]
@@ -131,10 +130,10 @@ public class ResultTests
         Result<Cliente2> result = resultCliente
             .SetResult(cliente => new Cliente2(cliente.Nome, cliente.Idade));
 
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Should().NotBeNull();
-        result.Data.Nome.Should().NotBeNull();
-        result.Data.Idade.Should().BeGreaterThanOrEqualTo(0);
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Data);
+        Assert.NotEmpty(result.Data.Nome);
+        Assert.True(result.Data.Idade >= 0);
     }
 
     [Fact(DisplayName = "Result SetResult com - IsFailure = true, Data = object e ResponseCodes = default")]
@@ -146,9 +145,9 @@ public class ResultTests
         Result<Cliente2> result = resultCliente
            .SetResult(cliente => new Cliente2(cliente.Nome, cliente.Idade));
 
-        result.IsFailure.Should().BeTrue();
-        result.Errors.Should().Contain(mensagemErro);
-        result.ResponseCode.Should().Be(ResponseCodes.NONE);
+        Assert.True(result.IsFailure);
+        Assert.Contains(mensagemErro, result.Errors);
+        Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
     }
 
     [Fact(DisplayName = "Result SetResult com - IsFailure = true")]
@@ -159,8 +158,8 @@ public class ResultTests
 
         Result<Cliente2> result = resultCliente.SetResult<Cliente2>();
 
-        result.IsFailure.Should().BeTrue();
-        result.Errors.Should().Contain(mensagemErro);
+        Assert.True(result.IsFailure);
+        Assert.Contains(mensagemErro, result.Errors);
     }
 
     public static IEnumerable<object[]> ObterClientes()
