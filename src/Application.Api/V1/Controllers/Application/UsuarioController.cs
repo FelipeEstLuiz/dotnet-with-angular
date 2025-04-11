@@ -2,6 +2,7 @@
 using Application.Core.DTO.Usuario;
 using Application.Core.Mediator.Query.Usuario;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,6 +11,7 @@ namespace Application.Api.V1.Controllers.Application;
 [ApiExplorerSettings(GroupName = "Usuario")]
 public class UsuarioController(CommunicationProtocol protocol, IMediator mediator) : BaseApplicationController(protocol)
 {
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UsuarioDto>>))]
     public async Task<IActionResult> GetAllAsync()
