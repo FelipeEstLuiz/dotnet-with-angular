@@ -1,14 +1,14 @@
+﻿using Application.Core.DTO.Usuario;
 using Application.Core.Mediator.Command.Usuario;
 using Application.Core.Mediator.Handler.Usuario;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.Util;
 using Bogus;
 using NSubstitute;
 
-namespace Application.Core.Tests;
+namespace Tests.Core;
 
 public class CadastrarUsuarioHandlerTests
 {
@@ -46,10 +46,10 @@ public class CadastrarUsuarioHandlerTests
             .GerarToken(Arg.Any<Usuario>())
             .Returns(Task.FromResult("token"));
 
-        Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
+        Result<LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.True(result.Data?.Token == "token");
+        Assert.Equal("token", result.Data?.Token);
     }
 
     [Fact]
@@ -72,9 +72,9 @@ public class CadastrarUsuarioHandlerTests
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<Usuario?>.Success(usuarioMock)));
 
-        Result<DTO.Usuario.LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
+        Result<LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("E-mail ja cadastrado", result.Errors);
-    }    
+    }
 }

@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Domain.Converter;
 
+[ExcludeFromCodeCoverage]
 public class CustomDateTimeConverter : IsoDateTimeConverter
 {
     public CustomDateTimeConverter() => DateTimeFormat = "dd/MM/yyyy";
