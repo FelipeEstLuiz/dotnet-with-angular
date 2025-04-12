@@ -21,7 +21,7 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro ao inserir usuário: {Message}", ex.Message);
-            return Result<bool>.Failure("Erro ao inserir usuário");
+            return Result<bool>.Failure("Erro ao inserir usuario");
         }
     }
 
@@ -29,17 +29,15 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
     {
         try
         {
-#pragma warning disable CA1862
             return await context.Usuarios.FirstOrDefaultAsync(
                 x => x.Email.ToLower() == email.ToLower(),
                 cancellationToken: cancellationToken
             );
-#pragma warning restore CA1862
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuario por email: email informado: {email}, erro: {Message}", email, ex.Message);
-            return Result<Usuario?>.Failure("Erro ao obter usuário");
+            return Result<Usuario?>.Failure("Erro ao obter usuario");
         }
     }
 
@@ -52,7 +50,7 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuario por id: id informado: {id}, erro: {Message}", id, ex.Message);
-            return Result<Usuario?>.Failure("Erro ao obter usuário");
+            return Result<Usuario?>.Failure("Erro ao obter usuario");
         }
     }
 
@@ -67,7 +65,7 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuarios: {Message}", ex.Message);
-            return Result<IEnumerable<Usuario>>.Failure("Erro ao obter usuários");
+            return Result<IEnumerable<Usuario>>.Failure("Erro ao obter usuarios");
         }
     }
 }
