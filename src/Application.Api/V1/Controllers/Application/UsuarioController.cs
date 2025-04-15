@@ -9,7 +9,7 @@ using System.Net;
 namespace Application.Api.V1.Controllers.Application;
 
 [ApiExplorerSettings(GroupName = "Usuario")]
-public class UsuarioController(CommunicationProtocol protocol, IMediator mediator) : BaseApplicationController(protocol)
+public class UsuarioController(CommunicationProtocol protocol, IMediator mediator) : BaseAuthorizationController(protocol)
 {
     [AllowAnonymous]
     [HttpGet]

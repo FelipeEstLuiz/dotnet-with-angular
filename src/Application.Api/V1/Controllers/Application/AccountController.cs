@@ -3,7 +3,6 @@ using Application.Core.DTO.Usuario;
 using Application.Core.Mediator.Command.Login;
 using Application.Core.Mediator.Command.Usuario;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -17,7 +16,6 @@ public class AccountController(CommunicationProtocol protocol, IMediator mediato
     public async Task<IActionResult> InsertUsuarioAsync([FromBody] CadastrarUsuarioCommand request)
        => HandlerResponse(HttpStatusCode.Created, await mediator.Send(request));
 
-    [AllowAnonymous]
     [HttpPost("Login")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto?>))]
     public async Task<IActionResult> LoginAsync([FromBody] LoginCommand request)
