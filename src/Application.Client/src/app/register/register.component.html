@@ -2,7 +2,7 @@
     <h2 class="text-center text-primary">Sign up</h2>
     <hr>
     <div class="mb-3 form-floating">
-        <input type="text" class="form-control" name="nome" [(ngModel)]="model.nome" placeholder="Nome" required #nome="ngModel">
+        <input type="text" class="form-control" [class.is-invalid]="nome.invalid && nome.touched" name="nome" [(ngModel)]="model.nome" placeholder="Nome" required #nome="ngModel">
         <label>*Name</label>
         <div *ngIf="registerForm.submitted && nome.invalid" class="text-danger small">
           Name is required.
@@ -10,14 +10,14 @@
     </div>
 
     <div class="mb-3 form-floating">
-        <input type="email" class="form-control" name="email" [(ngModel)]="model.email" placeholder="E-mail" required email #email="ngModel">
+        <input type="email" class="form-control" [class.is-invalid]="email.invalid && email.touched" name="email" [(ngModel)]="model.email" placeholder="E-mail" required email #email="ngModel">
         <label>*Email</label>
         <div *ngIf="registerForm.submitted && email.invalid" class="text-danger small">
             Email is required and valid.
           </div>
     </div>
     <div class="mb-3 form-floating">
-        <input type="password" class="form-control" name="password" [(ngModel)]="model.senha" placeholder="Password"  (keyup)="onPasswordChange()" required #senha="ngModel">
+        <input type="password" class="form-control" [class.is-invalid]="senha.invalid && senha.touched" name="password" [(ngModel)]="model.senha" placeholder="Password"  (keyup)="onPasswordChange()" required #senha="ngModel">
         <label>*Password</label>
         <div *ngIf="registerForm.submitted && senha.invalid" class="text-danger small">
             Password is required.
@@ -33,7 +33,7 @@
         </small>
     </div>
     <div class="mb-3 form-floating">
-        <input type="password" class="form-control" name="passwordconfirmed" [(ngModel)]="model.senhaconfirmacao" placeholder="Password Confirmation" required #senhaconfirmacao="ngModel">
+        <input type="password" class="form-control" [class.is-invalid]="senhaconfirmacao.invalid && senhaconfirmacao.touched" name="passwordconfirmed" [(ngModel)]="model.senhaconfirmacao" placeholder="Password Confirmation" required #senhaconfirmacao="ngModel">
         <label>*Password Confirmation</label>
         <div *ngIf="registerForm.submitted && senhaconfirmacao.invalid" class="text-danger small">
             Confirmation is required.

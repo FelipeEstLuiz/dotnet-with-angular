@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     importProvidersFrom(
       ToastrModule.forRoot({
-        positionClass: 'toast-top-full-width',
+        positionClass: 'toast-top-center',
         timeOut: 3000,
         preventDuplicates: true,
         closeButton: true,

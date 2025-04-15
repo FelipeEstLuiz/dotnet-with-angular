@@ -33,7 +33,7 @@ export class RegisterComponent {
 
   register(form: NgForm) {
     if (!form.valid || this.model.senha !== this.model.senhaconfirmacao) {
-      this.alertService.error('Por favor, preencha todos os campos obrigatórios.');
+      form.control.markAllAsTouched();
       return;
     }
 
