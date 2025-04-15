@@ -4,6 +4,7 @@ import { UserRegister } from '../_model/user-register';
 import { getPasswordStrength } from '../validators/password-strength.validator';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../_services/account.service';
+import { AlertService } from '../_services/alert.service';
 
 @Component({
   selector: 'app-register',
@@ -24,27 +25,30 @@ export class RegisterComponent {
 
   passwordStrength: string = '';
 
+  constructor(private alertService: AlertService) {}
+
   onPasswordChange(): void {
     this.passwordStrength = getPasswordStrength(this.model.senha);
   }
 
   register(form: NgForm) {
     if (!form.valid || this.model.senha !== this.model.senhaconfirmacao) {
+      this.alertService.error('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     if (this.passwordStrength === 'Weak') {
-      alert('The password is too weak!');
+      this.alertService.error('The password is too weak!');
       return;
     }
 
     this.accountService.register(this.model).subscribe({
-      next: response =>{
+      next: (response) => {
         console.log(response);
         this.cancel();
       },
-      error: error => console.log(error)
-    })
+      error: (error) => this.alertService.error(error),
+    });
   }
 
   cancel() {

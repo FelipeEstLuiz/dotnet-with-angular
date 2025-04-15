@@ -1,0 +1,39 @@
+.alert-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    max-width: 90vw;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 2000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+  
+  .alert-content {
+    position: relative;
+  }
+  
+  .alert-success { border-left: 5px solid #28a745; }
+  .alert-error   { border-left: 5px solid #dc3545; }
+  .alert-warning { border-left: 5px solid #ffc107; }
+  .alert-info    { border-left: 5px solid #17a2b8; }
+  
+  .close-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    border: none;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 20px;
+  }
+  
