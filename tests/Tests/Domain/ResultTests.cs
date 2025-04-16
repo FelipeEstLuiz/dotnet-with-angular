@@ -15,6 +15,10 @@ public class ResultTests
         Assert.False(result.IsFailure);
         Assert.False(result.Errors.Any());
         Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
+
+        Assert.Null(result.PaginaAtual);
+        Assert.Null(result.TotalPaginas);
+        Assert.Null(result.TotalItens);
     }
 
     [Fact(DisplayName = "Result com - IsSuccess = false, IsFailure = true, Errors array com valor, Errors com o erro informado e ResponseCode = default (None)")]
@@ -28,6 +32,10 @@ public class ResultTests
         Assert.True(result.Errors.Any());
         Assert.Contains(mensagemErro, result.Errors);
         Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
+
+        Assert.Null(result.PaginaAtual);
+        Assert.Null(result.TotalPaginas);
+        Assert.Null(result.TotalItens);
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true, Errors com multiplas mensagens")]
@@ -106,7 +114,7 @@ public class ResultTests
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
         Assert.NotEmpty(result.Data.Nome);
-        Assert.True(result.Data.Idade >= 0);        
+        Assert.True(result.Data.Idade >= 0);
     }
 
     [Theory(DisplayName = "Result com implicit operator - IsSuccess = true, Data = object")]
@@ -160,6 +168,24 @@ public class ResultTests
 
         Assert.True(result.IsFailure);
         Assert.Contains(mensagemErro, result.Errors);
+    }
+
+    [Theory(DisplayName = "Result Server Side com - IsSuccess = true, Data = object")]
+    [MemberData(nameof(ObterClientes))]
+    public void ResultServerSide_Return_IsSuccess_Data_Object(Cliente cliente)
+    {
+        Result<Cliente> result = Result<Cliente>.Success(cliente, 1, 1, 1);
+
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Data);
+
+        Assert.Equal(1, result.TotalItens);
+        Assert.Equal(1, result.TotalPaginas);
+        Assert.Equal(1, result.PaginaAtual);
+
+        Assert.NotNull(result.PaginaAtual);
+        Assert.NotNull(result.TotalPaginas);
+        Assert.NotNull(result.TotalItens);
     }
 
     public static IEnumerable<object[]> ObterClientes()

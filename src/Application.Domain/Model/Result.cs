@@ -13,7 +13,24 @@ public class Result<TResponse>(bool isSuccess)
     public TResponse? Data { get; private set; }
     public ResponseCodes ResponseCode { get; private set; } = ResponseCodes.NONE;
 
+    public int? TotalItens { get; set; }
+    public int? PaginaAtual { get; set; }
+    public int? TotalPaginas { get; set; }
+
     public static Result<TResponse> Success(TResponse data) => new(true) { Data = data };
+
+    public static Result<TResponse> Success(
+        TResponse data,
+        int totalItens,
+        int paginaAtual,
+        int totalPaginas
+    ) => new(true)
+    {
+        Data = data,
+        TotalItens = totalItens,
+        PaginaAtual = paginaAtual,
+        TotalPaginas = totalPaginas
+    };
 
     public static implicit operator Result<TResponse>(TResponse value) => Success(value);
 
