@@ -2,6 +2,7 @@
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Model;
 using Application.Infraestructure.Data.Context;
+using Application.Infraestructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -9,11 +10,13 @@ namespace Application.Infraestructure.Data.Repositories;
 
 public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepository> logger) : IUsuarioRepository
 {
+    private readonly DbSet<Usuario> _dbSet = context.Set<Usuario>();
+
     public async Task<Result<bool>> InsertAsync(Usuario request, CancellationToken cancellationToken)
     {
         try
         {
-            await context.Usuarios.AddAsync(request, cancellationToken);
+            await _dbSet.AddAsync(request, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);
@@ -29,7 +32,7 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
     {
         try
         {
-            return await context.Usuarios.FirstOrDefaultAsync(
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(
                 x => x.Email.ToLower() == email.ToLower(),
                 cancellationToken: cancellationToken
             );
@@ -45,7 +48,7 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
     {
         try
         {
-            return await context.Usuarios.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
@@ -54,18 +57,19 @@ public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepo
         }
     }
 
-    public async Task<Result<IEnumerable<Usuario>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<Result<List<Usuario>>> GetAllAsync(
+        QueryOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
-            return Result<IEnumerable<Usuario>>.Success(await context.Usuarios.ToListAsync(
-                cancellationToken: cancellationToken
-            ));
+            return await _dbSet.AsNoTracking().ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuarios: {Message}", ex.Message);
-            return Result<IEnumerable<Usuario>>.Failure("Erro ao obter usuarios");
+            return Result<List<Usuario>>.Failure("Erro ao obter usuarios");
         }
     }
 }

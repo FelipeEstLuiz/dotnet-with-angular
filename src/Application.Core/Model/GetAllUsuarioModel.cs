@@ -1,3 +1,5 @@
-﻿namespace Application.Core.Model;
+﻿using Application.Domain.Model;
 
-public record GetAllUsuarioModel;
+namespace Application.Core.Model;
+
+public class GetAllUsuarioModel : QueryOptions;

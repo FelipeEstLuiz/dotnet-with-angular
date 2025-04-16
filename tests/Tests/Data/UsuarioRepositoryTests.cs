@@ -145,22 +145,63 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetAllAsync_DeveRetornarUsuarios_QuandoExistiremUsuarios()
     {
-        Usuario usuario1 = _faker.Generate();
-        Usuario usuario2 = _faker.Generate();
+        using IServiceScope scope = _server.Host.Services.CreateScope();
+        ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
+        UsuarioRepository repository = new(context, logger);
+
+        await context.Usuarios.AddAsync(_faker.Generate());
+        await context.Usuarios.AddAsync(_faker.Generate());
+        await context.SaveChangesAsync();
+
+        Result<List<Usuario>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+#pragma warning disable CS8602
+        Assert.Equal(2, result.Data.Count);
+#pragma warning restore CS8602
+
+        Assert.Null(result.PaginaAtual);
+        Assert.Null(result.TotalPaginas);
+        Assert.Null(result.TotalItens);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_DeveRetornarUsuarios_QuandoExistiremUsuarios_ServerSide()
+    {
+        List<Usuario> usuarios = [];
+
+        for (int i = 0; i < 12; i++)
+            usuarios.Add(_faker.Generate());
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
         UsuarioRepository repository = new(context, logger);
 
-        await context.Usuarios.AddAsync(usuario1);
-        await context.Usuarios.AddAsync(usuario2);
+        await context.Usuarios.AddRangeAsync(usuarios);
         await context.SaveChangesAsync();
 
-        Result<IEnumerable<Usuario>> result = await repository.GetAllAsync(CancellationToken.None);
+        Result<List<Usuario>> result = await repository.GetAllAsync(
+            new QueryOptions()
+            {
+                Pagina = 1,
+                TamanhoPagina = 10
+            },
+            cancellationToken: CancellationToken.None
+        );
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(2, result.Data?.Count());
+#pragma warning disable CS8602
+        Assert.Equal(10, result.Data.Count);
+#pragma warning restore CS8602
+        Assert.Equal(12, result.TotalItens);
+        Assert.Equal(2, result.TotalPaginas);
+        Assert.Equal(1, result.PaginaAtual);
+
+        Assert.NotNull(result.PaginaAtual);
+        Assert.NotNull(result.TotalPaginas);
+        Assert.NotNull(result.TotalItens);
     }
 
     [Fact]
@@ -173,7 +214,7 @@ public class UsuarioRepositoryTests
 
         context.Dispose();
 
-        Result<IEnumerable<Usuario>> result = await repository.GetAllAsync(CancellationToken.None);
+        Result<List<Usuario>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuarios", result.Errors);

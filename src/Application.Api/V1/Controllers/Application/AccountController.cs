@@ -9,7 +9,8 @@ using System.Net;
 namespace Application.Api.V1.Controllers.Application;
 
 [ApiExplorerSettings(GroupName = "Account")]
-public class AccountController(CommunicationProtocol protocol, RequestDispatcher dispatcher) : BaseApplicationController(protocol)
+public class AccountController(CommunicationProtocol protocol, RequestDispatcher dispatcher) 
+    : BaseApplicationController(protocol)
 {
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto>))]

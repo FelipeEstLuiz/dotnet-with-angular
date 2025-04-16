@@ -14,7 +14,10 @@ public class GetAllUsuarioUseCase(IUsuarioRepository usuarioRepository)
         CancellationToken cancellationToken
     )
     {
-        Result<IEnumerable<Domain.Entities.Usuario>> usuarios = await usuarioRepository.GetAllAsync(cancellationToken);
+        Result<List<Domain.Entities.Usuario>> usuarios = await usuarioRepository.GetAllAsync(
+            options: request,
+            cancellationToken: cancellationToken
+        );
         return usuarios.SetResult(data => data.Select(x => UsuarioDto.Map(x)));
     }
 }
