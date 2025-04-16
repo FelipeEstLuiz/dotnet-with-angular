@@ -1,15 +1,15 @@
 ﻿using Application.Core.DTO.Usuario;
-using Application.Core.Mediator.Query.Usuario;
+using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using MediatR;
 
-namespace Application.Core.Mediator.Handler.Usuario;
+namespace Application.Core.UseCase.Usuario;
 
-public class GetUsuarioByIdHandler(IUsuarioRepository usuarioRepository)
-    : IRequestHandler<GetUsuarioByIdQuery, Result<UsuarioDto?>>
+public class GetUsuarioByIdUseCase(IUsuarioRepository usuarioRepository)
+    : IRequestHandler<GetUsuarioByIdModel, Result<UsuarioDto?>>
 {
-    public async Task<Result<UsuarioDto?>> Handle(GetUsuarioByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<UsuarioDto?>> Handle(GetUsuarioByIdModel request, CancellationToken cancellationToken)
     {
         Result<Domain.Entities.Usuario?> usuario = await usuarioRepository.GetByIdAsync(request.Id, cancellationToken);
 

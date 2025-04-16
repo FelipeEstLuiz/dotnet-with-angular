@@ -1,6 +1,6 @@
 ﻿using Application.Core.DTO.Usuario;
-using Application.Core.Mediator.Command.Usuario;
-using Application.Core.Mediator.Handler.Usuario;
+using Application.Core.Model;
+using Application.Core.UseCase.Usuario;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -12,7 +12,7 @@ namespace Tests.Core;
 
 public class CadastrarUsuarioHandlerTests
 {
-    public readonly CadastrarUsuarioHandler _cadastrarUsuarioHandler;
+    public readonly CadastrarUsuarioUseCase _cadastrarUsuarioHandler;
     public readonly IUsuarioRepository _usuarioRepositoryMock;
     public readonly ITokenService _tokenServiceMock;
 
@@ -26,13 +26,13 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Inserir_Usuario_Se_Email_Nao_Existir()
     {
-        Faker<CadastrarUsuarioCommand> faker = new Faker<CadastrarUsuarioCommand>()
+        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
             .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
             .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha);
 
-        CadastrarUsuarioCommand command = faker.Generate();
+        CadastrarUsuarioModel command = faker.Generate();
 
         _usuarioRepositoryMock
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -55,13 +55,13 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Retornar_Erro_Se_Email_Ja_Cadastrado()
     {
-        Faker<CadastrarUsuarioCommand> faker = new Faker<CadastrarUsuarioCommand>()
+        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
             .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
             .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha);
 
-        CadastrarUsuarioCommand command = faker.Generate();
+        CadastrarUsuarioModel command = faker.Generate();
 
         Usuario usuarioMock = Usuario.Create(
             command.Nome,

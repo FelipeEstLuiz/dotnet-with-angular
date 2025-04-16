@@ -1,9 +1,9 @@
-﻿using Application.Core.Mediator.Command.Login;
+﻿using Application.Core.Model;
 using FluentValidation;
 
-namespace Application.Core.Mediator.Validator.Login;
+namespace Application.Core.Validator;
 
-public class LoginValidator: AbstractValidator<LoginCommand>
+public class LoginValidator: AbstractValidator<LoginModel>
 {
     public LoginValidator()
     {

@@ -1,21 +1,19 @@
 ﻿using Application.Core.DTO.Usuario;
-using Application.Core.Mediator.Command.Usuario;
+using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.Util;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Core.Mediator.Handler.Usuario;
+namespace Application.Core.UseCase.Usuario;
 
-public class CadastrarUsuarioHandler(
+public class CadastrarUsuarioUseCase(
     IUsuarioRepository usuarioRepository,
     ITokenService tokenService
-) : IRequestHandler<CadastrarUsuarioCommand, Result<LoginDto>>
+) : IRequestHandler<CadastrarUsuarioModel, Result<LoginDto>>
 {
     public async Task<Result<LoginDto>> Handle(
-        CadastrarUsuarioCommand request,
+        CadastrarUsuarioModel request,
         CancellationToken cancellationToken
     )
     {

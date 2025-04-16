@@ -2,10 +2,8 @@
 using Application.Api.Filter;
 using Application.Api.Middleware;
 using Application.Api.Util;
-using Application.Core.Behaviours;
 using Application.Domain.Util;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -36,9 +34,8 @@ public static class ServiceCollectionExtensions
             .AddHttpContextAccessor()
             .AddVersioning()
             .AddGlobalExceptionMiddleware()
-            //.AddFilters()
             .AddHttpClient()
-            .AddApplicationServices();
+            .AddApplicationServices(); 
 
         return services;
     }
@@ -96,8 +93,8 @@ public static class ServiceCollectionExtensions
     {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         services.AddValidatorsFromAssemblies(assemblies);
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
+        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
         return services;
     }

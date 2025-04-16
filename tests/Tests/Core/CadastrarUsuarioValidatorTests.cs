@@ -1,16 +1,16 @@
-﻿using Application.Core.Mediator.Command.Usuario;
-using Application.Core.Mediator.Validator.Usuario;
+﻿using Application.Core.Model;
+using Application.Core.Validator;
 using Bogus;
 
 namespace Tests.Core;
 
 public class CadastrarUsuarioValidatorTests
 {
-    private readonly CadastrarUsuarioCommand _command;
+    private readonly CadastrarUsuarioModel _command;
 
     public CadastrarUsuarioValidatorTests()
     {
-        Faker<CadastrarUsuarioCommand> faker = new Faker<CadastrarUsuarioCommand>()
+        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
             .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
@@ -23,7 +23,7 @@ public class CadastrarUsuarioValidatorTests
     public void Deve_Retornar_Erros_Se_Command_For_Invalido()
     {
         CadastrarUsuarioValidator validator = new();
-        CadastrarUsuarioCommand command = new()
+        CadastrarUsuarioModel command = new()
         {
             Nome = "",
             Email = "invalido",

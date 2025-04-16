@@ -1,19 +1,18 @@
 ﻿using Application.Core.DTO.Usuario;
-using Application.Core.Mediator.Command.Login;
+using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Core.Mediator.Handler.Login;
+namespace Application.Core.UseCase.Login;
 
-public class LoginHandler(
+public class LoginUseCase(
     IUsuarioRepository usuarioRepository,
     ITokenService tokenService
-) : IRequestHandler<LoginCommand, Result<LoginDto?>>
+) : IRequestHandler<LoginModel, Result<LoginDto?>>
 {
-    public async Task<Result<LoginDto?>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken)
     {
         Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,

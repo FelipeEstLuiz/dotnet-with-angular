@@ -1,9 +1,9 @@
-﻿using Application.Core.Mediator.Command.Usuario;
+﻿using Application.Core.Model;
 using FluentValidation;
 
-namespace Application.Core.Mediator.Validator.Usuario;
+namespace Application.Core.Validator;
 
-public class CadastrarUsuarioValidator : AbstractValidator<CadastrarUsuarioCommand>
+public class CadastrarUsuarioValidator : AbstractValidator<CadastrarUsuarioModel>
 {
     public CadastrarUsuarioValidator()
     {
