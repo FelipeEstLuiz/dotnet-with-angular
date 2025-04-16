@@ -2,9 +2,9 @@ name: Build, Test and Coverage
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, iniciar-desenvolvimento ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, iniciar-desenvolvimento ]
 
 jobs:
   build-test-coverage:
@@ -26,4 +26,4 @@ jobs:
         run: dotnet build --no-restore --configuration Release
         
       - name: Run tests
-        run: dotnet test --no-build --configuration Release
+        run: dotnet test --no-build --configuration Release --logger trx

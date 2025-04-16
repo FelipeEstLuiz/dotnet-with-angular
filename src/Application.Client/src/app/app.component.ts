@@ -3,11 +3,12 @@ import { NavComponent } from './nav/nav.component';
 import { AccountService } from './_services/account.service';
 import { HomeComponent } from './home/home.component';
 import { AppLoadingComponent } from './shared/loading/loading.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NavComponent, HomeComponent, AppLoadingComponent],
+  imports: [RouterOutlet, NavComponent, HomeComponent, AppLoadingComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
