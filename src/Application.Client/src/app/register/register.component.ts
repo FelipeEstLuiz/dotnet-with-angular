@@ -14,8 +14,8 @@ import { AlertService } from '../_services/alert.service';
 })
 export class RegisterComponent {
   private accountService = inject(AccountService);
+  private alertService = inject(AlertService);
   cancelRegister = output<boolean>();
-
   model: UserRegister = {
     nome: '',
     email: '',
@@ -24,8 +24,6 @@ export class RegisterComponent {
   };
 
   passwordStrength: string = '';
-
-  constructor(private alertService: AlertService) {}
 
   onPasswordChange(): void {
     this.passwordStrength = getPasswordStrength(this.model.senha);
