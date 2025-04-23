@@ -14,6 +14,7 @@ public class AccountController(CommunicationProtocol protocol, RequestDispatcher
 {
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto>))]
+    [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(Response<LoginDto>))]
     public async Task<IActionResult> InsertUsuarioAsync([FromBody] CadastrarUsuarioModel request) 
         => HandlerResponse(
             HttpStatusCode.Created, 

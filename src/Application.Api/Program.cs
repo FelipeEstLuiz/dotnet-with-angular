@@ -35,6 +35,9 @@ builder.Services.AddSwaggerGen();
 
 WebApplication app = builder.Build();
 
+app.UseCommunicationProtocolMiddleware();
+app.UseGlobalExceptionMiddleware();
+
 if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 
@@ -52,9 +55,7 @@ app.UseCors(x => x
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCommunicationProtocolMiddleware();
 app.UseResponseCompression();
-app.UseGlobalExceptionMiddleware();
 
 app.UseRouting()
     .UseEndpoints(r =>

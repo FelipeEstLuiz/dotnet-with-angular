@@ -6,10 +6,10 @@ namespace Application.Api.Controllers._Shared;
 [ApiController]
 [Route("api/app/v{version:apiVersion}/[controller]")]
 [ApiExplorerSettings(GroupName = "Application")]
-[ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(Response))]
-[ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(Response))]
-[ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(Response))]
-[ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(Response))]
+[ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ResponseError))]
+[ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ResponseError))]
+[ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(ResponseError))]
+[ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ResponseError))]
 public class BaseApplicationController(CommunicationProtocol protocol) : BaseController(protocol)
 {
 }

@@ -7,14 +7,14 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { httpLoadingInterceptor } from './shared/http/http.component';
 import { provideToastr } from 'ngx-toastr';
+import { errorInterceptor } from './_interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([httpLoadingInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor])),
     provideAnimations(),
     provideToastr({
       positionClass: 'toast-top-center',
