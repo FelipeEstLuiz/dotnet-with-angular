@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Application.Infraestructure.Data.EntitiesConfiguration;
 
 [ExcludeFromCodeCoverage]
-public class UsuarioConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {

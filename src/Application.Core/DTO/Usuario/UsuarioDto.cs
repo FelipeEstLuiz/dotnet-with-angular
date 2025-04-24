@@ -1,5 +1,4 @@
-﻿using Application.Domain.Converter;
-using Application.Domain.Extensions;
+﻿using System.Globalization;
 
 namespace Application.Core.DTO.Usuario;
 
@@ -7,11 +6,8 @@ public record UsuarioDto : ComumDto
 {
     public string Nome { get; private set; } = null!;
     public string Email { get; private set; } = null!;
-
-    [Newtonsoft.Json.JsonConverter(typeof(CustomDateTimeConverter))]
-    public DateOnly DataNascimento { get; private set; }
-
-    public int Idade => DataNascimento.CalcularIdade();
+    public string DataNascimento { get; private set; } = null!;
+    public int Idade { get; private set; }
 
     public static UsuarioDto Map(Domain.Entities.User usuario) => new()
     {
@@ -19,6 +15,7 @@ public record UsuarioDto : ComumDto
         Nome = usuario.UserName,
         Id = usuario.Id,
         DataCadastro = usuario.Created,
-        DataNascimento = usuario.DateOfBirth
+        DataNascimento = usuario.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+        Idade = usuario.GetAge()
     };
 }

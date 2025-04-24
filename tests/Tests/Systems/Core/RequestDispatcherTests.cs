@@ -12,7 +12,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
-namespace Tests.Core;
+namespace Tests.Systems.Core;
 
 public class RequestDispatcherTests
 {
@@ -33,7 +33,7 @@ public class RequestDispatcherTests
             .GerarToken(Arg.Any<User>())
             .Returns(Task.FromResult("token"));
 
-        IUsuarioRepository usuarioRepositoryMock = Substitute.For<IUsuarioRepository>();
+        IUserRepository usuarioRepositoryMock = Substitute.For<IUserRepository>();
 
         usuarioRepositoryMock
            .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())

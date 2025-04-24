@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.Usuario;
 
 public class CadastrarUsuarioUseCase(
-    IUsuarioRepository usuarioRepository,
+    IUserRepository usuarioRepository,
     ITokenService tokenService
 ) : IRequestHandler<CadastrarUsuarioModel, Result<LoginDto>>
 {

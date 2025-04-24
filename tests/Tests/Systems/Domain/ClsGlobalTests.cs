@@ -3,7 +3,7 @@ using Application.Domain.Util;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 
-namespace Tests.Domain;
+namespace Tests.Systems.Domain;
 
 public  class ClsGlobalTests
 {

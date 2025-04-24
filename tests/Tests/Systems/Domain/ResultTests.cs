@@ -2,7 +2,7 @@
 using Application.Domain.Model;
 using Bogus;
 
-namespace Tests.Domain;
+namespace Tests.Systems.Domain;
 
 public class ResultTests
 {

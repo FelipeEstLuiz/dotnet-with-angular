@@ -6,7 +6,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Usuario;
 
-public class GetUsuarioByIdUseCase(IUsuarioRepository usuarioRepository)
+public class GetUsuarioByIdUseCase(IUserRepository usuarioRepository)
     : IRequestHandler<GetUsuarioByIdModel, Result<UsuarioDto?>>
 {
     public async Task<Result<UsuarioDto?>> Handle(GetUsuarioByIdModel request, CancellationToken cancellationToken)

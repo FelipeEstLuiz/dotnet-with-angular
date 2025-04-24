@@ -2,7 +2,7 @@
 using Application.Core.Validator;
 using Bogus;
 
-namespace Tests.Core;
+namespace Tests.Systems.Core;
 
 public class CadastrarUsuarioValidatorTests
 {
@@ -14,7 +14,15 @@ public class CadastrarUsuarioValidatorTests
             .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
-            .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha);
+            .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha)
+            .RuleFor(u => u.DataNascimento, f =>
+            {
+                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
+                return DateOnly.FromDateTime(date);
+            })
+            .RuleFor(u => u.Introducao, f => f.Lorem.Sentence())
+            .RuleFor(u => u.Genero, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+            .RuleFor(u => u.KnowAs, f => f.Name.FirstName());
 
         _command = faker.Generate();
     }

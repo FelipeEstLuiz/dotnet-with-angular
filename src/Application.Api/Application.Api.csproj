@@ -23,4 +23,11 @@
 		<ProjectReference Include="..\Application.Infraestructure.IoC\Application.Infraestructure.IOC.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+
 </Project>

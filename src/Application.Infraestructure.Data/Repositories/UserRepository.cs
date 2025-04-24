@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Infraestructure.Data.Repositories;
 
-public class UsuarioRepository(ApplicationDbContext context, ILogger<UsuarioRepository> logger) : IUsuarioRepository
+public class UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) : IUserRepository
 {
     private readonly DbSet<User> _dbSet = context.Set<User>();
 

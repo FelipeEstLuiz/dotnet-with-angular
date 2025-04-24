@@ -8,17 +8,17 @@ using Application.Domain.Model;
 using Bogus;
 using NSubstitute;
 
-namespace Tests.Core;
+namespace Tests.Systems.Core;
 
 public class CadastrarUsuarioHandlerTests
 {
     public readonly CadastrarUsuarioUseCase _cadastrarUsuarioHandler;
-    public readonly IUsuarioRepository _usuarioRepositoryMock;
+    public readonly IUserRepository _usuarioRepositoryMock;
     public readonly ITokenService _tokenServiceMock;
 
     public CadastrarUsuarioHandlerTests()
     {
-        _usuarioRepositoryMock = Substitute.For<IUsuarioRepository>();
+        _usuarioRepositoryMock = Substitute.For<IUserRepository>();
         _tokenServiceMock = Substitute.For<ITokenService>();
         _cadastrarUsuarioHandler = new(_usuarioRepositoryMock, _tokenServiceMock);
     }
@@ -26,13 +26,7 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Inserir_Usuario_Se_Email_Nao_Existir()
     {
-        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
-            .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
-            .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-            .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
-            .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha);
-
-        CadastrarUsuarioModel command = faker.Generate();
+        CadastrarUsuarioModel command = Generate();
 
         _usuarioRepositoryMock
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -55,24 +49,7 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Retornar_Erro_Se_Email_Ja_Cadastrado()
     {
-        DateTime max = DateTime.Today.AddYears(-18);
-        DateTime min = DateTime.Today.AddYears(-110);
-
-        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
-            .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
-            .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-            .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
-            .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha)
-            .RuleFor(u => u.DataNascimento, f =>
-            {
-                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
-                return DateOnly.FromDateTime(date);
-            })
-            .RuleFor(u => u.Introducao, f => f.Lorem.Sentence())
-            .RuleFor(u => u.Genero, f => f.PickRandom("Masculino", "Feminino", "Outro"))
-            .RuleFor(u => u.KnowAs, f => f.Name.FirstName());
-
-        CadastrarUsuarioModel command = faker.Generate();
+        CadastrarUsuarioModel command = Generate();
 
         User usuarioMock = command.MapUsuario();
 
@@ -85,4 +62,19 @@ public class CadastrarUsuarioHandlerTests
         Assert.True(result.IsFailure);
         Assert.Contains("E-mail ja cadastrado", result.Errors);
     }
+
+    private static CadastrarUsuarioModel Generate() => new Faker<CadastrarUsuarioModel>()
+        .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
+        .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
+        .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
+        .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha)
+        .RuleFor(u => u.DataNascimento, f =>
+        {
+            DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
+            return DateOnly.FromDateTime(date);
+        })
+        .RuleFor(u => u.Introducao, f => f.Lorem.Sentence())
+        .RuleFor(u => u.Genero, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+        .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
+        .Generate();
 }

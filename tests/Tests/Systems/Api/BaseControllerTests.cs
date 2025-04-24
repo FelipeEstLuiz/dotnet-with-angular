@@ -4,7 +4,7 @@ using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Tests.Api;
+namespace Tests.Systems.Api;
 
 public class BaseControllerTests
 {

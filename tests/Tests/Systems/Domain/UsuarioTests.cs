@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Entities;
-using Bogus;
+using Tests.Fixtures;
 
-namespace Tests.Domain;
+namespace Tests.Systems.Domain;
 
 public class UsuarioTests
 {
@@ -11,21 +11,10 @@ public class UsuarioTests
         string nome = "joao";
         string email = "joao@email.com";
 
-        Faker<User> faker = new Faker<User>()
-            .RuleFor(cmd => cmd.Id, f => f.Random.Guid())
-            .RuleFor(cmd => cmd.UserName, f => nome)
-            .RuleFor(cmd => cmd.Email, f => email)
-            .RuleFor(u => u.DateOfBirth, f =>
-            {
-                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
-                return DateOnly.FromDateTime(date);
-            })
-            .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
-            .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
-            .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
-            .RuleFor(u => u.Created, f => f.Date.Past(1, DateTime.UtcNow));
+        User usuarioMock = GenerateUser.Created();
 
-        User usuarioMock = faker.Generate();
+        usuarioMock.UserName = nome;
+        usuarioMock.Email = email;
 
         User usuario = User.Create(
             usuarioMock.UserName,
@@ -57,21 +46,7 @@ public class UsuarioTests
     [Fact]
     public void SetPassword_DeveAtribuirPasswordHash()
     {
-        Faker<User> faker = new Faker<User>()
-            .RuleFor(cmd => cmd.Id, f => f.Random.Guid())
-            .RuleFor(cmd => cmd.UserName, f => f.Person.FullName)
-            .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-            .RuleFor(u => u.DateOfBirth, f =>
-            {
-                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
-                return DateOnly.FromDateTime(date);
-            })
-            .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
-            .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
-            .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
-            .RuleFor(u => u.Created, f => f.Date.Past(1, DateTime.UtcNow));
-
-        User usuarioMock = faker.Generate();
+        User usuarioMock = GenerateUser.Created();
 
         User usuario = User.Create(
             usuarioMock.UserName,

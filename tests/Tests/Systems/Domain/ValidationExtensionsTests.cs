@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Exception;
 using System.Net;
 
-namespace Tests.Domain;
+namespace Tests.Systems.Domain;
 
 public class ValidationExtensionsTests
 {

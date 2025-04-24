@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Util;
 using System.Text.RegularExpressions;
 
-namespace Tests.Domain;
+namespace Tests.Systems.Domain;
 
 public class ProtocolGeneratorTests
 {

@@ -6,7 +6,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Usuario;
 
-public class GetAllUsuarioUseCase(IUsuarioRepository usuarioRepository)
+public class GetAllUsuarioUseCase(IUserRepository usuarioRepository)
     : IRequestHandler<GetAllUsuarioModel, Result<IEnumerable<UsuarioDto>>>
 {
     public async Task<Result<IEnumerable<UsuarioDto>>> Handle(

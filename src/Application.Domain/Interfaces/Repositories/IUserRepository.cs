@@ -3,7 +3,7 @@ using Application.Domain.Model;
 
 namespace Application.Domain.Interfaces.Repositories;
 
-public interface IUsuarioRepository
+public interface IUserRepository
 {
     Task<Result<bool>> InsertAsync(User request, CancellationToken cancellationToken);
     Task<Result<User?>> GetByEmailAsync(string email, CancellationToken cancellationToken);
