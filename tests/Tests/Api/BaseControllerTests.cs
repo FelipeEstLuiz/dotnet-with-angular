@@ -8,7 +8,7 @@ namespace Tests.Api;
 
 public class BaseControllerTests
 {
-    private CommunicationProtocol protocol;
+    private readonly CommunicationProtocol protocol;
 
     public BaseControllerTests()
     {
@@ -32,6 +32,21 @@ public class BaseControllerTests
 
         ObjectResult objectResult = Assert.IsType<ObjectResult>(response);
         Assert.Equal(200, objectResult.StatusCode);
+        Response responseData = Assert.IsType<Response>(objectResult.Value);
+        Assert.Equal("dados de teste", responseData.Data);
+        Assert.Equal("API", responseData.Protocol);
+    }
+
+    [Fact]
+    public void HandlerResponse_Deve_Retornar_201_Se_Sucesso()
+    {
+        TestController controller = new(protocol);
+        Result<string> result = "dados de teste";
+
+        IActionResult response = controller.CallHandlerResponse(HttpStatusCode.Created, result);
+
+        ObjectResult objectResult = Assert.IsType<ObjectResult>(response);
+        Assert.Equal(201, objectResult.StatusCode);
         Response responseData = Assert.IsType<Response>(objectResult.Value);
         Assert.Equal("dados de teste", responseData.Data);
         Assert.Equal("API", responseData.Protocol);

@@ -30,17 +30,17 @@ public class RequestDispatcherTests
         ITokenService tokenServiceMock = Substitute.For<ITokenService>();
         
         tokenServiceMock
-            .GerarToken(Arg.Any<Usuario>())
+            .GerarToken(Arg.Any<User>())
             .Returns(Task.FromResult("token"));
 
         IUsuarioRepository usuarioRepositoryMock = Substitute.For<IUsuarioRepository>();
 
         usuarioRepositoryMock
            .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-           .Returns(Task.FromResult(Result<Usuario?>.Success(null)));
+           .Returns(Task.FromResult(Result<User?>.Success(null)));
 
         usuarioRepositoryMock
-            .InsertAsync(Arg.Any<Usuario>(), Arg.Any<CancellationToken>())
+            .InsertAsync(Arg.Any<User>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<bool>.Success(true)));
 
         ServiceCollection services = new();

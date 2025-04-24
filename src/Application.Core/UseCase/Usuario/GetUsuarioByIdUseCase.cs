@@ -11,7 +11,7 @@ public class GetUsuarioByIdUseCase(IUsuarioRepository usuarioRepository)
 {
     public async Task<Result<UsuarioDto?>> Handle(GetUsuarioByIdModel request, CancellationToken cancellationToken)
     {
-        Result<Domain.Entities.Usuario?> usuario = await usuarioRepository.GetByIdAsync(request.Id, cancellationToken);
+        Result<Domain.Entities.User?> usuario = await usuarioRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (usuario.IsSuccess && usuario.Data is not null)
             return UsuarioDto.Map(usuario.Data);

@@ -14,7 +14,7 @@ public class LoginUseCase(
 {
     public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken)
     {
-        Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
+        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
@@ -26,9 +26,9 @@ public class LoginUseCase(
             : Result<LoginDto?>.Failure(resultUsuario.Errors);
     }
 
-    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.Usuario usuario, string senha)
+    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User usuario, string senha)
     {
-        PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.Usuario>().VerifyHashedPassword(
+        PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
             usuario,
             usuario.PasswordHash,
             senha

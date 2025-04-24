@@ -15,7 +15,7 @@ namespace Tests.Data;
 public class UsuarioRepositoryTests
 {
     private readonly TestServer _server;
-    private readonly Faker<Usuario> _faker;
+    private readonly Faker<User> _faker;
 
     public UsuarioRepositoryTests()
     {
@@ -29,7 +29,7 @@ public class UsuarioRepositoryTests
             })
             .Configure(app => { }));
 
-        _faker = new Faker<Usuario>()
+        _faker = new Faker<User>()
             .RuleFor(cmd => cmd.Id, f => Guid.NewGuid())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.UserName, f => f.Name.FullName())
@@ -47,7 +47,7 @@ public class UsuarioRepositoryTests
         Result<bool> result = await repository.InsertAsync(_faker.Generate(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(1, await context.Usuarios.CountAsync());
+        Assert.Equal(1, await context.Users.CountAsync());
     }
 
     [Fact]
@@ -70,17 +70,17 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetByEmailAsync_DeveRetornarUsuario_QuandoEmailExistir()
     {
-        Usuario usuario = _faker.Generate();
+        User usuario = _faker.Generate();
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
         UsuarioRepository repository = new(context, logger);
 
-        await context.Usuarios.AddAsync(usuario);
+        await context.Users.AddAsync(usuario);
         await context.SaveChangesAsync();
 
-        Result<Usuario?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
+        Result<User?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
@@ -90,7 +90,7 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetByEmailAsync_DeveRetornarUsuario_QuandoErroAoConsultar()
     {
-        Usuario usuario = _faker.Generate();
+        User usuario = _faker.Generate();
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
@@ -98,7 +98,7 @@ public class UsuarioRepositoryTests
 
         context.Dispose();
 
-        Result<Usuario?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
+        Result<User?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuario", result.Errors);
@@ -107,17 +107,17 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetByIdAsync_DeveRetornarUsuario_QuandoIdExistir()
     {
-        Usuario usuario = _faker.Generate();
+        User usuario = _faker.Generate();
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
         UsuarioRepository repository = new(context, logger);
 
-        await context.Usuarios.AddAsync(usuario);
+        await context.Users.AddAsync(usuario);
         await context.SaveChangesAsync();
 
-        Result<Usuario?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
+        Result<User?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
@@ -127,7 +127,7 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetByIdAsync_DeveRetornarUsuario_QuandoErroAoConsultar()
     {
-        Usuario usuario = _faker.Generate();
+        User usuario = _faker.Generate();
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -136,7 +136,7 @@ public class UsuarioRepositoryTests
 
         context.Dispose();
 
-        Result<Usuario?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
+        Result<User?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuario", result.Errors);
@@ -150,11 +150,11 @@ public class UsuarioRepositoryTests
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
         UsuarioRepository repository = new(context, logger);
 
-        await context.Usuarios.AddAsync(_faker.Generate());
-        await context.Usuarios.AddAsync(_faker.Generate());
+        await context.Users.AddAsync(_faker.Generate());
+        await context.Users.AddAsync(_faker.Generate());
         await context.SaveChangesAsync();
 
-        Result<List<Usuario>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsSuccess);
 #pragma warning disable CS8602
@@ -169,7 +169,7 @@ public class UsuarioRepositoryTests
     [Fact]
     public async Task GetAllAsync_DeveRetornarUsuarios_QuandoExistiremUsuarios_ServerSide()
     {
-        List<Usuario> usuarios = [];
+        List<User> usuarios = [];
 
         for (int i = 0; i < 12; i++)
             usuarios.Add(_faker.Generate());
@@ -179,10 +179,10 @@ public class UsuarioRepositoryTests
         ILogger<UsuarioRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UsuarioRepository>>();
         UsuarioRepository repository = new(context, logger);
 
-        await context.Usuarios.AddRangeAsync(usuarios);
+        await context.Users.AddRangeAsync(usuarios);
         await context.SaveChangesAsync();
 
-        Result<List<Usuario>> result = await repository.GetAllAsync(
+        Result<List<User>> result = await repository.GetAllAsync(
             new QueryOptions()
             {
                 Pagina = 1,
@@ -214,7 +214,7 @@ public class UsuarioRepositoryTests
 
         context.Dispose();
 
-        Result<List<Usuario>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuarios", result.Errors);

@@ -5,10 +5,11 @@ namespace Application.Domain.Interfaces.Repositories;
 
 public interface IUsuarioRepository
 {
-    Task<Result<bool>> InsertAsync(Usuario request, CancellationToken cancellationToken);
-    Task<Result<Usuario?>> GetByEmailAsync(string email, CancellationToken cancellationToken);
-    Task<Result<Usuario?>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<Result<List<Usuario>>> GetAllAsync(
+    Task<Result<bool>> InsertAsync(User request, CancellationToken cancellationToken);
+    Task<Result<User?>> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<Result<User?>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<User?>> GetByIdAsync(int userId, CancellationToken cancellationToken);
+    Task<Result<List<User>>> GetAllAsync(
         QueryOptions? options = null,
         CancellationToken cancellationToken = default
     );

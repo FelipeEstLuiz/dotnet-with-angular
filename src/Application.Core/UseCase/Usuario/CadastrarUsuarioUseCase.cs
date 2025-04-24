@@ -17,7 +17,7 @@ public class CadastrarUsuarioUseCase(
         CancellationToken cancellationToken
     )
     {
-        Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
+        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
@@ -27,12 +27,9 @@ public class CadastrarUsuarioUseCase(
         else if (resultUsuario.IsFailure)
             return Result<LoginDto>.Failure(resultUsuario.Errors);
 
-        Domain.Entities.Usuario usuario = Domain.Entities.Usuario.Create(
-            nome: request.Nome,
-            email: request.Email
-        );
+        Domain.Entities.User usuario = request.MapUsuario();
 
-        PasswordHasher<Domain.Entities.Usuario> hasher = new();
+        PasswordHasher<Domain.Entities.User> hasher = new();
 
         usuario.SetPassword(hasher.HashPassword(usuario, request.Senha));
 

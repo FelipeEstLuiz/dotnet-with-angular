@@ -19,25 +19,31 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
 
     protected IActionResult HandlerResponse<T>(HttpStatusCode statusCode, Result<T> result)
     {
+        Response response;
+
         if (result.IsSuccess)
-            return StatusCode((int)statusCode, _Shared.Response.ResponseSuccess(
+            response = _Shared.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
                 statusCode: statusCode
-            ));
-
-        HttpStatusCode httpStatusCode = result.ResponseCode switch
+            );
+        else
         {
-            ResponseCodes.USER_NOT_HAVE_PERMISSION => HttpStatusCode.Forbidden,
-            ResponseCodes.UNAUTHORIZED => HttpStatusCode.Unauthorized,
-            ResponseCodes.NOT_FOUND => HttpStatusCode.NotFound,
-            _ => HttpStatusCode.BadRequest,
-        };
+            statusCode = result.ResponseCode switch
+            {
+                ResponseCodes.USER_NOT_HAVE_PERMISSION => HttpStatusCode.Forbidden,
+                ResponseCodes.UNAUTHORIZED => HttpStatusCode.Unauthorized,
+                ResponseCodes.NOT_FOUND => HttpStatusCode.NotFound,
+                _ => HttpStatusCode.BadRequest,
+            };
 
-        return StatusCode((int)statusCode, _Shared.Response.Failure(
-            _protocol.ToString(),
-            result.Errors,
-            statusCode: httpStatusCode
-        ));
+            response = _Shared.Response.Failure(
+                _protocol.ToString(),
+                result.Errors,
+                statusCode: statusCode
+            );
+        }
+
+        return StatusCode((int)statusCode, response);
     }
 }
