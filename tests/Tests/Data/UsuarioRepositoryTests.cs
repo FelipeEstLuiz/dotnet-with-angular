@@ -30,10 +30,19 @@ public class UsuarioRepositoryTests
             .Configure(app => { }));
 
         _faker = new Faker<User>()
-            .RuleFor(cmd => cmd.Id, f => Guid.NewGuid())
+            .RuleFor(cmd => cmd.Id, f => f.Random.Guid())
+            .RuleFor(cmd => cmd.UserId, f => f.Random.Int())
+            .RuleFor(cmd => cmd.UserName, f => f.Person.FullName)
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-            .RuleFor(cmd => cmd.UserName, f => f.Name.FullName())
-            .RuleFor(cmd => cmd.PasswordHash, f => f.Internet.Password(8));
+            .RuleFor(u => u.DateOfBirth, f =>
+            {
+                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
+                return DateOnly.FromDateTime(date);
+            })
+            .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
+            .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+            .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
+            .RuleFor(u => u.Created, f => f.Date.Past(1, DateTime.UtcNow));
     }
 
     [Fact]
