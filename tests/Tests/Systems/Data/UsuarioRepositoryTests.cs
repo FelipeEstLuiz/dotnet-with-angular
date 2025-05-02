@@ -1,6 +1,7 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Model;
+using Application.Domain.VO;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.Repositories;
 using Bogus;
@@ -152,7 +153,7 @@ public class UsuarioRepositoryTests
         await context.Users.AddAsync(_faker.Generate());
         await context.SaveChangesAsync();
 
-        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<UserVo>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsSuccess);
 #pragma warning disable CS8602
@@ -180,7 +181,7 @@ public class UsuarioRepositoryTests
         await context.Users.AddRangeAsync(usuarios);
         await context.SaveChangesAsync();
 
-        Result<List<User>> result = await repository.GetAllAsync(
+        Result<List<UserVo>> result = await repository.GetAllAsync(
             new QueryOptions()
             {
                 Pagina = 1,
@@ -212,7 +213,7 @@ public class UsuarioRepositoryTests
 
         context.Dispose();
 
-        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<UserVo>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuarios", result.Errors);

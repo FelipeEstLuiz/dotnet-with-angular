@@ -13,10 +13,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("aspnet_users");
 
         builder.HasKey(u => u.Id);
-        builder.HasKey(u => u.UserId);
 
         builder.Property(u => u.Id).HasColumnName("id");
-        builder.Property(u => u.UserId).HasColumnName("user_id");
         builder.Property(u => u.UserName).HasColumnName("user_name").HasMaxLength(200);
         builder.Property(u => u.Email).HasColumnName("email").HasMaxLength(150);
         builder.Property(u => u.PasswordHash).HasColumnName("password_hash");

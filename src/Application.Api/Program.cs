@@ -74,7 +74,7 @@ if (app.Environment.IsDevelopment())
     try
     {
         ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
+        //await context.Database.MigrateAsync();
         await Seed.SeedUsers(context);
     }
     catch (Exception ex)

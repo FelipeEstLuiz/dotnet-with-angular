@@ -1,6 +1,6 @@
-﻿using Application.Core.DTO.Usuario;
+﻿using Application.Core.DTO.User;
 using Application.Core.Model;
-using Application.Core.UseCase.Usuario;
+using Application.Core.UseCase.User;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -12,7 +12,7 @@ namespace Tests.Systems.Core;
 
 public class CadastrarUsuarioHandlerTests
 {
-    public readonly CadastrarUsuarioUseCase _cadastrarUsuarioHandler;
+    public readonly InsertUserUseCase _cadastrarUsuarioHandler;
     public readonly IUserRepository _usuarioRepositoryMock;
     public readonly ITokenService _tokenServiceMock;
 
@@ -26,7 +26,7 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Inserir_Usuario_Se_Email_Nao_Existir()
     {
-        CadastrarUsuarioModel command = Generate();
+        InsertUserModel command = Generate();
 
         _usuarioRepositoryMock
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -49,7 +49,7 @@ public class CadastrarUsuarioHandlerTests
     [Fact]
     public async Task Handle_Deve_Retornar_Erro_Se_Email_Ja_Cadastrado()
     {
-        CadastrarUsuarioModel command = Generate();
+        InsertUserModel command = Generate();
 
         User usuarioMock = command.MapUsuario();
 
@@ -63,18 +63,18 @@ public class CadastrarUsuarioHandlerTests
         Assert.Contains("E-mail ja cadastrado", result.Errors);
     }
 
-    private static CadastrarUsuarioModel Generate() => new Faker<CadastrarUsuarioModel>()
-        .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
+    private static InsertUserModel Generate() => new Faker<InsertUserModel>()
+        .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
         .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-        .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
-        .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha)
-        .RuleFor(u => u.DataNascimento, f =>
+        .RuleFor(cmd => cmd.Password, f => f.Internet.Password(8))
+        .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password)
+        .RuleFor(u => u.DateOfBirth, f =>
         {
             DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
             return DateOnly.FromDateTime(date);
         })
-        .RuleFor(u => u.Introducao, f => f.Lorem.Sentence())
-        .RuleFor(u => u.Genero, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+        .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
+        .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
         .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
         .Generate();
 }

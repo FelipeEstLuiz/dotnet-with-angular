@@ -25,7 +25,7 @@ public class UsuarioTests
             usuarioMock.DateOfBirth
         );
 
-        Assert.NotEqual(Guid.Empty, usuario.Id);
+        Assert.NotEqual(default, usuario.Id);
         Assert.Equal(nome, usuario.UserName);
         Assert.Equal(nome.ToUpperInvariant(), usuario.NormalizedUserName);
         Assert.Equal(email, usuario.Email);

@@ -1,19 +1,19 @@
-﻿using Application.Core.DTO.Usuario;
+﻿using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Core.UseCase.Usuario;
+namespace Application.Core.UseCase.User;
 
-public class CadastrarUsuarioUseCase(
+public class InsertUserUseCase(
     IUserRepository usuarioRepository,
     ITokenService tokenService
-) : IRequestHandler<CadastrarUsuarioModel, Result<LoginDto>>
+) : IRequestHandler<InsertUserModel, Result<LoginDto>>
 {
     public async Task<Result<LoginDto>> Handle(
-        CadastrarUsuarioModel request,
+        InsertUserModel request,
         CancellationToken cancellationToken
     )
     {
@@ -31,7 +31,7 @@ public class CadastrarUsuarioUseCase(
 
         PasswordHasher<Domain.Entities.User> hasher = new();
 
-        usuario.SetPassword(hasher.HashPassword(usuario, request.Senha));
+        usuario.SetPassword(hasher.HashPassword(usuario, request.Password));
 
         Result<bool> resultInsert = await usuarioRepository.InsertAsync(usuario, cancellationToken);
 

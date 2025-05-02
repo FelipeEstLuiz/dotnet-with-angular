@@ -16,7 +16,7 @@ namespace Application.Infraestructure.Data.Migrations
                 name: "aspnet_users",
                 columns: table => new
                 {
-                    user_id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     normalized_user_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
@@ -41,35 +41,33 @@ namespace Application.Infraestructure.Data.Migrations
                     looking_for = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     city = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     country = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_aspnet_users", x => x.user_id);
+                    table.PrimaryKey("PK_aspnet_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "photos",
                 columns: table => new
                 {
-                    photo_id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     is_main = table.Column<bool>(type: "boolean", nullable: false),
                     public_id = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     user_id = table.Column<int>(type: "integer", nullable: false),
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_photos", x => x.photo_id);
+                    table.PrimaryKey("PK_photos", x => x.id);
                     table.ForeignKey(
                         name: "FK_photos_aspnet_users_user_id",
                         column: x => x.user_id,
                         principalTable: "aspnet_users",
-                        principalColumn: "user_id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 

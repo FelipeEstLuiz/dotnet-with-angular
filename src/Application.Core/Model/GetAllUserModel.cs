@@ -2,4 +2,4 @@
 
 namespace Application.Core.Model;
 
-public class GetAllUsuarioModel : QueryOptions;
+public class GetAllUserModel : QueryOptions;

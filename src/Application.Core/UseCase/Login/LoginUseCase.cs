@@ -1,4 +1,4 @@
-﻿using Application.Core.DTO.Usuario;
+﻿using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -22,7 +22,7 @@ public class LoginUseCase(
         return resultUsuario.IsSuccess
             ? resultUsuario.Data is null
                 ? Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
-                : await ValidarPasswordAsync(resultUsuario.Data, request.Senha)
+                : await ValidarPasswordAsync(resultUsuario.Data, request.Password)
             : Result<LoginDto?>.Failure(resultUsuario.Errors);
     }
 

@@ -4,13 +4,13 @@ import { ApiResponse } from '../_model/api-response';
 import { User } from '../_model/user';
 import { map } from 'rxjs';
 import { UserRegister } from '../_model/user-register';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = 'https://localhost:7006/api/app/';
+  baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null);
 
   login(model: any) {

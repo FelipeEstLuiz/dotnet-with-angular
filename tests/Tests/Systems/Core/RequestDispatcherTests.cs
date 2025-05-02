@@ -1,7 +1,7 @@
 ﻿using Application.Core.Common.Dispatcher;
-using Application.Core.DTO.Usuario;
+using Application.Core.DTO.User;
 using Application.Core.Model;
-using Application.Core.UseCase.Usuario;
+using Application.Core.UseCase.User;
 using Application.Core.Validator;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
@@ -19,13 +19,13 @@ public class RequestDispatcherTests
     [Fact]
     public async Task Should_Return_Success_When_Valid()
     {
-        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
-           .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
+        Faker<InsertUserModel> faker = new Faker<InsertUserModel>()
+           .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
            .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-           .RuleFor(cmd => cmd.Senha, f => "asd123@#02Fel")
-           .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha);
+           .RuleFor(cmd => cmd.Password, f => "asd123@#02Fel")
+           .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password);
 
-        CadastrarUsuarioModel command = faker.Generate();
+        InsertUserModel command = faker.Generate();
 
         ITokenService tokenServiceMock = Substitute.For<ITokenService>();
         
@@ -45,15 +45,15 @@ public class RequestDispatcherTests
 
         ServiceCollection services = new();
         services.AddScoped<RequestDispatcher>();
-        services.AddScoped<IRequestHandler<CadastrarUsuarioModel, Result<LoginDto>>, CadastrarUsuarioUseCase>();
-        services.AddValidatorsFromAssemblyContaining<CadastrarUsuarioValidator>();
+        services.AddScoped<IRequestHandler<InsertUserModel, Result<LoginDto>>, InsertUserUseCase>();
+        services.AddValidatorsFromAssemblyContaining<InsertUserValidator>();
         services.AddScoped(_ => usuarioRepositoryMock);
         services.AddScoped(_ => tokenServiceMock);
 
         ServiceProvider serviceProvider = services.BuildServiceProvider();
         RequestDispatcher dispatcher = serviceProvider.GetRequiredService<RequestDispatcher>();
 
-        Result<LoginDto> result = await dispatcher.Dispatch<CadastrarUsuarioModel, Result<LoginDto>>(command);
+        Result<LoginDto> result = await dispatcher.Dispatch<InsertUserModel, Result<LoginDto>>(command);
 
         Assert.True(result.IsSuccess);
     }

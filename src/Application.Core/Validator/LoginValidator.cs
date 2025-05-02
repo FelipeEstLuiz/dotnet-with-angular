@@ -12,7 +12,7 @@ public class LoginValidator: AbstractValidator<LoginModel>
             .EmailAddress().WithMessage("Invalido")
             .MaximumLength(150).WithMessage("Pode ter no maximo 150 caracteres.");
 
-        RuleFor(x => x.Senha)
+        RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Obrigatorio");
     }
 }

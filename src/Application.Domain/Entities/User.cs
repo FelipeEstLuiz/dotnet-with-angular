@@ -4,10 +4,9 @@ namespace Application.Domain.Entities;
 
 public class User : Entity
 {
-    public int UserId { get; set; }
-    public string UserName { get; set; } = string.Empty;
+    public required string UserName { get; set; }
     public string NormalizedUserName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public required string Email { get; set; }
     public string NormalizedEmail { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; }
     public string PasswordHash { get; set; } = string.Empty;
@@ -39,19 +38,38 @@ public class User : Entity
         DateOnly dateOfBirth
     ) => new()
     {
-        Id = Guid.NewGuid(),
-        Email = email,
-        NormalizedEmail = email.ToUpperInvariant(),
-        UserName = name,
-        NormalizedUserName = name.ToUpperInvariant(),
         SecurityStamp = Guid.NewGuid().ToString(),
         ConcurrencyStamp = Guid.NewGuid().ToString(),
         KnowAs = knowAs,
         Gender = gender,
         Introduction = introduction,
         DateOfBirth = dateOfBirth,
+        Email = email,
+        UserName = name,
+        NormalizedUserName = name.ToUpperInvariant(),
+        NormalizedEmail = email.ToUpperInvariant()
     };
 
     public void SetPassword(string password) => PasswordHash = password;
     public int GetAge() => DateOfBirth.CalcularIdade();
+    public void SetGender(string gender) => Gender = gender;
+    public void SetKowAs(string knowAs) => KnowAs = knowAs;
+    public void SetIntroduction(string? introduction) => Introduction = introduction;
+    public void SetInterests(string? interests) => Interests = interests;
+    public void SetLookingFor(string? lookingFor) => LookingFor = lookingFor;
+    public void SetCity(string? city) => City = city;
+    public void SetCountry(string? country) => Country = country;
+
+    public void SetName(string name)
+    {
+        UserName = name;
+        NormalizedUserName = name.ToUpperInvariant();
+    }
+
+    public void SetEmail(string email)
+    {
+        Email = email;
+        NormalizedEmail = email.ToUpperInvariant();
+    }
+
 }

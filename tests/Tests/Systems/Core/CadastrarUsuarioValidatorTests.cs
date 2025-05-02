@@ -6,22 +6,22 @@ namespace Tests.Systems.Core;
 
 public class CadastrarUsuarioValidatorTests
 {
-    private readonly CadastrarUsuarioModel _command;
+    private readonly InsertUserModel _command;
 
     public CadastrarUsuarioValidatorTests()
     {
-        Faker<CadastrarUsuarioModel> faker = new Faker<CadastrarUsuarioModel>()
-            .RuleFor(cmd => cmd.Nome, f => f.Name.FullName())
+        Faker<InsertUserModel> faker = new Faker<InsertUserModel>()
+            .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-            .RuleFor(cmd => cmd.Senha, f => f.Internet.Password(8))
-            .RuleFor(cmd => cmd.SenhaConfirmacao, (f, cmd) => cmd.Senha)
-            .RuleFor(u => u.DataNascimento, f =>
+            .RuleFor(cmd => cmd.Password, f => f.Internet.Password(8))
+            .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password)
+            .RuleFor(u => u.DateOfBirth, f =>
             {
                 DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
                 return DateOnly.FromDateTime(date);
             })
-            .RuleFor(u => u.Introducao, f => f.Lorem.Sentence())
-            .RuleFor(u => u.Genero, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+            .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
+            .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
             .RuleFor(u => u.KnowAs, f => f.Name.FirstName());
 
         _command = faker.Generate();
@@ -30,13 +30,13 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void Deve_Retornar_Erros_Se_Command_For_Invalido()
     {
-        CadastrarUsuarioValidator validator = new();
-        CadastrarUsuarioModel command = new()
+        InsertUserValidator validator = new();
+        InsertUserModel command = new()
         {
-            Nome = "",
+            Name = "",
             Email = "invalido",
-            Senha = "abc",
-            SenhaConfirmacao = "diferente"
+            Password = "abc",
+            PasswordConfirmed = "diferente"
         };
 
         FluentValidation.Results.ValidationResult result = validator.Validate(command);
@@ -57,7 +57,7 @@ public class CadastrarUsuarioValidatorTests
     {
         _command.Email = email;
 
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -71,9 +71,9 @@ public class CadastrarUsuarioValidatorTests
     [InlineData("comeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Nome_Invalido(string nome)
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Nome = nome;
+        _command.Name = nome;
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -84,9 +84,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Vazia()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = string.Empty;
+        _command.Password = string.Empty;
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -98,9 +98,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Menor8Caracteres()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = "t87@De";
+        _command.Password = "t87@De";
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -112,9 +112,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Numeros()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = "t@Dertewq";
+        _command.Password = "t@Dertewq";
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -126,9 +126,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Letras_Maiusculas()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = "t87@rrw422e";
+        _command.Password = "t87@rrw422e";
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -140,9 +140,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Letras_Minusculas()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = "87@D432524562456";
+        _command.Password = "87@D432524562456";
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -154,9 +154,9 @@ public class CadastrarUsuarioValidatorTests
     [Fact]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Caractres_Especiais()
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.Senha = "87tD432524562456";
+        _command.Password = "87tD432524562456";
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
@@ -170,9 +170,9 @@ public class CadastrarUsuarioValidatorTests
     [InlineData("asd#4rRrrrrrr")]
     public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_SenhaConfirmacao_Invalido(string senhaConfirmacao)
     {
-        CadastrarUsuarioValidator validator = new();
+        InsertUserValidator validator = new();
 
-        _command.SenhaConfirmacao = senhaConfirmacao;
+        _command.PasswordConfirmed = senhaConfirmacao;
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 

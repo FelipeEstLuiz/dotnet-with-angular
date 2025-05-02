@@ -8,7 +8,7 @@ internal static class GenerateUser
     public static User Created() => FakerUser().Generate();
 
     public static Faker<User> FakerUser() => new Faker<User>()
-        .RuleFor(cmd => cmd.Id, f => f.Random.Guid())
+        .RuleFor(cmd => cmd.Id, f => f.Random.Int(1, 1000))
         .RuleFor(cmd => cmd.UserName, f => f.Person.FullName)
         .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
         .RuleFor(u => u.DateOfBirth, f =>

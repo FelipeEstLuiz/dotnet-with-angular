@@ -27,16 +27,12 @@ public class Seed
 
         foreach (User user in users)
         {
-            user.Id = Guid.NewGuid();
             user.Created = DateTime.UtcNow;
             user.SecurityStamp = Guid.NewGuid().ToString();
             user.ConcurrencyStamp = Guid.NewGuid().ToString();
             user.NormalizedEmail = user.Email.ToUpperInvariant();
             user.NormalizedUserName = user.UserName.ToUpperInvariant();
             user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc);
-
-            foreach (Photo photo in user.Photos)
-                photo.Id = Guid.NewGuid();
 
             PasswordHasher<User> hasher = new();
             user.SetPassword(hasher.HashPassword(user, "Pas$w0rd"));

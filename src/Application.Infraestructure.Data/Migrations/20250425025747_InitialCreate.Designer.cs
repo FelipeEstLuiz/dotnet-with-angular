@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Application.Infraestructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250424194653_InitialCreate")]
+    [Migration("20250425025747_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,19 +27,15 @@ namespace Application.Infraestructure.Data.Migrations
 
             modelBuilder.Entity("Application.Domain.Entities.Photo", b =>
                 {
-                    b.Property<int>("PhotoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("photo_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PhotoId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("boolean")
@@ -60,7 +56,7 @@ namespace Application.Infraestructure.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
-                    b.HasKey("PhotoId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -69,12 +65,12 @@ namespace Application.Infraestructure.Data.Migrations
 
             modelBuilder.Entity("Application.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("user_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer")
@@ -118,10 +114,6 @@ namespace Application.Infraestructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("gender");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
 
                     b.Property<string>("Interests")
                         .HasMaxLength(1000)
@@ -197,18 +189,20 @@ namespace Application.Infraestructure.Data.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("user_name");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("aspnet_users", (string)null);
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.Photo", b =>
                 {
-                    b.HasOne("Application.Domain.Entities.User", null)
+                    b.HasOne("Application.Domain.Entities.User", "User")
                         .WithMany("Photos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Application.Domain.Entities.User", b =>
