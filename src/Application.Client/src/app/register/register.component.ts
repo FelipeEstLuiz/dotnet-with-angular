@@ -17,20 +17,20 @@ export class RegisterComponent {
   private alertService = inject(AlertService);
   cancelRegister = output<boolean>();
   model: UserRegister = {
-    nome: '',
+    name: '',
     email: '',
-    senha: '',
-    senhaconfirmacao: '',
+    password: '',
+    passwordConfirmed: '',
   };
 
   passwordStrength: string = '';
 
   onPasswordChange(): void {
-    this.passwordStrength = getPasswordStrength(this.model.senha);
+    this.passwordStrength = getPasswordStrength(this.model.password);
   }
 
   register(form: NgForm) {
-    if (!form.valid || this.model.senha !== this.model.senhaconfirmacao) {
+    if (!form.valid || this.model.password !== this.model.passwordConfirmed) {
       form.control.markAllAsTouched();
       return;
     }

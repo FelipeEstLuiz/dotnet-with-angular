@@ -23,7 +23,7 @@
         dropdownToggle
         class="dropdown-toggle text-light text-decoration-none btn btn-secondary"
       >
-        Welcome {{ accountService.currentUser()?.nome | titlecase }}
+        Welcome {{ accountService.currentUser()?.name | titlecase }}
       </button>
       <div *dropdownMenu class="dropdown-menu">
         <a class="dropdown-item">Edit profile</a>
@@ -41,10 +41,10 @@
         type="email"
       />
       <input
-        name="senha"
-        [(ngModel)]="model.senha"
+        name="password"
+        [(ngModel)]="model.password"
         class="form-control me-2"
-        placeholder="Senha"
+        placeholder="Password"
         type="password"
       />
       <button class="btn btn-success" type="submit">Login</button>

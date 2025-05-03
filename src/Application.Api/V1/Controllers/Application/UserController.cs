@@ -26,7 +26,7 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
         await dispatcher.Dispatch<GetUserByIdModel, Result<UserDto?>>(new GetUserByIdModel(id))
     );
 
-    [HttpGet("{userName:string}")]
+    [HttpGet("{userName}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetByUserNameAsync(string userName) => HandlerResponse(
         HttpStatusCode.OK,

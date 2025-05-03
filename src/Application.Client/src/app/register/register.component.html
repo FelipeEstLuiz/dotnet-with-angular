@@ -10,28 +10,28 @@
       type="text"
       class="form-control"
       minlength="3"
-      [class.is-invalid]="nome.invalid && nome.touched"
-      name="nome"
-      [(ngModel)]="model.nome"
-      placeholder="Nome"
+      [class.is-invalid]="name.invalid && name.touched"
+      name="name"
+      [(ngModel)]="model.name"
+      placeholder="Name"
       required
-      #nome="ngModel"
+      #name="ngModel"
     />
-    <label [ngClass]="{ 'text-success': nome.valid && nome.touched }">
+    <label [ngClass]="{ 'text-success': name.valid && name.touched }">
       *Name
       <i
-        *ngIf="nome.valid && nome.touched"
+        *ngIf="name.valid && name.touched"
         class="bi bi-check-circle-fill ms-1"
       ></i>
     </label>
     <div
-      *ngIf="registerForm.submitted && nome.invalid"
+      *ngIf="registerForm.submitted && name.invalid"
       class="text-danger small"
     >
       Name is required.
     </div>
     <div
-      *ngIf="registerForm.submitted && nome.errors?.['minlength']"
+      *ngIf="registerForm.submitted && name.errors?.['minlength']"
       class="text-danger small"
     >
       Name must be at least 3 characters.
@@ -68,23 +68,23 @@
     <input
       type="password"
       class="form-control"
-      [class.is-invalid]="senha.invalid && senha.touched"
+      [class.is-invalid]="password.invalid && password.touched"
       name="password"
-      [(ngModel)]="model.senha"
+      [(ngModel)]="model.password"
       placeholder="Password"
       (keyup)="onPasswordChange()"
       required
-      #senha="ngModel"
+      #password="ngModel"
     />
-    <label [ngClass]="{ 'text-success': senha.valid && senha.touched }">
+    <label [ngClass]="{ 'text-success': password.valid && password.touched }">
       *Password
       <i
-        *ngIf="senha.valid && senha.touched"
+        *ngIf="password.valid && password.touched"
         class="bi bi-check-circle-fill ms-1"
       ></i>
     </label>
     <div
-      *ngIf="registerForm.submitted && senha.invalid"
+      *ngIf="registerForm.submitted && password.invalid"
       class="text-danger small"
     >
       Password is required.
@@ -106,41 +106,41 @@
       type="password"
       class="form-control"
       [class.is-invalid]="
-        (senhaconfirmacao.invalid && senhaconfirmacao.touched) ||
-        (senhaconfirmacao.touched && model.senha != model.senhaconfirmacao)
+        (passwordConfirmed.invalid && passwordConfirmed.touched) ||
+        (passwordConfirmed.touched && model.password != model.passwordConfirmed)
       "
       name="passwordconfirmed"
-      [(ngModel)]="model.senhaconfirmacao"
+      [(ngModel)]="model.passwordConfirmed"
       placeholder="Password Confirmation"
       required
-      #senhaconfirmacao="ngModel"
+      #passwordConfirmed="ngModel"
     />
     <label
       [ngClass]="{
         'text-success':
-          senhaconfirmacao.valid &&
-          senhaconfirmacao.touched &&
-          model.senha === model.senhaconfirmacao
+          passwordConfirmed.valid &&
+          passwordConfirmed.touched &&
+          model.password === model.passwordConfirmed
       }"
     >
       *Password Confirmation
       <i
         *ngIf="
-          senhaconfirmacao.valid &&
-          senhaconfirmacao.touched &&
-          model.senha === model.senhaconfirmacao
+          passwordConfirmed.valid &&
+          passwordConfirmed.touched &&
+          model.password === model.passwordConfirmed
         "
         class="bi bi-check-circle-fill ms-1"
       ></i>
     </label>
     <div
-      *ngIf="registerForm.submitted && senhaconfirmacao.invalid"
+      *ngIf="registerForm.submitted && passwordConfirmed.invalid"
       class="text-danger small"
     >
       Confirmation is required.
     </div>
     <div
-      *ngIf="registerForm.submitted && model.senha !== model.senhaconfirmacao"
+      *ngIf="registerForm.submitted && model.password !== model.passwordConfirmed"
       class="text-danger small"
     >
       Password is not equals.
