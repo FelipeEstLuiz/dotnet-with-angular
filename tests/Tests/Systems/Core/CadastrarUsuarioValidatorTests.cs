@@ -42,10 +42,10 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Nome" && e.ErrorMessage.Contains("Obrigatorio"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Name" && e.ErrorMessage.Contains("Obrigatorio"));
         Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalido"));
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha" && e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
-        Assert.Contains(result.Errors, e => e.PropertyName == "SenhaConfirmacao" && e.ErrorMessage.Contains("nao corresponde"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password" && e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
+        Assert.Contains(result.Errors, e => e.PropertyName == "PasswordConfirmed" && e.ErrorMessage.Contains("nao corresponde"));
     }
 
 
@@ -69,7 +69,7 @@ public class CadastrarUsuarioValidatorTests
     [InlineData("")]
     [InlineData("te")]
     [InlineData("comeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Nome_Invalido(string nome)
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Name_Invalido(string nome)
     {
         InsertUserValidator validator = new();
 
@@ -78,11 +78,11 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Nome");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Name");
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Vazia()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Vazia()
     {
         InsertUserValidator validator = new();
 
@@ -91,12 +91,12 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Obrigatorio"));
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Menor8Caracteres()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Menor8Caracteres()
     {
         InsertUserValidator validator = new();
 
@@ -105,12 +105,12 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Numeros()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Deve_Conter_Numeros()
     {
         InsertUserValidator validator = new();
 
@@ -119,12 +119,12 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um numero."));
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Letras_Maiusculas()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Deve_Conter_Letras_Maiusculas()
     {
         InsertUserValidator validator = new();
 
@@ -133,12 +133,12 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra maiuscula."));
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Letras_Minusculas()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Deve_Conter_Letras_Minusculas()
     {
         InsertUserValidator validator = new();
 
@@ -147,12 +147,12 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra minuscula."));
     }
 
     [Fact]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Senha_Deve_Conter_Caractres_Especiais()
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_Password_Deve_Conter_Caractres_Especiais()
     {
         InsertUserValidator validator = new();
 
@@ -161,22 +161,22 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Senha");
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password");
         Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um caractere especial (@#$%^&+=!)."));
     }
 
-    [Theory(DisplayName = "Validator_Deve_Retornar_Erro_Se_SenhaConfirmacao_Invalido")]
+    [Theory(DisplayName = "Validator_Deve_Retornar_Erro_Se_PasswordConfirmed_Invalido")]
     [InlineData("")]
     [InlineData("asd#4rRrrrrrr")]
-    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_SenhaConfirmacao_Invalido(string senhaConfirmacao)
+    public void CadastrarUsuarioValidator_Deve_Retornar_Erro_Se_PasswordConfirmed_Invalido(string passwordConfirmed)
     {
         InsertUserValidator validator = new();
 
-        _command.PasswordConfirmed = senhaConfirmacao;
+        _command.PasswordConfirmed = passwordConfirmed;
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "SenhaConfirmacao");
+        Assert.Contains(result.Errors, e => e.PropertyName == "PasswordConfirmed");
     }
 }

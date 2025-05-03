@@ -20,15 +20,25 @@ public class RequestDispatcherTests
     public async Task Should_Return_Success_When_Valid()
     {
         Faker<InsertUserModel> faker = new Faker<InsertUserModel>()
-           .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
-           .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
-           .RuleFor(cmd => cmd.Password, f => "asd123@#02Fel")
-           .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password);
+            .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
+            .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
+            .RuleFor(cmd => cmd.Password, f => "asd234$455F")
+            .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password)
+            .RuleFor(cmd => cmd.City, f => f.Person.Address.City)
+            .RuleFor(cmd => cmd.Country, f => f.Person.Address.State)
+            .RuleFor(u => u.DateOfBirth, f =>
+            {
+                DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));
+                return DateOnly.FromDateTime(date);
+            })
+            .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
+            .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+            .RuleFor(u => u.KnowAs, f => f.Name.FirstName());
 
         InsertUserModel command = faker.Generate();
 
         ITokenService tokenServiceMock = Substitute.For<ITokenService>();
-        
+
         tokenServiceMock
             .GerarToken(Arg.Any<User>())
             .Returns(Task.FromResult("token"));
