@@ -1,14 +1,14 @@
 ﻿using Application.Domain.Extensions;
 using Application.Domain.VO;
-using System.Globalization;
 
 namespace Application.Core.DTO.User;
 
 public record UserDto : ComumDto
 {
     public string Name { get; set; } = null!;
+    public string UserName { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public string DateOfBirth { get; set; } = null!;
+    public DateOnly DateOfBirth { get; set; }
     public int Age { get; set; }
     public string KnowAs { get; set; } = null!;
     public string Gender { get; set; } = null!;
@@ -18,6 +18,7 @@ public record UserDto : ComumDto
     public string? City { get; set; }
     public string? Country { get; set; }
     public string? PhotoUrl { get; set; }
+    public DateTime LastActive { get; set; }
     public List<PhotoUserDto>? Photo { get; set; }
 
     public static UserDto Map(UserVo usuario) => new()
@@ -26,12 +27,13 @@ public record UserDto : ComumDto
         Name = usuario.Name,
         Id = usuario.Id,
         Created = usuario.Created,
-        DateOfBirth = usuario.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+        DateOfBirth = usuario.DateOfBirth,
         Age = usuario.DateOfBirth.CalcularIdade(),
         Photo = usuario.Photos?.Select(x => new PhotoUserDto(x.Id, x.Url, x.IsMain)).ToList(),
         Introduction = usuario.Introduction,
         City = usuario.City,
         Country = usuario.Country,
+        LastActive = usuario.LastActive,
         Gender = usuario.Gender,
         Interests = usuario.Interests,
         KnowAs = usuario.KnowAs,

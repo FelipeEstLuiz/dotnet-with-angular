@@ -7,6 +7,7 @@ public class UserVo
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public DateOnly DateOfBirth { get; set; }
+    public DateTime LastActive { get; set; }
     public int Age { get; set; }
     public string KnowAs { get; set; } = null!;
     public string Gender { get; set; } = null!;

@@ -79,6 +79,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
                     Id = x.Id,
                     Interests = x.Interests,
                     Introduction = x.Introduction,
+                    LastActive = x.LastActive,
                     KnowAs = x.KnowAs,
                     LookingFor = x.LookingFor,
                     Name = x.UserName,

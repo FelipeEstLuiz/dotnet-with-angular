@@ -6,7 +6,7 @@ import { AccountService } from './account.service';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpService {
   private http = inject(HttpClient);
@@ -14,22 +14,27 @@ export class HttpService {
   private baseUrl = environment.apiUrlV1;
 
   get<T>(url: string) {
-    return this.http.get<ApiResponse<T>>(this.baseUrl + url, this.getHttpOptions());
-  }
-
-  postAuthorization<T>(url: string, body: any): Observable<ApiResponse<T>> {
-    return this.http.post<ApiResponse<T>>(this.baseUrl + url, body, this.getHttpOptions());
+    return this.http.get<ApiResponse<T>>(
+      this.baseUrl + url,
+      this.getHttpOptions()
+    );
   }
 
   post<T>(url: string, body: any): Observable<ApiResponse<T>> {
-    return this.http.post<ApiResponse<T>>(this.baseUrl + url, body);
+    return this.http.post<ApiResponse<T>>(
+      this.baseUrl + url,
+      body,
+      this.getHttpOptions()
+    );
   }
 
   private getHttpOptions() {
     const user = this.accountService.currentUser();
     if (user) {
-      return { headers: new HttpHeaders({ 'Authorization': `Bearer ${user.token}` }) };
+      return {
+        headers: new HttpHeaders({ Authorization: `Bearer ${user.token}` }),
+      };
     }
     return {};
   }
-} 
+}

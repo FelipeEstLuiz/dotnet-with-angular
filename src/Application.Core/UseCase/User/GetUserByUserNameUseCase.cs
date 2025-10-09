@@ -6,6 +6,7 @@ using Application.Domain.Model;
 using Application.Domain.VO;
 
 namespace Application.Core.UseCase.User;
+
 public class GetUserByUserNameUseCase(IUserRepository usuarioRepository)
     : IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>
 {

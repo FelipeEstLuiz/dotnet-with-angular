@@ -17,6 +17,7 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<InsertUserModel, Result<LoginDto>>, InsertUserUseCase>();
         services.AddScoped<IRequestHandler<LoginModel, Result<LoginDto?>>, LoginUseCase>();
         services.AddScoped<IRequestHandler<GetAllUserModel, Result<IEnumerable<UserDto>>>, GetAllUserUseCase>();
+        services.AddScoped<IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>, GetUserByUserNameUseCase>();
         services.AddScoped<IRequestHandler<GetUserByIdModel, Result<UserDto?>>, GetUserByIdUseCase>();
         services.AddScoped<IRequestHandler<UpdateUserModel, Result<string>>, UpdateUserUseCase>();
 

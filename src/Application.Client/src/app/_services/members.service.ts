@@ -1,14 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Member } from '../_model/member';
 import { HttpService } from './http.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MembersService {
   private httpService = inject(HttpService);
-  baseUrl = environment.apiUrlV1;
 
   getMembers() {
     return this.httpService.get<Member[]>('user');
