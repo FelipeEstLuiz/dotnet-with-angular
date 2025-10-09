@@ -1,6 +1,6 @@
 ﻿using Application.Api.Controllers._Shared;
 using Application.Core.Common.Dispatcher;
-using Application.Core.DTO.Usuario;
+using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +14,11 @@ public class AccountController(CommunicationProtocol protocol, RequestDispatcher
 {
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto>))]
-    public async Task<IActionResult> InsertUsuarioAsync([FromBody] CadastrarUsuarioModel request) 
+    [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(Response<LoginDto>))]
+    public async Task<IActionResult> InsertUsuarioAsync([FromBody] InsertUserModel request) 
         => HandlerResponse(
             HttpStatusCode.Created, 
-            await dispatcher.Dispatch<CadastrarUsuarioModel, Result<LoginDto>>(request)
+            await dispatcher.Dispatch<InsertUserModel, Result<LoginDto>>(request)
         );
 
     [HttpPost("Login")]

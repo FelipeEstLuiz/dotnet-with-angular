@@ -1,4 +1,4 @@
-﻿using Application.Core.DTO.Usuario;
+﻿using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -8,27 +8,28 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.Login;
 
 public class LoginUseCase(
-    IUsuarioRepository usuarioRepository,
+    IUserRepository usuarioRepository,
     ITokenService tokenService
 ) : IRequestHandler<LoginModel, Result<LoginDto?>>
 {
-    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken)
+    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.Usuario?> resultUsuario = await usuarioRepository.GetByEmailAsync(
+        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
 
         return resultUsuario.IsSuccess
-            ? resultUsuario.Data is null
-                ? Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
-                : await ValidarPasswordAsync(resultUsuario.Data, request.Senha)
+            ? await ValidarPasswordAsync(resultUsuario.Data, request.Password)
             : Result<LoginDto?>.Failure(resultUsuario.Errors);
     }
 
-    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.Usuario usuario, string senha)
+    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User? usuario, string senha)
     {
-        PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.Usuario>().VerifyHashedPassword(
+        if (usuario is null)
+            return Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+
+        PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
             usuario,
             usuario.PasswordHash,
             senha

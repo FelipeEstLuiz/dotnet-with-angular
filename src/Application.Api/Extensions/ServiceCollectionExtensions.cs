@@ -183,8 +183,8 @@ public static class ServiceCollectionExtensions
 
             options.DocInclusionPredicate((name, api) => true);
 
-            //string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
             // Resolve conflitos de nomes de endpoints com versionamento
             options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());

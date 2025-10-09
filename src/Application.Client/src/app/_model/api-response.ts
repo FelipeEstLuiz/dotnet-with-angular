@@ -1,6 +1,6 @@
 export interface ApiResponse<T> {
-    success: boolean;
-    errors: string[];
-    data?: T;
-    protocol: string;
-  }
+  success: boolean;
+  errors: string[];
+  data?: T;
+  protocol: string;
+}

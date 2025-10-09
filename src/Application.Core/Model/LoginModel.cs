@@ -1,3 +1,3 @@
 ﻿namespace Application.Core.Model;
 
-public record LoginModel(string Email, string Senha);
+public record LoginModel(string Email, string Password);

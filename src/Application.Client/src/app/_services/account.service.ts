@@ -1,21 +1,22 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { ApiResponse } from '../_model/api-response';
 import { User } from '../_model/user';
 import { map } from 'rxjs';
 import { UserRegister } from '../_model/user-register';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { ApiResponse } from '../_model/api-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = 'https://localhost:7006/api/app/';
+  baseUrl = environment.apiUrlV1;
   currentUser = signal<User | null>(null);
 
   login(model: any) {
     return this.http
-      .post<ApiResponse<User>>(this.baseUrl + 'v1/Account/Login', model)
+      .post<ApiResponse<User>>(this.baseUrl + 'Account/Login', model)
       .pipe(
         map((response) => {
           if (response && response.data) {
@@ -28,7 +29,7 @@ export class AccountService {
 
   register(model: UserRegister) {
     return this.http
-      .post<ApiResponse<User>>(this.baseUrl + 'v1/Account', model)
+      .post<ApiResponse<User>>(this.baseUrl + 'Account', model)
       .pipe(
         map((response) => {
           if (response && response.data) {

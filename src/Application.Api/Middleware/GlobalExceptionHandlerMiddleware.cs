@@ -5,7 +5,10 @@ using System.Net;
 
 namespace Application.Api.Middleware;
 
-public class GlobalExceptionHandlerMiddleware(CommunicationProtocol communicationProtocol) : IMiddleware
+public class GlobalExceptionHandlerMiddleware(
+    CommunicationProtocol communicationProtocol,
+    ILogger<GlobalExceptionHandlerMiddleware> logger
+) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -47,13 +50,11 @@ public class GlobalExceptionHandlerMiddleware(CommunicationProtocol communicatio
         }
         else
         {
+            logger.LogError(exception, "Erro inesperado: {Message}", exception.Message);
             erros = ["Erro ao processar requisição"];
         }
 
         context.Response.StatusCode = (int)httpStatusCode;
-
-        Response baseResponse = new(communicationProtocol.ToString());
-        baseResponse.AddError(erros);
 
         JsonSerializerSettings settings = new()
         {
@@ -61,6 +62,10 @@ public class GlobalExceptionHandlerMiddleware(CommunicationProtocol communicatio
             Formatting = Formatting.Indented
         };
 
-        await context.Response.WriteAsync(JsonConvert.SerializeObject(baseResponse, settings));
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(Response.Failure(
+            communicationProtocol.ToString(),
+            erros,
+            statusCode: httpStatusCode
+        ), settings));
     }
 }

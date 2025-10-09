@@ -19,38 +19,31 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
 
     protected IActionResult HandlerResponse<T>(HttpStatusCode statusCode, Result<T> result)
     {
-        if (result.IsFailure)
+        Response response;
+
+        if (result.IsSuccess)
+            response = _Shared.Response.ResponseSuccess(
+                result.Data,
+                protocol: _protocol.ToString(),
+                statusCode: statusCode
+            );
+        else
         {
-            HttpStatusCode httpStatusCode = HttpStatusCode.BadRequest;
-
-            switch (result.ResponseCode)
+            statusCode = result.ResponseCode switch
             {
-                case ResponseCodes.USER_NOT_HAVE_PERMISSION:
-                    httpStatusCode = HttpStatusCode.Forbidden;
-                    break;
-                case ResponseCodes.UNAUTHORIZED:
-                    httpStatusCode = HttpStatusCode.Unauthorized;
-                    break;
-                case ResponseCodes.BAD_REQUEST:
-                    httpStatusCode = HttpStatusCode.BadRequest;
-                    break;
-                case ResponseCodes.NOT_FOUND:
-                    httpStatusCode = HttpStatusCode.NotFound;
-                    break;
-            }
+                ResponseCodes.USER_NOT_HAVE_PERMISSION => HttpStatusCode.Forbidden,
+                ResponseCodes.UNAUTHORIZED => HttpStatusCode.Unauthorized,
+                ResponseCodes.NOT_FOUND => HttpStatusCode.NotFound,
+                _ => HttpStatusCode.BadRequest,
+            };
 
-            return ErrorResponse(httpStatusCode, result.Errors);
+            response = _Shared.Response.Failure(
+                _protocol.ToString(),
+                result.Errors,
+                statusCode: statusCode
+            );
         }
 
-        return result.IsSuccess
-            ? StatusCode((int)statusCode, new Response(result.Data, protocol: _protocol.ToString()))
-            : ErrorResponse(HttpStatusCode.BadRequest, result.Errors);
-    }
-
-    protected IActionResult ErrorResponse(HttpStatusCode statusCode, IEnumerable<string> errors)
-    {
-        Response response = new(_protocol.ToString());
-        response.AddError(errors);
         return StatusCode((int)statusCode, response);
     }
 }

@@ -1,7 +1,7 @@
-﻿using Application.Core.DTO.Usuario;
+﻿using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Core.UseCase.Login;
-using Application.Core.UseCase.Usuario;
+using Application.Core.UseCase.User;
 using Application.Core.Validator;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
@@ -14,10 +14,11 @@ internal static class DependencyInjectionUseCase
 {
     internal static IServiceCollection AddUseCase(this IServiceCollection services)
     {
-        services.AddScoped<IRequestHandler<CadastrarUsuarioModel, Result<LoginDto>>, CadastrarUsuarioUseCase>();
+        services.AddScoped<IRequestHandler<InsertUserModel, Result<LoginDto>>, InsertUserUseCase>();
         services.AddScoped<IRequestHandler<LoginModel, Result<LoginDto?>>, LoginUseCase>();
-        services.AddScoped<IRequestHandler<GetAllUsuarioModel, Result<IEnumerable<UsuarioDto>>>, GetAllUsuarioUseCase>();
-        services.AddScoped<IRequestHandler<GetUsuarioByIdModel, Result<UsuarioDto?>>, GetUsuarioByIdUseCase>();
+        services.AddScoped<IRequestHandler<GetAllUserModel, Result<IEnumerable<UserDto>>>, GetAllUserUseCase>();
+        services.AddScoped<IRequestHandler<GetUserByIdModel, Result<UserDto?>>, GetUserByIdUseCase>();
+        services.AddScoped<IRequestHandler<UpdateUserModel, Result<string>>, UpdateUserUseCase>();
 
         services.AddValidators();
 
@@ -26,7 +27,7 @@ internal static class DependencyInjectionUseCase
 
     internal static IServiceCollection AddValidators(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<CadastrarUsuarioValidator>();
+        services.AddValidatorsFromAssemblyContaining<InsertUserValidator>();
         services.AddValidatorsFromAssemblyContaining<LoginValidator>();
         services.AddValidatorsFromAssemblyContaining<LoginValidator>();
 
