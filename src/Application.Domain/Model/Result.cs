@@ -34,9 +34,6 @@ public class Result<TResponse>(bool isSuccess)
 
     public static implicit operator Result<TResponse>(TResponse value) => Success(value);
 
-    //public Result<U> SetResult<U>(Func<TResponse, Result<U>> func)
-    //    => IsSuccess ? func(Data!) : Result<U>.Failure(Errors);
-
     public Result<U> SetResult<U>(Func<TResponse, U> func)
     {
         if (IsSuccess)
@@ -63,17 +60,12 @@ public class Result<TResponse>(bool isSuccess)
     public static Result<TResponse> Failure(IEnumerable<string> messages)
         => Failure(messages, ResponseCodes.NONE);
 
-    private Result<TResponse> AddError(string message, ResponseCodes responseCode)
-    {
-        AddError(message);
-        ResponseCode = responseCode;
-        return this;
-    }
-
-    private Result<TResponse> AddError(string message)
+    private Result<TResponse> AddError(string message, ResponseCodes responseCode = ResponseCodes.NONE)
     {
         if (!_messages.Contains(message))
             _messages.Add(message);
+
+        ResponseCode = responseCode;
 
         return this;
     }

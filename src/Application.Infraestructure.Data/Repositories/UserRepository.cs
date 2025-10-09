@@ -56,7 +56,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por email: email informado: {email}, erro: {Message}", email, ex.Message);
+            logger.LogError(ex, "Erro obter usuario por email: {Email}, erro: {Message}", email, ex.Message);
             return Result<User?>.Failure("Erro ao obter usuario");
         }
     }

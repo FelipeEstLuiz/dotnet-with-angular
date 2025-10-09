@@ -12,7 +12,7 @@ public class LoginUseCase(
     ITokenService tokenService
 ) : IRequestHandler<LoginModel, Result<LoginDto?>>
 {
-    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken)
+    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
         Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
             request.Email,
@@ -20,14 +20,15 @@ public class LoginUseCase(
         );
 
         return resultUsuario.IsSuccess
-            ? resultUsuario.Data is null
-                ? Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
-                : await ValidarPasswordAsync(resultUsuario.Data, request.Password)
+            ? await ValidarPasswordAsync(resultUsuario.Data, request.Password)
             : Result<LoginDto?>.Failure(resultUsuario.Errors);
     }
 
-    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User usuario, string senha)
+    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User? usuario, string senha)
     {
+        if (usuario is null)
+            return Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+
         PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
             usuario,
             usuario.PasswordHash,

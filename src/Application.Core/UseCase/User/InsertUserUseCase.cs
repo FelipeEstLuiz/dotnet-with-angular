@@ -14,7 +14,7 @@ public class InsertUserUseCase(
 {
     public async Task<Result<LoginDto>> Handle(
         InsertUserModel request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(

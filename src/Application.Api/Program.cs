@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.ConfigureExtensions(builder.Configuration);
 
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("PostgresDb"));
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("SqlServerDb"));
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -74,7 +74,7 @@ if (app.Environment.IsDevelopment())
     try
     {
         ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-        //await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync();
         await Seed.SeedUsers(context);
     }
     catch (Exception ex)
@@ -84,4 +84,4 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.Run();
+await app.RunAsync();

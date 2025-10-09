@@ -9,7 +9,7 @@ namespace Application.Core.UseCase.User;
 public class GetUserByUserNameUseCase(IUserRepository usuarioRepository)
     : IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>
 {
-    public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken)
+    public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
     {
         Result<UserVo?> usuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken);
 

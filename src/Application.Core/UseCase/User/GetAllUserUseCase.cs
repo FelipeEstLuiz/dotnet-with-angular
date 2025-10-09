@@ -12,7 +12,7 @@ public class GetAllUserUseCase(IUserRepository usuarioRepository)
 {
     public async Task<Result<IEnumerable<UserDto>>> Handle(
         GetAllUserModel request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         Result<List<UserVo>> usuarios = await usuarioRepository.GetAllAsync(

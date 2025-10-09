@@ -17,10 +17,10 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-        string connectionString = configuration.GetConnectionString("PostgresDb") 
+        string connectionString = configuration.GetConnectionString("SqlServerDb") 
             ?? throw new InvalidOperationException("A string de conexão não foi configurada corretamente no arquivo appsettings.json.");
 
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseSqlServer(connectionString);
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }

@@ -6,22 +6,24 @@ using System.Text.Json;
 
 namespace Application.Infraestructure.Data.SeedData;
 
-public class Seed
+public static class Seed
 {
+    private static JsonSerializerOptions Options => new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public static async Task SeedUsers(ApplicationDbContext context)
     {
         if (await context.Users.AnyAsync()) return;
 
         string path = Path.Combine(AppContext.BaseDirectory, @"SeedData\UserSeed.json");
 
+        if (!File.Exists(path)) return;
+
         string userData = await File.ReadAllTextAsync(path);
 
-        JsonSerializerOptions option = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        List<User>? users = JsonSerializer.Deserialize<List<User>>(userData, option);
+        List<User>? users = JsonSerializer.Deserialize<List<User>>(userData, Options);
 
         if (users == null) return;
 

@@ -11,7 +11,7 @@ public class UpdateUserUseCase(
 {
     public async Task<Result<string>> Handle(
         UpdateUserModel request,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken = default
     )
     {
         Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByIdAsync(
