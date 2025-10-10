@@ -2,7 +2,7 @@
   #registerForm="ngForm"
   (ngSubmit)="register(registerForm)"
   autocomplete="off"
->
+  >
   <h2 class="text-center text-primary">Sign up</h2>
   <hr />
   <div class="mb-3 form-floating">
@@ -16,138 +16,148 @@
       placeholder="Name"
       required
       #name="ngModel"
-    />
-    <label [ngClass]="{ 'text-success': name.valid && name.touched }">
-      *Name
-      <i
-        *ngIf="name.valid && name.touched"
-        class="bi bi-check-circle-fill ms-1"
-      ></i>
-    </label>
-    <div
-      *ngIf="registerForm.submitted && name.invalid"
-      class="text-danger small"
-    >
-      Name is required.
+      />
+      <label [ngClass]="{ 'text-success': name.valid && name.touched }">
+        *Name
+        @if (name.valid && name.touched) {
+          <i
+            class="bi bi-check-circle-fill ms-1"
+          ></i>
+        }
+      </label>
+      @if (registerForm.submitted && name.invalid) {
+        <div
+          class="text-danger small"
+          >
+          Name is required.
+        </div>
+      }
+      @if (registerForm.submitted && name.errors?.['minlength']) {
+        <div
+          class="text-danger small"
+          >
+          Name must be at least 3 characters.
+        </div>
+      }
     </div>
-    <div
-      *ngIf="registerForm.submitted && name.errors?.['minlength']"
-      class="text-danger small"
-    >
-      Name must be at least 3 characters.
-    </div>
-  </div>
 
-  <div class="mb-3 form-floating">
-    <input
-      type="email"
-      class="form-control"
-      [class.is-invalid]="email.invalid && email.touched"
-      name="email"
-      [(ngModel)]="model.email"
-      placeholder="E-mail"
-      required
-      email
-      #email="ngModel"
-    />
-    <label [ngClass]="{ 'text-success': email.valid && email.touched }">
-      *Email
-      <i
-        *ngIf="email.valid && email.touched"
-        class="bi bi-check-circle-fill ms-1"
-      ></i>
-    </label>
-    <div
-      *ngIf="registerForm.submitted && email.invalid"
-      class="text-danger small"
-    >
-      Email is required and valid.
-    </div>
-  </div>
-  <div class="mb-3 form-floating">
-    <input
-      type="password"
-      class="form-control"
-      [class.is-invalid]="password.invalid && password.touched"
-      name="password"
-      [(ngModel)]="model.password"
-      placeholder="Password"
-      (keyup)="onPasswordChange()"
-      required
-      #password="ngModel"
-    />
-    <label [ngClass]="{ 'text-success': password.valid && password.touched }">
-      *Password
-      <i
-        *ngIf="password.valid && password.touched"
-        class="bi bi-check-circle-fill ms-1"
-      ></i>
-    </label>
-    <div
-      *ngIf="registerForm.submitted && password.invalid"
-      class="text-danger small"
-    >
-      Password is required.
-    </div>
-    <small class="text-muted">
-      Password Strength:
-      <span
+    <div class="mb-3 form-floating">
+      <input
+        type="email"
+        class="form-control"
+        [class.is-invalid]="email.invalid && email.touched"
+        name="email"
+        [(ngModel)]="model.email"
+        placeholder="E-mail"
+        required
+        email
+        #email="ngModel"
+        />
+        <label [ngClass]="{ 'text-success': email.valid && email.touched }">
+          *Email
+          @if (email.valid && email.touched) {
+            <i
+              class="bi bi-check-circle-fill ms-1"
+            ></i>
+          }
+        </label>
+        @if (registerForm.submitted && email.invalid) {
+          <div
+            class="text-danger small"
+            >
+            Email is required and valid.
+          </div>
+        }
+      </div>
+      <div class="mb-3 form-floating">
+        <input
+          type="password"
+          class="form-control"
+          [class.is-invalid]="password.invalid && password.touched"
+          name="password"
+          [(ngModel)]="model.password"
+          placeholder="Password"
+          (keyup)="onPasswordChange()"
+          required
+          #password="ngModel"
+          />
+          <label [ngClass]="{ 'text-success': password.valid && password.touched }">
+            *Password
+            @if (password.valid && password.touched) {
+              <i
+                class="bi bi-check-circle-fill ms-1"
+              ></i>
+            }
+          </label>
+          @if (registerForm.submitted && password.invalid) {
+            <div
+              class="text-danger small"
+              >
+              Password is required.
+            </div>
+          }
+          <small class="text-muted">
+            Password Strength:
+            <span
         [ngClass]="{
           'text-danger': passwordStrength === 'Weak',
           'text-warning': passwordStrength === 'Average',
           'text-success': passwordStrength === 'Strong'
         }"
-        >{{ passwordStrength }}
-      </span>
-    </small>
-  </div>
-  <div class="mb-3 form-floating">
-    <input
-      type="password"
-      class="form-control"
+              >{{ passwordStrength }}
+            </span>
+          </small>
+        </div>
+        <div class="mb-3 form-floating">
+          <input
+            type="password"
+            class="form-control"
       [class.is-invalid]="
         (passwordConfirmed.invalid && passwordConfirmed.touched) ||
         (passwordConfirmed.touched && model.password != model.passwordConfirmed)
       "
-      name="passwordconfirmed"
-      [(ngModel)]="model.passwordConfirmed"
-      placeholder="Password Confirmation"
-      required
-      #passwordConfirmed="ngModel"
-    />
-    <label
+            name="passwordconfirmed"
+            [(ngModel)]="model.passwordConfirmed"
+            placeholder="Password Confirmation"
+            required
+            #passwordConfirmed="ngModel"
+            />
+            <label
       [ngClass]="{
         'text-success':
           passwordConfirmed.valid &&
           passwordConfirmed.touched &&
           model.password === model.passwordConfirmed
       }"
-    >
-      *Password Confirmation
-      <i
-        *ngIf="
-          passwordConfirmed.valid &&
-          passwordConfirmed.touched &&
-          model.password === model.passwordConfirmed
-        "
-        class="bi bi-check-circle-fill ms-1"
-      ></i>
-    </label>
-    <div
-      *ngIf="registerForm.submitted && passwordConfirmed.invalid"
-      class="text-danger small"
-    >
-      Confirmation is required.
-    </div>
-    <div
-      *ngIf="registerForm.submitted && model.password !== model.passwordConfirmed"
-      class="text-danger small"
-    >
-      Password is not equals.
-    </div>
-  </div>
-  <div class="form-group text-center">
-    <button class="btn btn-success me-2" type="submit">Register</button>
-    <button class="btn btn-secondary me-2" (click)="cancel()" type="button">Cancel</button>
-  </div>
-</form>
+              >
+              *Password Confirmation
+              @if (
+                passwordConfirmed.valid &&
+                passwordConfirmed.touched &&
+                model.password === model.passwordConfirmed
+                ) {
+                <i
+                  class="bi bi-check-circle-fill ms-1"
+                ></i>
+              }
+            </label>
+            @if (registerForm.submitted && passwordConfirmed.invalid) {
+              <div
+                class="text-danger small"
+                >
+                Confirmation is required.
+              </div>
+            }
+            @if (registerForm.submitted && model.password !== model.passwordConfirmed) {
+              <div
+                class="text-danger small"
+                >
+                Password is not equals.
+              </div>
+            }
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-success me-2" type="submit">Register</button>
+            <button class="btn btn-secondary me-2" (click)="cancel()" type="button">Cancel</button>
+          </div>
+        </form>

@@ -37,7 +37,7 @@ public static class Seed
             user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc);
 
             PasswordHasher<User> hasher = new();
-            user.SetPassword(hasher.HashPassword(user, "Pas$w0rd"));
+            user.SetPassword(hasher.HashPassword(user, user.PasswordHash ?? "Pas$w0rd"));
             context.Users.Add(user);
         }
 
