@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MembersService } from '../../_services/members.service';
 import { Member } from './../../_model/member';
-import { TabsModule } from 'ngx-bootstrap/tabs';
-import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 
 @Component({
   selector: 'app-member-detail',
