@@ -38,6 +38,7 @@ public class LoginUseCase(
         return resultado == PasswordVerificationResult.Failed
             ? Result<LoginDto?>.Failure("Senha inválida", Domain.Enums.ResponseCodes.UNAUTHORIZED)
             : Result<LoginDto?>.Success(new LoginDto(
+                usuario.Id,
                 usuario.UserName,
                 usuario.Email,
                 await tokenService.GerarToken(usuario)

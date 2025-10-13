@@ -1,5 +1,4 @@
 ﻿using Application.Api.Controllers._Shared;
-using Application.Api.Filter;
 using Application.Api.Middleware;
 using Application.Api.Util;
 using Application.Domain.Util;
@@ -27,8 +26,8 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddCommunicationProtocol()
-            .ConfigureMvc()
             .ConfigureJwt(configuration)
+            .ConfigureMvc()
             .AddSwagger()
             .AddCompression()
             .AddHttpContextAccessor()
@@ -68,11 +67,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddCors();
 
-        services.AddMvc(config =>
-        {
-            config.EnableEndpointRouting = false;
-        })
-        .AddNewtonsoftJson(options =>
+        services.AddControllers().AddNewtonsoftJson(options =>
         {
             options.SerializerSettings.ContractResolver = new DefaultContractResolver
             {
@@ -93,14 +88,9 @@ public static class ServiceCollectionExtensions
     {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         services.AddValidatorsFromAssemblies(assemblies);
-        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
         return services;
     }
-
-    private static IServiceCollection AddFilters(this IServiceCollection services)
-       => services.AddScoped<CustomAuthorizationFilter>();
 
     private static IServiceCollection AddGlobalExceptionMiddleware(this IServiceCollection services)
         => services.AddTransient<GlobalExceptionHandlerMiddleware>();

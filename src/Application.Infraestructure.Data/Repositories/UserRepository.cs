@@ -94,7 +94,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por name: name informado: {name}, erro: {Message}", name, ex.Message);
+            logger.LogError(ex, "Erro obter usuario por name: name informado: {Name}, erro: {Message}", name, ex.Message);
             return Result<UserVo?>.Failure("Erro ao obter usuario");
         }
     }
@@ -131,7 +131,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por id: id informado: {id}, erro: {Message}", id, ex.Message);
+            logger.LogError(ex, "Erro obter usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
             return Result<UserVo?>.Failure("Erro ao obter usuario");
         }
     }
@@ -146,7 +146,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por id: id informado: {id}, erro: {Message}", id, ex.Message);
+            logger.LogError(ex, "Erro obter usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
             return Result<User?>.Failure("Erro ao obter usuario");
         }
     }

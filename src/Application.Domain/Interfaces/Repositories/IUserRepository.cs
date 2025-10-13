@@ -6,7 +6,7 @@ namespace Application.Domain.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<Result<bool>> InsertAsync(User request, CancellationToken cancellationToken);
+    Task<Result<bool>> InsertAsync(User user, CancellationToken cancellationToken);
     Task<Result<User?>> GetByEmailAsync(string email, CancellationToken cancellationToken);
     Task<Result<UserVo?>> GetUserVoByIdAsync(int id, CancellationToken cancellationToken);
     Task<Result<User?>> GetByIdAsync(int id, CancellationToken cancellationToken);

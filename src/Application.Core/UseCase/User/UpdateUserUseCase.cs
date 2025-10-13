@@ -22,16 +22,15 @@ public class UpdateUserUseCase(
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
             return Result<string>.Failure("Usuario nao encontrado");
         else if (resultUsuario.IsFailure)
-            return Result<string>.Failure(resultUsuario.Errors);
+            return resultUsuario.SetResult<string>();
 
         Domain.Entities.User usuario = resultUsuario.Data!;
 
+        if (!string.Equals(usuario.UserName, request.NameToken, StringComparison.InvariantCulture))
+            return Result<string>.Failure("Usuario invalido");
+
         usuario.SetCountry(request.Country);
         usuario.SetCity(request.City);
-        usuario.SetGender(request.Gender);
-        usuario.SetKowAs(request.KnowAs);
-        usuario.SetName(request.Name);
-        usuario.SetEmail(request.Email);
         usuario.SetIntroduction(request.Introduction);
         usuario.SetInterests(request.Interests);
         usuario.SetLookingFor(request.LookingFor);

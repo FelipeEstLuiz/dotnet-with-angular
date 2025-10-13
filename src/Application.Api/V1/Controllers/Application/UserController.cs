@@ -5,6 +5,7 @@ using Application.Core.Model;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace Application.Api.V1.Controllers.Application;
 
@@ -37,7 +38,10 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<string>))]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
     {
+        string? userName = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? throw new UnauthorizedAccessException();
+
         request.Id = id;
+        request.NameToken = userName;
         return HandlerResponse(
             HttpStatusCode.OK,
             await dispatcher.Dispatch<UpdateUserModel, Result<string>>(request)

@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { firstValueFrom, lastValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse } from '../_model/api-response';
 import { AccountService } from './account.service';
-import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,18 +13,25 @@ export class HttpService {
   private accountService = inject(AccountService);
   private baseUrl = environment.apiUrlV1;
 
-  get<T>(url: string) {
-    return this.http.get<ApiResponse<T>>(
-      this.baseUrl + url,
-      this.getHttpOptions()
+  get<T>(url: string): Promise<T> {
+    return firstValueFrom(
+      this.http
+        .get<ApiResponse<T>>(this.baseUrl + url, this.getHttpOptions())
+        .pipe(map((response) => response.data!))
     );
   }
 
-  post<T>(url: string, body: any): Observable<ApiResponse<T>> {
-    return this.http.post<ApiResponse<T>>(
-      this.baseUrl + url,
-      body,
-      this.getHttpOptions()
+  async post<T>(url: string, body: any): Promise<T> {
+    return await lastValueFrom(
+      this.http
+        .post<ApiResponse<T>>(this.baseUrl + url, body, this.getHttpOptions())
+        .pipe(map((response) => response.data!))
+    );
+  }
+
+  async put(url: string, body: any) {
+    return await lastValueFrom(
+      this.http.put<void>(this.baseUrl + url, body, this.getHttpOptions())
     );
   }
 

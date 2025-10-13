@@ -23,11 +23,6 @@ builder.Services.ConfigureExtensions(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("SqlServerDb"));
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-});
-
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -41,30 +36,20 @@ WebApplication app = builder.Build();
 app.UseCommunicationProtocolMiddleware();
 app.UseGlobalExceptionMiddleware();
 
-if (app.Environment.IsDevelopment())
-    app.UseDeveloperExceptionPage();
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors(x => x
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseResponseCompression();
 
-app.UseRouting()
-    .UseEndpoints(r =>
-    {
-        r.MapControllers();
-    });
+app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {

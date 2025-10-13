@@ -36,7 +36,7 @@ public class InsertUserUseCase(
         Result<bool> resultInsert = await usuarioRepository.InsertAsync(usuario, cancellationToken);
 
         return resultInsert.IsSuccess
-            ? Result<LoginDto>.Success(new LoginDto(usuario.UserName, usuario.Email, await tokenService.GerarToken(usuario)))
+            ? Result<LoginDto>.Success(new LoginDto(usuario.Id, usuario.UserName, usuario.Email, await tokenService.GerarToken(usuario)))
             : Result<LoginDto>.Failure(resultInsert.Errors);
     }
 }

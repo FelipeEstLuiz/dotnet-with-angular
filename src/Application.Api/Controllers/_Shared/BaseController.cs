@@ -22,11 +22,13 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
         Response response;
 
         if (result.IsSuccess)
+        {
             response = _Shared.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
                 statusCode: statusCode
             );
+        }
         else
         {
             statusCode = result.ResponseCode switch
