@@ -41,7 +41,7 @@ public class GlobalExceptionHandlerMiddleware(
         else if (exception is UnauthorizedAccessException)
         {
             httpStatusCode = HttpStatusCode.Unauthorized;
-            erros = ["Usuário nao autorizado"];
+            erros = ["Usuario nao autorizado"];
         }
         else if (exception is ValidationException validacaoException)
         {

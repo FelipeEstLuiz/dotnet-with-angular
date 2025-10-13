@@ -1,7 +1,9 @@
 using Application.Api.Extensions;
+using Application.Api.Middleware;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.SeedData;
 using Application.Infraestructure.IOC;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
@@ -18,6 +20,8 @@ builder.Services.AddCors(options =>
           .AllowAnyHeader();
        });
 });
+
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthResultHandler>();
 
 builder.Services.ConfigureExtensions(builder.Configuration);
 
