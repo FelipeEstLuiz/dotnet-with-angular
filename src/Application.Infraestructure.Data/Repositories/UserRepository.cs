@@ -1,15 +1,15 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Application.Domain.VO;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Infraestructure.Data.Repositories;
 
-public class UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) : IUserRepository
+public class UserRepository(ApplicationDbContext context, IAppLogger<UserRepository> logger) : IUserRepository
 {
     private readonly DbSet<User> _dbSet = context.Set<User>();
 
@@ -61,41 +61,19 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
     }
 
-    public async Task<Result<UserVo?>> GetByNameAsync(string name, CancellationToken cancellationToken)
+    public async Task<Result<User?>> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
         try
         {
             return await _dbSet
                 .AsNoTracking()
                 .Where(x => x.UserName.ToLower() == name.ToLower())
-                .Select(x => new UserVo()
-                {
-                    City = x.City,
-                    Country = x.Country,
-                    Created = x.Created,
-                    DateOfBirth = x.DateOfBirth,
-                    Email = x.Email,
-                    Gender = x.Gender,
-                    Id = x.Id,
-                    Interests = x.Interests,
-                    Introduction = x.Introduction,
-                    LastActive = x.LastActive,
-                    KnowAs = x.KnowAs,
-                    LookingFor = x.LookingFor,
-                    Name = x.UserName,
-                    Photos = x.Photos.Select(p => new PhotoVo()
-                    {
-                        Id = p.Id,
-                        IsMain = p.IsMain,
-                        Url = p.Url
-                    }).ToList()
-                })
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuario por name: name informado: {Name}, erro: {Message}", name, ex.Message);
-            return Result<UserVo?>.Failure("Erro ao obter usuario");
+            return Result<User?>.Failure("Erro ao obter usuario");
         }
     }
 
@@ -151,7 +129,7 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         }
     }
 
-    public async Task<Result<List<UserVo>>> GetAllAsync(
+    public async Task<Result<List<User>>> GetAllAsync(
         QueryOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -160,33 +138,12 @@ public class UserRepository(ApplicationDbContext context, ILogger<UserRepository
         {
             return await _dbSet
             .AsNoTracking()
-            .Select(x => new UserVo()
-            {
-                City = x.City,
-                Country = x.Country,
-                Created = x.Created,
-                DateOfBirth = x.DateOfBirth,
-                Email = x.Email,
-                Gender = x.Gender,
-                Id = x.Id,
-                Interests = x.Interests,
-                Introduction = x.Introduction,
-                KnowAs = x.KnowAs,
-                LookingFor = x.LookingFor,
-                Name = x.UserName,
-                Photos = x.Photos.Select(p => new PhotoVo()
-                {
-                    Id = p.Id,
-                    IsMain = p.IsMain,
-                    Url = p.Url
-                }).ToList()
-            })
             .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Erro obter usuarios: {Message}", ex.Message);
-            return Result<List<UserVo>>.Failure("Erro ao obter usuarios");
+            return Result<List<User>>.Failure("Erro ao obter usuarios");
         }
     }
 }

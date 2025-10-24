@@ -1,13 +1,14 @@
 ﻿using Application.Api.Controllers._Shared;
+using Application.Api.Util;
 using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.User;
 using Application.Core.Model;
+using Application.Domain.Extensions;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Security.Claims;
 
-namespace Application.Api.V1.Controllers.Application;
+namespace Application.Api.Controllers.V1;
 
 [ApiExplorerSettings(GroupName = "User")]
 public class UserController(CommunicationProtocol protocol, RequestDispatcher dispatcher)
@@ -35,16 +36,21 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     );
 
     [HttpPut("{id:int}")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<string>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
     {
-        string? userName = (User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? throw new UnauthorizedAccessException();
-
         request.Id = id;
-        request.NameToken = userName;
+        request.NameToken = User.GetUserName();
         return HandlerResponse(
             HttpStatusCode.OK,
-            await dispatcher.Dispatch<UpdateUserModel, Result<string>>(request)
+            await dispatcher.Dispatch<UpdateUserModel, Result<bool>>(request)
         );
     }
+
+    [HttpPost("add-photo")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<PhotoUserDto>))]
+    public async Task<IActionResult> AddPhoto(IFormFile file) => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<PhotoUploadModel, Result<PhotoUserDto>>(new PhotoUploadModel(file, User.GetUserName()))
+    );
 }

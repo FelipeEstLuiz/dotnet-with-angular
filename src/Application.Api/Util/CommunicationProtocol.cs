@@ -1,4 +1,4 @@
-﻿namespace Application.Api.Controllers._Shared;
+﻿namespace Application.Api.Util;
 
 public class CommunicationProtocol
 {

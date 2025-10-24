@@ -7,9 +7,9 @@ namespace Application.Core.UseCase.User;
 
 public class UpdateUserUseCase(
     IUserRepository usuarioRepository
-) : IRequestHandler<UpdateUserModel, Result<string>>
+) : IRequestHandler<UpdateUserModel, Result<bool>>
 {
-    public async Task<Result<string>> Handle(
+    public async Task<Result<bool>> Handle(
         UpdateUserModel request,
         CancellationToken cancellationToken = default
     )
@@ -20,14 +20,14 @@ public class UpdateUserUseCase(
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
-            return Result<string>.Failure("Usuario nao encontrado");
+            return Result<bool>.Failure("Usuario nao encontrado");
         else if (resultUsuario.IsFailure)
-            return resultUsuario.SetResult<string>();
+            return resultUsuario.SetResult<bool>();
 
         Domain.Entities.User usuario = resultUsuario.Data!;
 
         if (!string.Equals(usuario.UserName, request.NameToken, StringComparison.InvariantCulture))
-            return Result<string>.Failure("Usuario invalido");
+            return Result<bool>.Failure("Usuario invalido");
 
         usuario.SetCountry(request.Country);
         usuario.SetCity(request.City);
@@ -35,8 +35,6 @@ public class UpdateUserUseCase(
         usuario.SetInterests(request.Interests);
         usuario.SetLookingFor(request.LookingFor);
 
-        Result<bool> resultUpdate = await usuarioRepository.UpdateAsync(usuario, cancellationToken);
-
-        return resultUpdate.SetResult(res => "Usuario atualizado com sucesso");
+        return await usuarioRepository.UpdateAsync(usuario, cancellationToken);
     }
 }

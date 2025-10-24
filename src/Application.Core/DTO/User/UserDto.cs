@@ -1,5 +1,4 @@
 ﻿using Application.Domain.Extensions;
-using Application.Domain.VO;
 
 namespace Application.Core.DTO.User;
 
@@ -21,10 +20,10 @@ public record UserDto : ComumDto
     public DateTime LastActive { get; set; }
     public List<PhotoUserDto>? Photo { get; set; }
 
-    public static UserDto Map(UserVo usuario) => new()
+    public static UserDto Map(Domain.Entities.User usuario) => new()
     {
         Email = usuario.Email,
-        Name = usuario.Name,
+        Name = usuario.UserName,
         Id = usuario.Id,
         Created = usuario.Created,
         DateOfBirth = usuario.DateOfBirth,

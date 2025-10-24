@@ -1,5 +1,6 @@
-﻿using Application.Api.Controllers._Shared;
+﻿using Application.Api.Util;
 using Application.Domain.Exception;
+using Application.Domain.Interfaces.Services;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -7,7 +8,7 @@ namespace Application.Api.Middleware;
 
 public class GlobalExceptionHandlerMiddleware(
     CommunicationProtocol communicationProtocol,
-    ILogger<GlobalExceptionHandlerMiddleware> logger
+    IAppLogger<GlobalExceptionHandlerMiddleware> logger
 ) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)

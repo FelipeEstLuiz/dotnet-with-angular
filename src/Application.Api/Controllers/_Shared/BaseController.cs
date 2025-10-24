@@ -1,18 +1,13 @@
-﻿using Application.Domain.Enums;
+﻿using Application.Api.Util;
+using Application.Domain.Enums;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
-using System.Net.Mime;
 
 namespace Application.Api.Controllers._Shared;
 
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces("application/json")]
 [SwaggerResponse(200, Type = typeof(Response))]
-[SwaggerResponse(400, Type = typeof(Response))]
-[SwaggerResponse(401, Type = typeof(Response))]
-[SwaggerResponse(403, Type = typeof(Response))]
 public class BaseController(CommunicationProtocol protocol) : ControllerBase
 {
     protected readonly CommunicationProtocol _protocol = protocol;
@@ -23,7 +18,7 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
 
         if (result.IsSuccess)
         {
-            response = _Shared.Response.ResponseSuccess(
+            response = Util.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
                 statusCode: statusCode
@@ -39,7 +34,7 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
                 _ => HttpStatusCode.BadRequest,
             };
 
-            response = _Shared.Response.Failure(
+            response = Util.Response.Failure(
                 _protocol.ToString(),
                 result.Errors,
                 statusCode: statusCode

@@ -3,7 +3,6 @@ using Application.Core.Model;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.VO;
 
 namespace Application.Core.UseCase.User;
 
@@ -12,7 +11,7 @@ public class GetUserByUserNameUseCase(IUserRepository usuarioRepository)
 {
     public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
     {
-        Result<UserVo?> usuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken);
+        Result<Domain.Entities.User?> usuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken);
 
         if (usuario.IsSuccess && usuario.Data is not null)
             return UserDto.Map(usuario.Data);

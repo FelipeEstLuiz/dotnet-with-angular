@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.VO;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.Repositories;
 using Bogus;
@@ -40,7 +40,7 @@ public class UsuarioRepositoryTests
     {
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
         Result<bool> result = await repository.InsertAsync(_faker.Generate(), CancellationToken.None);
@@ -54,10 +54,10 @@ public class UsuarioRepositoryTests
     {
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        context.Dispose();
+        await context.DisposeAsync();
 
         Result<bool> result = await repository.InsertAsync(_faker.Generate(), CancellationToken.None);
 
@@ -73,7 +73,7 @@ public class UsuarioRepositoryTests
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
         await context.Users.AddAsync(usuario);
@@ -92,10 +92,10 @@ public class UsuarioRepositoryTests
         User usuario = _faker.Generate();
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        context.Dispose();
+        await context.DisposeAsync();
 
         Result<User?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
 
@@ -110,7 +110,7 @@ public class UsuarioRepositoryTests
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
         await context.Users.AddAsync(usuario);
@@ -130,10 +130,10 @@ public class UsuarioRepositoryTests
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        context.Dispose();
+        await context.DisposeAsync();
 
         Result<User?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
 
@@ -146,14 +146,14 @@ public class UsuarioRepositoryTests
     {
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
         await context.Users.AddAsync(_faker.Generate());
         await context.Users.AddAsync(_faker.Generate());
         await context.SaveChangesAsync();
 
-        Result<List<UserVo>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsSuccess);
 #pragma warning disable CS8602
@@ -175,13 +175,13 @@ public class UsuarioRepositoryTests
 
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
         await context.Users.AddRangeAsync(usuarios);
         await context.SaveChangesAsync();
 
-        Result<List<UserVo>> result = await repository.GetAllAsync(
+        Result<List<User>> result = await repository.GetAllAsync(
             new QueryOptions()
             {
                 Pagina = 1,
@@ -208,12 +208,12 @@ public class UsuarioRepositoryTests
     {
         using IServiceScope scope = _server.Host.Services.CreateScope();
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        ILogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<ILogger<UserRepository>>();
+        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        context.Dispose();
+        await context.DisposeAsync();
 
-        Result<List<UserVo>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Contains("Erro ao obter usuarios", result.Errors);

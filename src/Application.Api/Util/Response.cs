@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Net;
 
-namespace Application.Api.Controllers._Shared;
+namespace Application.Api.Util;
 
 public struct Response
 {

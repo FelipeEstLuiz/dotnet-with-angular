@@ -1,10 +1,11 @@
-﻿using Application.Api.Controllers._Shared;
+﻿using Application.Api.Util;
+using Application.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 
 namespace Application.Api.Middleware;
 
-public class CustomAuthResultHandler : IAuthorizationMiddlewareResultHandler
+public class CustomAuthResultHandler(IAppLogger<CustomAuthResultHandler> logger) : IAuthorizationMiddlewareResultHandler
 {
     private readonly AuthorizationMiddlewareResultHandler defaultHandler = new();
 
@@ -28,8 +29,8 @@ public class CustomAuthResultHandler : IAuthorizationMiddlewareResultHandler
         
         if (authorizeResult.Challenged)
         {
+            logger.LogInformation("Usuario nao autorizado");
             context.Response.StatusCode = 401;
-
             await context.Response.WriteAsJsonAsync(Response.Failure(
                 GetProtocol(context),
                 ["Usuario nao autorizado"],

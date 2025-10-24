@@ -1,4 +1,4 @@
-﻿using Application.Api.Controllers._Shared;
+﻿using Application.Api.Util;
 using Application.Domain.Util;
 using System.Reflection;
 

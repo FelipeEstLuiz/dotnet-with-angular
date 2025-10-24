@@ -1,6 +1,6 @@
-﻿using Application.Api.Controllers._Shared;
-using Application.Api.Middleware;
+﻿using Application.Api.Middleware;
 using Application.Api.Util;
+using Application.Core.Model;
 using Application.Domain.Util;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,7 +34,9 @@ public static class ServiceCollectionExtensions
             .AddVersioning()
             .AddGlobalExceptionMiddleware()
             .AddHttpClient()
-            .AddApplicationServices(); 
+            .AddApplicationServices();
+
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
         return services;
     }

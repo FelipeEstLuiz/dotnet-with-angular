@@ -6,7 +6,12 @@ using Application.Infraestructure.IOC;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
+using Serilog;
+using System.Reflection;
+
+Assembly? assembly = Assembly.GetEntryAssembly();
+string? appName = assembly?.GetName().Name;
+string? appVersion = assembly?.GetName()?.Version?.ToString();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +26,25 @@ builder.Services.AddCors(options =>
        });
 });
 
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthResultHandler>();
+KeyValuePair<string, string?> serilogIdSession = builder.Configuration.GetSection("Serilog:WriteTo").AsEnumerable().FirstOrDefault(ss => ss.Key.Contains("Args:path"));
+
+if (serilogIdSession.Key is not null)
+{
+    IConfigurationSection? serilogSection = builder.Configuration.GetSection(serilogIdSession.Key);
+
+    if (serilogSection is not null)
+        serilogSection.Value = Path.Combine(serilogSection.Value!, $"{appName}_.log");
+}
+
+// Logging
+builder.Host.UseSerilog((ctx, lc) => lc
+    .ReadFrom.Configuration(ctx.Configuration)
+    .WriteTo.Conditional(levt => Environment.UserInteractive, lsc => lsc.Console())
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Version", appVersion)
+);
+
+builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, CustomAuthResultHandler>();
 
 builder.Services.ConfigureExtensions(builder.Configuration);
 
@@ -38,6 +61,7 @@ builder.Services.AddSwaggerGen();
 WebApplication app = builder.Build();
 
 app.UseCommunicationProtocolMiddleware();
+
 app.UseGlobalExceptionMiddleware();
 
 app.UseSwagger();
