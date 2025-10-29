@@ -1,20 +1,24 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
+  inject,
+  provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
-import { errorInterceptor } from './_interceptors/error.interceptor';
 import { loadingInterceptor } from './_interceptors/loading.interceptor';
+import { InitService } from '../core/services/init.service';
+import { lastValueFrom } from 'rxjs';
+import { errorInterceptor } from '../core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withViewTransitions()),
     provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
     provideAnimations(),
     provideToastr({
@@ -23,6 +27,18 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
       closeButton: true,
       progressBar: true,
+    }),
+    provideAppInitializer(async () => {
+      const initService = inject(InitService);
+
+      try {
+        return lastValueFrom(initService.init());
+      } finally {
+        const splash = document.getElementById('initial-splash');
+        if (splash) {
+          splash.remove();
+        }
+      }
     }),
   ],
 };

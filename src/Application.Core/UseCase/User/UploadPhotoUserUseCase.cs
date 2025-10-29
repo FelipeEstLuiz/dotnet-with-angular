@@ -32,7 +32,7 @@ public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoSer
         Result<bool> updateResult = await usuarioRepository.UpdateAsync(user, cancellationToken);
 
         return updateResult.IsSuccess
-            ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.IsMain)
+            ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.IsMain, photo.PublicId, photo.UserId)
             : Result<PhotoUserDto>.Failure("Erro ao adicionar a foto do usuario");
     }
 }

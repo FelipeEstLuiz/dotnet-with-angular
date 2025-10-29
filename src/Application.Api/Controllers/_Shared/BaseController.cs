@@ -31,6 +31,7 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
                 ResponseCodes.USER_NOT_HAVE_PERMISSION => HttpStatusCode.Forbidden,
                 ResponseCodes.UNAUTHORIZED => HttpStatusCode.Unauthorized,
                 ResponseCodes.NOT_FOUND => HttpStatusCode.NotFound,
+                ResponseCodes.SERVER_ERROR => HttpStatusCode.InternalServerError,
                 _ => HttpStatusCode.BadRequest,
             };
 

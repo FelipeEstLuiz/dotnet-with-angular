@@ -22,5 +22,6 @@ public enum ResponseCodes
     NOT_A_IMAGE,
     INVALID_LENGTH,
     USER_NOT_HAVE_PERMISSION,
-    NOT_FOUND
+    NOT_FOUND,
+    SERVER_ERROR
 }

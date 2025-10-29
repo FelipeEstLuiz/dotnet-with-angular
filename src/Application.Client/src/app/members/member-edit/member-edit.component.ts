@@ -6,11 +6,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { AccountService } from '../../_services/account.service';
-import { MembersService } from '../../_services/members.service';
+import { MembersService } from '../../../core/services/members.service';
 import { Member } from './../../_model/member';
 import { FormsModule, NgForm } from '@angular/forms';
-import { AlertService } from '../../_services/alert.service';
+import { AlertService } from '../../../core/services/alert.service';
+import { AccountService } from '../../../core/services/account.service';
 
 @Component({
   selector: 'app-members-edit',

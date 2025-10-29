@@ -51,6 +51,7 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         {
             return await _dbSet
                 .AsNoTracking()
+                .Include(x => x.Photos)
                 .Where(x => x.Email.ToLower() == email.ToLower())
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
@@ -138,6 +139,7 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         {
             return await _dbSet
             .AsNoTracking()
+            .Include(x => x.Photos)
             .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
         }
         catch (Exception ex)

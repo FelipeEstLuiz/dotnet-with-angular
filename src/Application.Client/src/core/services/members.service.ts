@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Member } from '../_model/member';
+import { Member } from '../../app/_model/member';
 import { HttpService } from './http.service';
 
 @Injectable({

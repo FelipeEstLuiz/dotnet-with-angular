@@ -1,0 +1,8 @@
+:host {
+  width: 100%;
+}
+
+.is-invalid {
+  border: 1px solid red !important;
+  box-shadow: 0 0 4px red;
+}

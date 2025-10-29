@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, lastValueFrom, map } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { ApiResponse } from '../_model/api-response';
 import { AccountService } from './account.service';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from '../../types/api-response';
 
 @Injectable({
   providedIn: 'root',

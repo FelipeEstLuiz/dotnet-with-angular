@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { MembersService } from '../../_services/members.service';
+import { MembersService } from '../../../core/services/members.service';
 import { Member } from './../../_model/member';
 
 @Component({
@@ -23,10 +23,10 @@ export class MemberDetailComponent implements OnInit {
   }
 
   async loadMember() {
-    const username = this.route.snapshot.paramMap.get('username');
-    if (!username) return;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
 
-    this.member = await this.memberService.getByName(username);
+    this.member = await this.memberService.getById(parseInt(id));
 
     this.member?.photo?.map((p) => {
       this.images.push(new ImageItem({ src: p.url, thumb: p.url }));

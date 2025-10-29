@@ -1,24 +1,25 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { User } from '../_model/user';
-import { map } from 'rxjs';
-import { UserRegister } from '../_model/user-register';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponse } from '../_model/api-response';
+import { inject, Injectable, signal } from '@angular/core';
+import { tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from '../../types/api-response';
+import { Login } from '../../types/login';
+import { User } from '../../types/user';
+import { UserRegister } from '../../types/user-register';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   private http = inject(HttpClient);
-  baseUrl = environment.apiUrlV1;
+  private baseUrl = environment.apiUrlV1;
   currentUser = signal<User | null>(null);
 
-  login(model: any) {
+  login(model: Login) {
     return this.http
       .post<ApiResponse<User>>(this.baseUrl + 'Account/Login', model)
       .pipe(
-        map((response) => {
+        tap((response) => {
           if (response && response.data) {
             localStorage.setItem('user', JSON.stringify(response.data));
             this.currentUser.set(response.data);
@@ -31,7 +32,7 @@ export class AccountService {
     return this.http
       .post<ApiResponse<User>>(this.baseUrl + 'Account', model)
       .pipe(
-        map((response) => {
+        tap((response) => {
           if (response && response.data) {
             localStorage.setItem('user', JSON.stringify(response.data));
             this.currentUser.set(response.data);

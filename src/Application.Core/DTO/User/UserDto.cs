@@ -28,7 +28,7 @@ public record UserDto : ComumDto
         Created = usuario.Created,
         DateOfBirth = usuario.DateOfBirth,
         Age = usuario.DateOfBirth.CalcularIdade(),
-        Photo = usuario.Photos?.Select(x => new PhotoUserDto(x.Id, x.Url, x.IsMain)).ToList(),
+        Photo = usuario.Photos?.Select(x => new PhotoUserDto(x.Id, x.Url, x.IsMain, x.PublicId, usuario.Id)).ToList(),
         Introduction = usuario.Introduction,
         City = usuario.City,
         Country = usuario.Country,

@@ -10,7 +10,7 @@ namespace Application.Core.Services;
 
 public class TokenService(IConfiguration configuration) : ITokenService
 {
-    private static readonly DateTime _expiresAt = DateTime.UtcNow.AddHours(1);
+    private readonly DateTime _expiresAt = DateTime.UtcNow.AddHours(1);
 
     public Task<string> GerarToken(User usuario)
     {

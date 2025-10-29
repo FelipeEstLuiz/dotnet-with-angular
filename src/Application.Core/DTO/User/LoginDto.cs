@@ -1,3 +1,3 @@
 ﻿namespace Application.Core.DTO.User;
 
-public record LoginDto(int Id, string Name, string Email, string Token);
+public record LoginDto(int Id, string Name, string Email, string Token, string? ImageUrl);

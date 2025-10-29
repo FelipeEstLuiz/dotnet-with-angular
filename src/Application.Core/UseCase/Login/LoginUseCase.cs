@@ -41,7 +41,8 @@ public class LoginUseCase(
                 usuario.Id,
                 usuario.UserName,
                 usuario.Email,
-                await tokenService.GerarToken(usuario)
+                await tokenService.GerarToken(usuario),
+                usuario.Photos?.FirstOrDefault(x => x.IsMain)?.Url
             ));
     }
 }

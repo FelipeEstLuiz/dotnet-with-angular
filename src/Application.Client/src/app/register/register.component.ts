@@ -1,10 +1,10 @@
 import { Component, inject, input, output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { UserRegister } from '../_model/user-register';
 import { getPasswordStrength } from '../validators/password-strength.validator';
 import { CommonModule } from '@angular/common';
-import { AccountService } from '../_services/account.service';
-import { AlertService } from '../_services/alert.service';
+import { AlertService } from '../../core/services/alert.service';
+import { AccountService } from '../../core/services/account.service';
+import { UserRegister } from '../../types/user-register';
 
 @Component({
   selector: 'app-register',
