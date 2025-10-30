@@ -4,6 +4,7 @@ import { AccountService } from '../../../core/services/account.service';
 import { AlertService } from '../../../core/services/alert.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { getPasswordStrength } from '../../../core/validators/password-strength.validator';
 
 @Component({
   selector: 'app-register',
@@ -50,27 +51,10 @@ export class RegisterComponent {
   }
 
   onPasswordChange(): void {
-    this.passwordStrength = this.getPasswordStrength(this.model.password);
+    this.passwordStrength = getPasswordStrength(this.model.password);
   }
 
   cancel() {
     this.cancelRegister.emit(false);
-  }
-
-  getPasswordStrength(password: string): 'Weak' | 'Average' | 'Strong' {
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[\W_]/.test(password);
-
-    const strengthCount = [hasLower, hasUpper, hasNumber, hasSymbol].filter(
-      Boolean
-    ).length;
-
-    if (password.length < 6 || strengthCount < 2) return 'Weak';
-    if (password.length >= 6 && strengthCount === 3) return 'Average';
-    if (password.length >= 8 && strengthCount === 4) return 'Strong';
-
-    return 'Weak';
   }
 }

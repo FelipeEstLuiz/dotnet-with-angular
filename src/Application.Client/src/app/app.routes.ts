@@ -4,15 +4,14 @@ import { HomeComponent } from '../features/home/home.component';
 import { ListsComponent } from '../features/lists/lists.component';
 import { MemberDetailedComponent } from '../features/members/member-detailed/member-detailed.component';
 import { MessagesComponent } from '../features/messages/messages.component';
-import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { MembersEditComponent } from './members/member-edit/member-edit.component';
-import { MemberListComponent } from './members/member-list/member-list.component';
-import { MembersMessagesComponent } from './members/members-messages/members-messages.component';
 import { MembersPhotosComponent } from './members/members-photos/members-photos.component';
 import { MembersProfileComponent } from './members/members-profile/members-profile.component';
 import { authGuard } from '../core/guards/auth.guard';
 import { TestErrorsComponent } from '../features/test-errors/test-errors.component';
 import { NotFoundComponent } from '../shared/errors/not-found/not-found.component';
+import { MemberListComponent } from '../features/members/member-list/member-list.component';
+import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -41,7 +40,7 @@ export const routes: Routes = [
           },
           {
             path: 'messages',
-            component: MembersMessagesComponent,
+            component: MessagesComponent,
             title: 'Messages',
           },
         ],

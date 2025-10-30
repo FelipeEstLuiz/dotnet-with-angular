@@ -39,9 +39,9 @@
           class="flex items-center text-white text-xl gap-3 cursor-pointer"
         >
           <img
-            src="{{ user.imageUrl || '/user.png' }}"
+            [src]="user.imageUrl || '/user.png'"
             alt="user avatar"
-            class="w-8 h-8 rounded-full"
+            class="w-10 h-10 rounded-full"
           />
           <span>{{ user.name }}</span>
         </div>

@@ -121,6 +121,7 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         {
             return await _dbSet
                 .AsNoTracking()
+                .Include(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
         catch (Exception ex)

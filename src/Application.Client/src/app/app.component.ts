@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavComponent } from '../layout/nav/nav.component';
-import { AppLoadingComponent } from './shared/loading/loading.component';
+import { AppLoadingComponent } from '../shared/loading/loading.component';
 
 @Component({
   selector: 'app-root',
