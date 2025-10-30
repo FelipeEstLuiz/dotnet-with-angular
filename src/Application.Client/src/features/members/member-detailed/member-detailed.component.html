@@ -1,4 +1,4 @@
-@if(member){
+@if(member(); as member){
 <div class="flex gap-6">
   <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4">
     <img
@@ -19,10 +19,10 @@
           <a routerLink="profile" routerLinkActive="text-primary">Profile</a>
         </li>
         <li>
-          <a routerLink="profile" routerLinkActive="text-primary">Photos</a>
+          <a routerLink="photos" routerLinkActive="text-primary">Photos</a>
         </li>
         <li>
-          <a routerLink="profile" routerLinkActive="text-primary">Messages</a>
+          <a routerLink="messages" routerLinkActive="text-primary">Messages</a>
         </li>
       </ul>
     </div>
@@ -32,8 +32,9 @@
     </div>
   </div>
   <div class="card bg-base-100 w-3/4 p-6">
-    <h3 class="card-title text-3xl text-primary">Profile</h3>
+    <h3 class="card-title text-3xl text-primary">{{ title() }}</h3>
     <div class="divider"></div>
+    <div><router-outlet></router-outlet></div>
   </div>
 </div>
 } @else {
