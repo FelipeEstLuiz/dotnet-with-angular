@@ -3,7 +3,7 @@ using Tests.Fixtures;
 
 namespace Tests.Systems.Domain;
 
-public class UsuarioTests
+public class UserTests
 {
     [Fact]
     public void Create_DeveRetornarUsuarioComDadosCorretos()

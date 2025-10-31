@@ -27,7 +27,7 @@ public class PhotoService : IPhotoService
         try
         {
             if (file.Length == 0)
-                return Result<Photo>.Failure("Imagem nao informada");
+                return Result<Photo>.Failure("Image not send");
 
             using Stream stream = file.OpenReadStream();
             ImageUploadParams uploadParams = new()
@@ -53,8 +53,8 @@ public class PhotoService : IPhotoService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao realizar upload da imagem");
-            return Result<Photo>.Failure("Erro ao realizar upload da imagem");
+            _logger.LogError(ex, "Error uploading image.");
+            return Result<Photo>.Failure("Error uploading image.");
         }
     }
 
@@ -67,8 +67,8 @@ public class PhotoService : IPhotoService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover imagem");
-            return Result<DeletionResult>.Failure("Erro ao remover imagem");
+            _logger.LogError(ex, "Error to remove image.");
+            return Result<DeletionResult>.Failure("Error to remove image.");
         }
     }
 }

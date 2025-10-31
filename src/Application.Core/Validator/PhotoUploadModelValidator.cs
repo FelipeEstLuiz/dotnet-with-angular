@@ -10,13 +10,13 @@ public class PhotoUploadModelValidator : AbstractValidator<PhotoUploadModel>
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.File)
-            .NotNull().WithMessage("O arquivo é obrigatório.")
-            .Must(f => f.Length > 0).WithMessage("O arquivo não pode estar vazio.")
+            .NotNull().WithMessage("Required.")
+            .Must(f => f.Length > 0).WithMessage("The file must be empty.")
             .Must(f => f.ContentType.StartsWith("image/"))
-            .WithMessage("O arquivo deve ser uma imagem.");
+            .WithMessage("The file must be an image..");
 
         RuleFor(x => x.UserName)
-            .NotEmpty().WithMessage("O nome de usuário é obrigatório.")
+            .NotEmpty().WithMessage("Required.")
             .MaximumLength(100);
     }
 }

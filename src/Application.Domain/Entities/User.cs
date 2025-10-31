@@ -1,6 +1,4 @@
-﻿using Application.Domain.Extensions;
-
-namespace Application.Domain.Entities;
+﻿namespace Application.Domain.Entities;
 
 public class User : Entity
 {
@@ -52,7 +50,6 @@ public class User : Entity
     };
 
     public void SetPassword(string password) => PasswordHash = password;
-    public int GetAge() => DateOfBirth.CalcularIdade();
     public void SetGender(string gender) => Gender = gender;
     public void SetKowAs(string knowAs) => KnowAs = knowAs;
     public void SetIntroduction(string? introduction) => Introduction = introduction;

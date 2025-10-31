@@ -26,14 +26,14 @@ public class CustomAuthResultHandler(IAppLogger<CustomAuthResultHandler> logger)
             ));
             return;
         }
-        
+
         if (authorizeResult.Challenged)
         {
-            logger.LogInformation("Usuario nao autorizado");
+            logger.LogInformation("Unauthorized user");
             context.Response.StatusCode = 401;
             await context.Response.WriteAsJsonAsync(Response.Failure(
                 GetProtocol(context),
-                ["Usuario nao autorizado"],
+                ["Unauthorized user"],
                 System.Net.HttpStatusCode.Unauthorized
             ));
             return;

@@ -42,10 +42,10 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Name" && e.ErrorMessage.Contains("Obrigatorio"));
-        Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalido"));
-        Assert.Contains(result.Errors, e => e.PropertyName == "Password" && e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
-        Assert.Contains(result.Errors, e => e.PropertyName == "PasswordConfirmed" && e.ErrorMessage.Contains("nao corresponde"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Name" && e.ErrorMessage.Contains("Required"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalid"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "Password" && e.ErrorMessage.Contains("It must have at least 8 characters."));
+        Assert.Contains(result.Errors, e => e.PropertyName == "PasswordConfirmed" && e.ErrorMessage.Contains("The password confirmation does not match the password"));
     }
 
 
@@ -92,7 +92,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Obrigatorio"));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Required"));
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve ter pelo menos 8 caracteres."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("It must have at least 8 characters."));
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um numero."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("It must have at least one number."));
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra maiuscula."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("It must have at least one capital letter."));
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos uma letra minuscula."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("It must have at least one lowercase letter."));
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class CadastrarUsuarioValidatorTests
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Password");
-        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("Deve conter pelo menos um caractere especial (@#$%^&+=!)."));
+        Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("It must have at least one special character (@#$%^&+=!)."));
     }
 
     [Theory(DisplayName = "Validator_Deve_Retornar_Erro_Se_PasswordConfirmed_Invalido")]

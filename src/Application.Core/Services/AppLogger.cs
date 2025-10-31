@@ -43,5 +43,5 @@ public class AppLogger<TClass>(
         logger.LogInformation(message, args);
     }
 
-    private string? GetProtocol() => context.HttpContext.Request.Headers["Protocolo"].ToString();
+    private string? GetProtocol() => context.HttpContext.Request.Headers["Protocol"].ToString();
 }

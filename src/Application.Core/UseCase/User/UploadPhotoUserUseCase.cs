@@ -14,7 +14,7 @@ public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoSer
         Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken: cancellationToken);
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
-            return Result<PhotoUserDto>.Failure("Usuario nao encontrado");
+            return Result<PhotoUserDto>.Failure("User not found.");
         else if (resultUsuario.IsFailure)
             return resultUsuario.SetResult<PhotoUserDto>();
 
@@ -33,6 +33,6 @@ public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoSer
 
         return updateResult.IsSuccess
             ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.IsMain, photo.PublicId, photo.UserId)
-            : Result<PhotoUserDto>.Failure("Erro ao adicionar a foto do usuario");
+            : Result<PhotoUserDto>.Failure("Error adding user photo.");
     }
 }

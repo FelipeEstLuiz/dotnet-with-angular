@@ -35,14 +35,14 @@ public class GlobalExceptionHandlerMiddleware(
 
             foreach (FluentValidation.Results.ValidationFailure failure in validationException.Errors)
             {
-                string message = $"{failure.PropertyName} | {failure.ErrorMessage} | Valor: {failure.AttemptedValue}";
+                string message = $"{failure.PropertyName} | {failure.ErrorMessage} |  {(failure.AttemptedValue is null ? "" : $"Value: {failure.AttemptedValue}")}";
                 erros = [.. erros, message];
             }
         }
         else if (exception is UnauthorizedAccessException)
         {
             httpStatusCode = HttpStatusCode.Unauthorized;
-            erros = ["Usuario nao autorizado"];
+            erros = ["Unauthorized user"];
         }
         else if (exception is ValidationException validacaoException)
         {
@@ -51,8 +51,8 @@ public class GlobalExceptionHandlerMiddleware(
         }
         else
         {
-            logger.LogError(exception, "Erro inesperado: {Message}", exception.Message);
-            erros = ["Erro ao processar requisição"];
+            logger.LogError(exception, "Unexpected error: {Message}", exception.Message);
+            erros = ["Error processing request"];
         }
 
         context.Response.StatusCode = (int)httpStatusCode;

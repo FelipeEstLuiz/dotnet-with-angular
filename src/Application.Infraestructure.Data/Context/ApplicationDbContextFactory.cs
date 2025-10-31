@@ -17,8 +17,8 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-        string connectionString = configuration.GetConnectionString("SqlServerDb") 
-            ?? throw new InvalidOperationException("A string de conexão não foi configurada corretamente no arquivo appsettings.json.");
+        string connectionString = configuration.GetConnectionString("SqlServerDb")
+            ?? throw new InvalidOperationException("The connection string was not configured correctly in the appsettings.json file.");
 
         optionsBuilder.UseSqlServer(connectionString);
 

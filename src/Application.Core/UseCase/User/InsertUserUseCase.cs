@@ -23,7 +23,7 @@ public class InsertUserUseCase(
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
-            return Result<LoginDto>.Failure("E-mail ja cadastrado");
+            return Result<LoginDto>.Failure("E-mail already exists");
         else if (resultUsuario.IsFailure)
             return Result<LoginDto>.Failure(resultUsuario.Errors);
 

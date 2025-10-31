@@ -1,6 +1,6 @@
 ﻿namespace Application.Domain.Model;
 
-public class QueryOptions
+public record QueryOptions
 {
     public string? Filtro { get; set; }
     public string? OrdenarPor { get; set; }

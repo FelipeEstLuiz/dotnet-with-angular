@@ -66,7 +66,7 @@ public class UsuarioRepositoryTests
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Contains("Erro ao inserir usuario", result.Errors);
+        Assert.Contains("Insert user error", result.Errors);
     }
 
 

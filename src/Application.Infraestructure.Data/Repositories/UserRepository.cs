@@ -23,8 +23,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro ao inserir usuário: {Message}", ex.Message);
-            return Result<bool>.Failure("Erro ao inserir usuario");
+            logger.LogError(ex, "Insert user error: {Message}", ex.Message);
+            return Result<bool>.Failure("Insert user error");
         }
     }
 
@@ -39,8 +39,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro ao atualizar usuário: {Message}", ex.Message);
-            return Result<bool>.Failure("Erro ao atualizar usuario");
+            logger.LogError(ex, "Update user error: {Message}", ex.Message);
+            return Result<bool>.Failure("Update user error");
         }
     }
 
@@ -56,8 +56,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por email: {Email}, erro: {Message}", email, ex.Message);
-            return Result<User?>.Failure("Erro ao obter usuario");
+            logger.LogError(ex, "Error to find user by email: {Email}, error: {Message}", email, ex.Message);
+            return Result<User?>.Failure("Error to find user");
         }
     }
 
@@ -72,8 +72,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por name: name informado: {Name}, erro: {Message}", name, ex.Message);
-            return Result<User?>.Failure("Erro ao obter usuario");
+            logger.LogError(ex, "Error to find user by name: {Name}, error: {Message}", name, ex.Message);
+            return Result<User?>.Failure("Error to find user");
         }
     }
 
@@ -88,8 +88,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
-            return Result<User?>.Failure("Erro ao obter usuario");
+            logger.LogError(ex, "Error to find user by id: {Id}, error: {Message}", id, ex.Message);
+            return Result<User?>.Failure("Error to find user");
         }
     }
 
@@ -106,8 +106,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter fotos do usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
-            return Result<IEnumerable<Photo>?>.Failure("Erro ao obter fotos");
+            logger.LogError(ex, "Error to find photo user by id: {Id}, error: {Message}", id, ex.Message);
+            return Result<IEnumerable<Photo>?>.Failure("Error to find photo user");
         }
     }
 
@@ -125,8 +125,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Erro obter usuarios: {Message}", ex.Message);
-            return Result<List<User>>.Failure("Erro ao obter usuarios");
+            logger.LogError(ex, "Error to find users: {Message}", ex.Message);
+            return Result<List<User>>.Failure("Error to find users");
         }
     }
 }

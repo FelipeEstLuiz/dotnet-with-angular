@@ -20,7 +20,7 @@ public class UpdateUserUseCase(
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
-            return Result<bool>.Failure("Usuario nao encontrado");
+            return Result<bool>.Failure("User not found.");
         else if (resultUsuario.IsFailure)
             return resultUsuario.SetResult<bool>();
 

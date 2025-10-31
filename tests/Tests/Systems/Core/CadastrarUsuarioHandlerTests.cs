@@ -60,7 +60,7 @@ public class CadastrarUsuarioHandlerTests
         Result<LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsFailure);
-        Assert.Contains("E-mail ja cadastrado", result.Errors);
+        Assert.Contains("E-mail already exists", result.Errors);
     }
 
     private static InsertUserModel Generate() => new Faker<InsertUserModel>()

@@ -24,7 +24,7 @@ public class LoginUseCase(
             Domain.Entities.User? usuario = resultUsuario.Data;
 
             if (usuario is null)
-                return Result<LoginDto?>.Failure("Usuário inválida", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+                return Result<LoginDto?>.Failure("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
 
             Result<LoginDto?> resultLogin = await ValidarPasswordAsync(usuario, request.Password);
 
@@ -49,7 +49,7 @@ public class LoginUseCase(
         );
 
         return resultado == PasswordVerificationResult.Failed
-            ? Result<LoginDto?>.Failure("Senha inválida", Domain.Enums.ResponseCodes.UNAUTHORIZED)
+            ? Result<LoginDto?>.Failure("Invalid password", Domain.Enums.ResponseCodes.UNAUTHORIZED)
             : Result<LoginDto?>.Success(new LoginDto(
                 usuario.Id,
                 usuario.UserName,
