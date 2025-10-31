@@ -59,7 +59,7 @@
         </div>
         <ul
           tabindex="-1"
-          class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          class="dropdown-content z-50 menu bg-base-100 rounded-box w-52 p-2 shadow-sm"
         >
           @for(theme of themes; track $index){
           <li (click)="handleSelectTheme(theme)">
@@ -86,7 +86,7 @@
           tabindex="-1"
           class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
         >
-          <li><a>Edit profile</a></li>
+          <li><a routerLink="/members/{{ user.id }}">Edit profile</a></li>
           <li><a (click)="logout()">Logout</a></li>
         </ul>
       </div>

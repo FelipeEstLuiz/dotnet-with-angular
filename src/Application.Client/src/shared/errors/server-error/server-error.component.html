@@ -17,7 +17,10 @@
   </svg>
 
   <h1 class="card-title text-4xl justify-center">Server error</h1>
-  <button class="btn btn-primary" (click)="detailsToggle()">Details</button>
+  <div class="flex flex-row gap-3">
+    <button class="btn btn-primary" (click)="goBack()">Go back</button>
+    <button class="btn btn-info" (click)="detailsToggle()">Details</button>
+  </div>
   @if(showDetails){
   <ul class="list bg-base-100 rounded-box shadow-md">
     @for (message of errors; track $index) {

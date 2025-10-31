@@ -3,10 +3,12 @@ using FluentValidation;
 
 namespace Application.Core.Validator;
 
-public class LoginValidator: AbstractValidator<LoginModel>
+public class LoginValidator : AbstractValidator<LoginModel>
 {
     public LoginValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Obrigatorio")
             .EmailAddress().WithMessage("Invalido")

@@ -13,12 +13,15 @@ import { errorInterceptor } from '../core/interceptors/error.interceptor';
 import { loadingInterceptor } from '../core/interceptors/loading.interceptor';
 import { InitService } from '../core/services/init.service';
 import { routes } from './app.routes';
+import { jwtInterceptor } from '../core/interceptors/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
+    provideHttpClient(
+      withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor])
+    ),
     provideAnimations(),
     provideToastr({
       positionClass: 'toast-bottom-right',

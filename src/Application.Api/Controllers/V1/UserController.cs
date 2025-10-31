@@ -47,7 +47,6 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
     {
         request.Id = id;
-        request.NameToken = User.GetUserName();
         return HandlerResponse(
             HttpStatusCode.OK,
             await dispatcher.Dispatch<UpdateUserModel, Result<bool>>(request)

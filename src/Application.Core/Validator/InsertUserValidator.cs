@@ -8,6 +8,7 @@ public class InsertUserValidator : AbstractValidator<InsertUserModel>
     public InsertUserValidator()
     {
         RuleFor(x => x.DateOfBirth)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Obrigatorio")
             .LessThan(DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("Invalida");
 
@@ -22,6 +23,7 @@ public class InsertUserValidator : AbstractValidator<InsertUserModel>
            .Matches(@"[@#$%^&+=!]").WithMessage("Deve conter pelo menos um caractere especial (@#$%^&+=!).");
 
         RuleFor(x => x.PasswordConfirmed)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Obrigatorio")
             .Equal(u => u.Password).WithMessage("A confirmacao de senha nao corresponde a senha.");
     }

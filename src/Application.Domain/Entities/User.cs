@@ -60,6 +60,7 @@ public class User : Entity
     public void SetLookingFor(string? lookingFor) => LookingFor = lookingFor;
     public void SetCity(string? city) => City = city;
     public void SetCountry(string? country) => Country = country;
+    public void SetKnowAs(string knowAs) => KnowAs = knowAs;
 
     public void UpdateLastActive() => LastActive = DateTime.UtcNow;
 

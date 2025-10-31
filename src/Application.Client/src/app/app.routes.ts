@@ -4,7 +4,6 @@ import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-chang
 import { HomeComponent } from '../features/home/home.component';
 import { ListsComponent } from '../features/lists/lists.component';
 import { MemberDetailedComponent } from '../features/members/member-detailed/member-detailed.component';
-import { MemberEditComponent } from '../features/members/member-edit/member-edit.component';
 import { MemberListComponent } from '../features/members/member-list/member-list.component';
 import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
 import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
@@ -38,6 +37,7 @@ export const routes: Routes = [
             path: 'profile',
             title: 'Profile',
             component: MembersProfileComponent,
+            canDeactivate: [preventUnsavedChangesGuard],
           },
           {
             path: 'photos',
@@ -50,11 +50,6 @@ export const routes: Routes = [
             component: MemberMessagesComponent,
           },
         ],
-      },
-      {
-        path: 'member/edit',
-        component: MemberEditComponent,
-        canDeactivate: [preventUnsavedChangesGuard],
       },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },

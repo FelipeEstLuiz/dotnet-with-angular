@@ -7,6 +7,8 @@ public class PhotoUploadModelValidator : AbstractValidator<PhotoUploadModel>
 {
     public PhotoUploadModelValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
         RuleFor(x => x.File)
             .NotNull().WithMessage("O arquivo é obrigatório.")
             .Must(f => f.Length > 0).WithMessage("O arquivo não pode estar vazio.")

@@ -7,6 +7,8 @@ public class BaseUserValidator : AbstractValidator<BaseUserModel>
 {
     public BaseUserValidator()
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Obrigatorio")
             .Length(3, 100).WithMessage("Deve ter pelo entre 3 e 100 caracteres.");
@@ -28,6 +30,9 @@ public class BaseUserValidator : AbstractValidator<BaseUserModel>
           .Length(3, 50).WithMessage("Deve ter pelo entre 3 e 50 caracteres.");
 
         RuleFor(x => x.Interests)
+          .MaximumLength(1000).WithMessage("Deve ter no maximo 2000 caracteres.");
+
+        RuleFor(x => x.LookingFor)
           .MaximumLength(1000).WithMessage("Deve ter no maximo 2000 caracteres.");
 
         RuleFor(x => x.Introduction)

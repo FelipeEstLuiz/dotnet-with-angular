@@ -36,7 +36,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         case 401:
           accountService.logout();
           toastService.error(['Usuário não autorizado', protocolError]);
-          throw modelStateErrors.flat();
+          router.navigateByUrl('/');
+          break;
         case 403:
           toastService.error(['Acesso negado', protocolError]);
           throw modelStateErrors.flat();

@@ -2,12 +2,14 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpService } from './http.service';
 import { Photo } from '../../types/photo';
 import { Member } from '../../types/member';
+import { MemberUpdate } from '../../types/member-update';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MembersService {
+export class MemberService {
   private httpService = inject(HttpService);
+  editMode = signal(false);
 
   async getAll(): Promise<Member[]> {
     return await this.httpService.get<Member[]>('user');
@@ -21,7 +23,7 @@ export class MembersService {
     return await this.httpService.get<Member>('user/' + id);
   }
 
-  async updateById(id: number, member: Partial<Member>) {
+  async updateById(id: number, member: MemberUpdate) {
     await this.httpService.put('user/' + id, member);
   }
 

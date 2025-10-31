@@ -10,9 +10,11 @@ public record UpdateUserModel
     [Newtonsoft.Json.JsonIgnore]
     public string NameToken { get; set; } = null!;
 
+
+    public string Name { get; set; } = null!;
     public string? Introduction { get; set; }
     public string? Interests { get; set; }
     public string? LookingFor { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
+    public string City { get; set; } = null!;
+    public string Country { get; set; } = null!;
 }

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MembersService } from '../../../core/services/members.service';
+import { MemberService } from '../../../core/services/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { Photo } from '../../../types/photo';
 
@@ -10,7 +10,7 @@ import { Photo } from '../../../types/photo';
   styleUrl: './member-photos.component.css',
 })
 export class MemberPhotosComponent implements OnInit {
-  private memberService = inject(MembersService);
+  private memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
   protected photos?: Photo[];
 

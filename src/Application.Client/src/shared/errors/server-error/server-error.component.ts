@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../../types/api-response';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-server-error',
@@ -12,6 +13,7 @@ export class ServerErrorComponent {
   protected error: ApiResponse<any>;
   protected errors: string[];
   private router = inject(Router);
+  private location = inject(Location);
 
   protected showDetails = false;
 
@@ -23,5 +25,9 @@ export class ServerErrorComponent {
 
   detailsToggle() {
     this.showDetails = !this.showDetails;
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

@@ -26,9 +26,7 @@ public class UpdateUserUseCase(
 
         Domain.Entities.User usuario = resultUsuario.Data!;
 
-        if (!string.Equals(usuario.UserName, request.NameToken, StringComparison.InvariantCulture))
-            return Result<bool>.Failure("Usuario invalido");
-
+        usuario.SetName(request.Name);
         usuario.SetCountry(request.Country);
         usuario.SetCity(request.City);
         usuario.SetIntroduction(request.Introduction);
