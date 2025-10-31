@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tests.Systems.Domain;
 
-public  class ClsGlobalTests
+public class ClsGlobalTests
 {
     [Fact]
     public void GetTokenKey_DeveRetornarByteArray_QuandoChaveForValida()
@@ -32,7 +32,7 @@ public  class ClsGlobalTests
             .Build();
 
         ValidationException ex = Assert.Throws<ValidationException>(() => ClsGlobal.GetTokenKey(config));
-        Assert.Equal("Token nao encontrado no arquivo appsettings", ex.Message);
+        Assert.Equal("Token not found on appsettings", ex.Message);
     }
 
     [Fact]
@@ -46,6 +46,6 @@ public  class ClsGlobalTests
             .Build();
 
         ValidationException ex = Assert.Throws<ValidationException>(() => ClsGlobal.GetTokenKey(config));
-        Assert.Equal("Token de autenticacao invalido.O tamanho minimo e 64 caracteres.", ex.Message);
+        Assert.Equal("Invalid authentication token. The minimum size is 64 characters.", ex.Message);
     }
 }

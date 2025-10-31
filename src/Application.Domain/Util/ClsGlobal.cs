@@ -9,11 +9,11 @@ public static class ClsGlobal
     public static byte[] GetTokenKey(IConfiguration configuration)
     {
         string secretKey = configuration["Jwt:SecretKey"]
-            ?? throw new ValidationException("Token nao encontrado no arquivo appsettings");
+            ?? throw new ValidationException("Token not found on appsettings");
 
         ValidationException.When(
             secretKey.Length < 64,
-            "Token de autenticacao invalido.O tamanho minimo e 64 caracteres."
+            "Invalid authentication token. The minimum size is 64 characters."
         );
 
         return Encoding.ASCII.GetBytes(secretKey);
