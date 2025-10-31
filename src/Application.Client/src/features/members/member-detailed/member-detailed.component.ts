@@ -1,5 +1,5 @@
+import { Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MembersService } from '../../../core/services/members.service';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -8,32 +8,27 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { Member } from '../../../types/member';
-import { GalleryItem, ImageItem } from 'ng-gallery';
 import { filter } from 'rxjs';
+import { Member } from '../../../types/member';
+import { AgePipe } from '../../../core/pipes/age.pipe';
 
 @Component({
   selector: 'app-member-detailed',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, AgePipe],
   templateUrl: './member-detailed.component.html',
   styleUrl: './member-detailed.component.css',
 })
 export class MemberDetailedComponent implements OnInit {
-  private memberService = inject(MembersService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
 
   protected title = signal<string | undefined>('Profile');
   protected member = signal<Member | undefined>(undefined);
-  protected images: GalleryItem[] = [];
 
   async ngOnInit() {
     this.route.data.subscribe({
       next: (data) => this.member.set(data['member']),
-    });
-
-    this.member()?.photo?.map((p) => {
-      this.images.push(new ImageItem({ src: p.url, thumb: p.url }));
     });
 
     this.title.set(this.route.firstChild?.snapshot?.title);
@@ -47,11 +42,7 @@ export class MemberDetailedComponent implements OnInit {
       });
   }
 
-  get age(): number | null {
-    if (!this.member()) return null;
-    const birth = new Date(this.member()?.dateOfBirth ?? 0);
-    const diff = Date.now() - birth.getTime();
-    const ageDate = new Date(diff);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  goBack() {
+    this.location.back();
   }
 }

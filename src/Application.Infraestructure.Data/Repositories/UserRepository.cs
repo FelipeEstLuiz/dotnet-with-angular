@@ -2,7 +2,6 @@
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.VO;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -78,43 +77,6 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
     }
 
-    public async Task<Result<UserVo?>> GetUserVoByIdAsync(int id, CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await _dbSet
-                .AsNoTracking()
-                .Where(x => x.Id == id)
-                .Select(x => new UserVo()
-                {
-                    City = x.City,
-                    Country = x.Country,
-                    Created = x.Created,
-                    DateOfBirth = x.DateOfBirth,
-                    Email = x.Email,
-                    Gender = x.Gender,
-                    Id = x.Id,
-                    Interests = x.Interests,
-                    Introduction = x.Introduction,
-                    KnowAs = x.KnowAs,
-                    LookingFor = x.LookingFor,
-                    Name = x.UserName,
-                    Photos = x.Photos.Select(p => new PhotoVo()
-                    {
-                        Id = p.Id,
-                        IsMain = p.IsMain,
-                        Url = p.Url
-                    }).ToList()
-                })
-                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Erro obter usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
-            return Result<UserVo?>.Failure("Erro ao obter usuario");
-        }
-    }
-
     public async Task<Result<User?>> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         try
@@ -131,6 +93,24 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
     }
 
+    public async Task<Result<IEnumerable<Photo>?>> GetByPhotoIdAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(x => x.Photos)
+                .Where(x => x.Id == id)
+                .SelectMany(x => x.Photos)
+                .ToListAsync(cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Erro obter fotos do usuario por id: id informado: {Id}, erro: {Message}", id, ex.Message);
+            return Result<IEnumerable<Photo>?>.Failure("Erro ao obter fotos");
+        }
+    }
+
     public async Task<Result<List<User>>> GetAllAsync(
         QueryOptions? options = null,
         CancellationToken cancellationToken = default
@@ -139,9 +119,9 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         try
         {
             return await _dbSet
-            .AsNoTracking()
-            .Include(x => x.Photos)
-            .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
+                .AsNoTracking()
+                .Include(x => x.Photos)
+                .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {

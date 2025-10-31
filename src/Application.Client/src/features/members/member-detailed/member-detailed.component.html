@@ -9,7 +9,7 @@
     <div class="card-body">
       <div class="flex flex-col items-center">
         <div class="flex text-2xl text-primary">
-          {{ member.name }}, {{ age }}
+          {{ member.name }}, {{ member.dateOfBirth | age }}
         </div>
         <div class="text-sm">{{ member.city }}, {{ member.country }}</div>
       </div>
@@ -27,7 +27,7 @@
       </ul>
     </div>
     <div class="card-actions justify-between gap-2 px-2 mb-3">
-      <button class="btn btn-info flex-1">Go back</button>
+      <button class="btn btn-info flex-1" (click)="goBack()">Go back</button>
       <button class="btn btn-primary flex-1">Like user</button>
     </div>
   </div>

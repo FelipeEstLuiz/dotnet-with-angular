@@ -1,19 +1,19 @@
-import { ServerErrorComponent } from './../shared/errors/server-error/server-error.component';
 import { Routes } from '@angular/router';
+import { authGuard } from '../core/guards/auth.guard';
+import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes.guard';
 import { HomeComponent } from '../features/home/home.component';
 import { ListsComponent } from '../features/lists/lists.component';
 import { MemberDetailedComponent } from '../features/members/member-detailed/member-detailed.component';
+import { MemberEditComponent } from '../features/members/member-edit/member-edit.component';
+import { MemberListComponent } from '../features/members/member-list/member-list.component';
+import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
+import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
+import { memberResolver } from '../features/members/member.resolver';
+import { MembersProfileComponent } from '../features/members/members-profile/members-profile.component';
 import { MessagesComponent } from '../features/messages/messages.component';
-import { MembersEditComponent } from './members/member-edit/member-edit.component';
-import { authGuard } from '../core/guards/auth.guard';
 import { TestErrorsComponent } from '../features/test-errors/test-errors.component';
 import { NotFoundComponent } from '../shared/errors/not-found/not-found.component';
-import { MemberListComponent } from '../features/members/member-list/member-list.component';
-import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes.guard';
-import { MembersProfileComponent } from '../features/members/members-profile/members-profile.component';
-import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
-import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
-import { memberResolver } from '../features/members/member.resolver';
+import { ServerErrorComponent } from './../shared/errors/server-error/server-error.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -53,7 +53,7 @@ export const routes: Routes = [
       },
       {
         path: 'member/edit',
-        component: MembersEditComponent,
+        component: MemberEditComponent,
         canDeactivate: [preventUnsavedChangesGuard],
       },
       { path: 'lists', component: ListsComponent },

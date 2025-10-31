@@ -35,6 +35,13 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
         await dispatcher.Dispatch<GetUserByUserNameModel, Result<UserDto?>>(new GetUserByUserNameModel(userName))
     );
 
+    [HttpGet("{id:int}/photos")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<IEnumerable<PhotoUserDto>?>>))]
+    public async Task<IActionResult> GetPhotosByIdAsync(int id) => HandlerResponse(
+       HttpStatusCode.OK,
+       await dispatcher.Dispatch<GetUserPhotoByIdModel, Result<IEnumerable<PhotoUserDto>?>>(new GetUserPhotoByIdModel(id))
+   );
+
     [HttpPut("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)

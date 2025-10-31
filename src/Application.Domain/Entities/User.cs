@@ -20,7 +20,7 @@ public class User : Entity
     public int AccessFailedCount { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public required string KnowAs { get; set; }
-    public DateTime LastActive { get; set; } = DateTime.UtcNow;
+    public DateTime LastActive { get; set; }
     public required string Gender { get; set; }
     public string? Introduction { get; set; }
     public string? Interests { get; set; }
@@ -47,7 +47,8 @@ public class User : Entity
         Email = email,
         UserName = name,
         NormalizedUserName = name.ToUpperInvariant(),
-        NormalizedEmail = email.ToUpperInvariant()
+        NormalizedEmail = email.ToUpperInvariant(),
+        LastActive = DateTime.UtcNow
     };
 
     public void SetPassword(string password) => PasswordHash = password;
@@ -59,6 +60,8 @@ public class User : Entity
     public void SetLookingFor(string? lookingFor) => LookingFor = lookingFor;
     public void SetCity(string? city) => City = city;
     public void SetCountry(string? country) => Country = country;
+
+    public void UpdateLastActive() => LastActive = DateTime.UtcNow;
 
     public void SetName(string name)
     {
