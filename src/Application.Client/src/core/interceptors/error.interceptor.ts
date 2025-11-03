@@ -21,7 +21,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (event instanceof HttpResponse) {
         const body = event.body as ApiResponse<any>;
 
-        if (!body.success) {
+        if (body && !body.success) {
           const errorMsg = body.errors || [] || 'Unknown error';
           toastService.error(errorMsg);
           throw errorMsg;

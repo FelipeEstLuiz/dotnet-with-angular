@@ -14,15 +14,15 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
 
     protected IActionResult HandlerResponse<T>(HttpStatusCode statusCode, Result<T> result)
     {
-        Response response;
+        Response? response;
 
         if (result.IsSuccess)
         {
-            response = Util.Response.ResponseSuccess(
+            response = statusCode != HttpStatusCode.NoContent ? Util.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
                 statusCode: statusCode
-            );
+            ) : null;
         }
         else
         {

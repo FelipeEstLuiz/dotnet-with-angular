@@ -5,11 +5,10 @@ import {
   inject,
   OnDestroy,
   OnInit,
-  signal,
   ViewChild,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { AccountService } from '../../../core/services/account.service';
 import { MemberService } from '../../../core/services/member.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Member } from '../../../types/member';
@@ -28,11 +27,10 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
   ) {
     if (this.editForm?.dirty) $event.preventDefault();
   }
-  private route = inject(ActivatedRoute);
   protected memberService = inject(MemberService);
   private toastService = inject(ToastService);
+  private accountService = inject(AccountService);
 
-  protected member = signal<Member | undefined>(undefined);
   protected editableMember: MemberUpdate = {
     name: '',
     city: '',
@@ -43,42 +41,50 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    this.route.parent?.data.subscribe({
-      next: (data) => this.member.set(data['member']),
-    });
-
     this.editableMember = {
-      name: this.member()?.name || '',
-      city: this.member()?.city || '',
-      country: this.member()?.country || '',
-      interests: this.member()?.interests,
-      introduction: this.member()?.introduction,
-      lookingFor: this.member()?.lookingFor,
+      name: this.memberService.member()?.name || '',
+      city: this.memberService.member()?.city || '',
+      country: this.memberService.member()?.country || '',
+      interests: this.memberService.member()?.interests,
+      introduction: this.memberService.member()?.introduction,
+      lookingFor: this.memberService.member()?.lookingFor,
     };
   }
 
   resetForm(form: NgForm) {
-    if (!this.member()) return;
+    if (!this.memberService.member()) return;
     form.resetForm({
-      name: this.member()?.name || '',
-      city: this.member()?.city || '',
-      country: this.member()?.country || '',
-      interests: this.member()?.interests || '',
-      introduction: this.member()?.introduction || '',
-      lookingFor: this.member()?.lookingFor || '',
+      name: this.memberService.member()?.name || '',
+      city: this.memberService.member()?.city || '',
+      country: this.memberService.member()?.country || '',
+      interests: this.memberService.member()?.interests || '',
+      introduction: this.memberService.member()?.introduction || '',
+      lookingFor: this.memberService.member()?.lookingFor || '',
     });
   }
 
   async updateProfile() {
-    if (!this.member() || !this.editForm?.valid) {
+    if (!this.memberService.member() || !this.editForm?.valid) {
       this.toastService.error('Verifique os campos obrigatórios.');
       return;
     }
 
-    const updateMember = { ...this.member(), ...this.editableMember };
-    await this.memberService.updateById(updateMember.id!, updateMember);
+    const updateMember = {
+      ...this.memberService.member(),
+      ...this.editableMember,
+    };
+    await this.memberService.updateById(updateMember.id!, this.editableMember);
+    const currentUser = this.accountService.currentUser();
+
+    if (currentUser && updateMember.name !== currentUser?.name) {
+      currentUser.name = updateMember.name;
+      this.accountService.setCurrentUser(currentUser);
+    }
+
     this.toastService.success('Profile updated successfully');
     this.memberService.editMode.set(false);
+    this.memberService.member.set(updateMember as Member);
+    this.editForm.resetForm(updateMember);
   }
 
   ngOnDestroy() {

@@ -10,17 +10,22 @@ import { MemberUpdate } from '../../types/member-update';
 export class MemberService {
   private httpService = inject(HttpService);
   editMode = signal(false);
+  member = signal<Member | null>(null);
 
   async getAll(): Promise<Member[]> {
     return await this.httpService.get<Member[]>('user');
   }
 
   async getByName(username: string): Promise<Member> {
-    return await this.httpService.get<Member>('user/' + username);
+    const member = await this.httpService.get<Member>('user/' + username);
+    this.member.set(member);
+    return member;
   }
 
   async getById(id: number): Promise<Member> {
-    return await this.httpService.get<Member>('user/' + id);
+    const member = await this.httpService.get<Member>('user/' + id);
+    this.member.set(member);
+    return member;
   }
 
   async updateById(id: number, member: MemberUpdate) {

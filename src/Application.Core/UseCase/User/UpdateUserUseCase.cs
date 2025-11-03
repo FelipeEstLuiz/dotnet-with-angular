@@ -1,4 +1,5 @@
 ﻿using Application.Core.Model;
+using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
@@ -20,7 +21,7 @@ public class UpdateUserUseCase(
         );
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
-            return Result<bool>.Failure("User not found.");
+            return Result<bool>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
         else if (resultUsuario.IsFailure)
             return resultUsuario.SetResult<bool>();
 

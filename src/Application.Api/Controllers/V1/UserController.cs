@@ -46,9 +46,18 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
     {
+        int userId = User.GetUserId();
+
+        if (id != userId)
+            return HandlerResponse(
+                HttpStatusCode.BadRequest,
+                Result<bool>.Failure("Invalid member to Update", Domain.Enums.ResponseCodes.USER_NOT_FOUND)
+            );
+
         request.Id = id;
+
         return HandlerResponse(
-            HttpStatusCode.OK,
+            HttpStatusCode.NoContent,
             await dispatcher.Dispatch<UpdateUserModel, Result<bool>>(request)
         );
     }

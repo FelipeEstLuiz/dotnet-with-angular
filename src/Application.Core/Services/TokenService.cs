@@ -19,7 +19,7 @@ public class TokenService(IConfiguration configuration) : ITokenService
             Subject = new ClaimsIdentity(
             [
                 new(ClaimTypes.Name, usuario.NormalizedUserName),
-                new(ClaimTypes.NameIdentifier, usuario.UserName)
+                new(ClaimTypes.NameIdentifier, usuario.Id.ToString())
             ]),
             Expires = _expiresAt,
             SigningCredentials = new SigningCredentials(

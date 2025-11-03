@@ -1,6 +1,7 @@
 ﻿using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Domain.Entities;
+using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
@@ -14,7 +15,7 @@ public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoSer
         Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken: cancellationToken);
 
         if (resultUsuario.IsSuccess && resultUsuario.Data is null)
-            return Result<PhotoUserDto>.Failure("User not found.");
+            return Result<PhotoUserDto>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
         else if (resultUsuario.IsFailure)
             return resultUsuario.SetResult<PhotoUserDto>();
 

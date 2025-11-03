@@ -1,5 +1,6 @@
 ﻿using Application.Core.DTO.User;
 using Application.Core.Model;
+using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
@@ -18,6 +19,6 @@ public class GetUserByIdUseCase(IUserRepository usuarioRepository)
         else if (usuario.IsFailure)
             return Result<UserDto?>.Failure(usuario.Errors);
 
-        return Result<UserDto?>.Failure("User not found.", Domain.Enums.ResponseCodes.NOT_FOUND);
+        return Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
     }
 }
