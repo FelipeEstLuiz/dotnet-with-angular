@@ -68,4 +68,10 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
         HttpStatusCode.OK,
         await dispatcher.Dispatch<PhotoUploadModel, Result<PhotoUserDto>>(new PhotoUploadModel(file, User.GetUserName()))
     );
+
+    [HttpPut("set-main-photo/{photoId}")]
+    public async Task<IActionResult> SetMainPhotoAsync(int photoId) => HandlerResponse(
+        HttpStatusCode.NoContent,
+        await dispatcher.Dispatch<UpdatePhotoMainModel, Result<bool>>(new UpdatePhotoMainModel(User.GetUserId(), photoId))
+    );
 }

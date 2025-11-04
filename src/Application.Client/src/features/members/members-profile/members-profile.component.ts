@@ -82,12 +82,12 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
     }
 
     this.toastService.success('Profile updated successfully');
-    this.memberService.editMode.set(false);
+    this.memberService.disableEditMode();
     this.memberService.member.set(updateMember as Member);
     this.editForm.resetForm(updateMember);
   }
 
   ngOnDestroy() {
-    if (this.memberService.editMode()) this.memberService.editMode.set(false);
+    if (this.memberService.editMode()) this.memberService.disableEditMode();
   }
 }

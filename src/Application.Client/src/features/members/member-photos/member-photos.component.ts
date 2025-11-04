@@ -1,24 +1,37 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MemberService } from '../../../core/services/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { Photo } from '../../../types/photo';
+import { ImageUploadComponent } from '../../../shared/image-upload/image-upload.component';
 
 @Component({
   selector: 'app-member-photos',
-  imports: [],
+  imports: [ImageUploadComponent],
   templateUrl: './member-photos.component.html',
   styleUrl: './member-photos.component.css',
 })
 export class MemberPhotosComponent implements OnInit {
-  private memberService = inject(MemberService);
+  protected memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
-  protected photos?: Photo[];
+  protected photos = signal<Photo[]>([]);
+  protected loading = signal<boolean>(false);
 
   async ngOnInit() {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
     if (memberId)
-      this.photos = await this.memberService.getMemberPhotoById(
-        parseInt(memberId)
+      this.photos.set(
+        await this.memberService.getMemberPhotoById(parseInt(memberId))
       );
+  }
+
+  async uploadImage(file: File) {
+    try {
+      this.loading.set(true);
+      const photo = await this.memberService.uploadFile(file);
+      this.photos.update((photos) => [...photos, photo]);
+      this.memberService.disableEditMode();
+    } finally {
+      this.loading.set(false);
+    }
   }
 }

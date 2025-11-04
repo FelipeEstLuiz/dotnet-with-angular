@@ -37,7 +37,7 @@
       @if(isCurrentUser()){
       <button
         class="btn btn-outline btn-primary"
-        (click)="memberService.editMode.set(!memberService.editMode())"
+        (click)="memberService.setEditMode(!memberService.editMode())"
       >
         {{ memberService.editMode() ? "Cancel" : "Edit" }}
       </button>

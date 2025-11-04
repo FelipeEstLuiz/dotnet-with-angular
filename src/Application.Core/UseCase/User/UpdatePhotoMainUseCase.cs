@@ -1,4 +1,5 @@
 ﻿using Application.Core.Model;
+using Application.Domain.Entities;
 using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -6,12 +7,11 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class UpdateUserUseCase(
-    IUserRepository userRepository
-) : IRequestHandler<UpdateUserModel, Result<bool>>
+public class UpdatePhotoMainUseCase(IUserRepository userRepository)
+    : IRequestHandler<UpdatePhotoMainModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(
-        UpdateUserModel request,
+        UpdatePhotoMainModel request,
         CancellationToken cancellationToken = default
     )
     {
@@ -27,13 +27,19 @@ public class UpdateUserUseCase(
 
         Domain.Entities.User user = resultUser.Data!;
 
-        user.SetName(request.Name);
-        user.SetCountry(request.Country);
-        user.SetCity(request.City);
-        user.SetIntroduction(request.Introduction);
-        user.SetInterests(request.Interests);
-        user.SetLookingFor(request.LookingFor);
+        Photo? photo = user.Photos.SingleOrDefault(x => x.Id == request.Id);
 
-        return await userRepository.UpdateAsync(user, cancellationToken);
+        if (photo is null)
+            return Result<bool>.Failure("Photo not found.");
+        else if (user.ImageUrl == photo.Url)
+            return Result<bool>.Success(true);
+
+        user.ImageUrl = photo.Url;
+
+        Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
+
+        return updateResult.IsSuccess
+            ? Result<bool>.Success(true)
+            : Result<bool>.Failure("Error to set main photo.");
     }
 }

@@ -7,17 +7,17 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class GetUserByUserNameUseCase(IUserRepository usuarioRepository)
+public class GetUserByUserNameUseCase(IUserRepository userRepository)
     : IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>
 {
     public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.User?> usuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken);
+        Result<Domain.Entities.User?> user = await userRepository.GetByNameAsync(request.UserName, cancellationToken);
 
-        if (usuario.IsSuccess && usuario.Data is not null)
-            return UserDto.Map(usuario.Data);
-        else if (usuario.IsFailure)
-            return Result<UserDto?>.Failure(usuario.Errors);
+        if (user.IsSuccess && user.Data is not null)
+            return UserDto.Map(user.Data);
+        else if (user.IsFailure)
+            return Result<UserDto?>.Failure(user.Errors);
 
         return Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
     }

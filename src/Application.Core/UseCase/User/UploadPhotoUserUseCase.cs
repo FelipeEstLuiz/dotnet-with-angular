@@ -8,16 +8,16 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoService photoService) : IRequestHandler<PhotoUploadModel, Result<PhotoUserDto>>
+public class UploadPhotoUserUseCase(IUserRepository userRepository, IPhotoService photoService) : IRequestHandler<PhotoUploadModel, Result<PhotoUserDto>>
 {
     public async Task<Result<PhotoUserDto>> Handle(PhotoUploadModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken: cancellationToken);
+        Result<Domain.Entities.User?> resultUser = await userRepository.GetByNameAsync(request.UserName, cancellationToken: cancellationToken);
 
-        if (resultUsuario.IsSuccess && resultUsuario.Data is null)
+        if (resultUser.IsSuccess && resultUser.Data is null)
             return Result<PhotoUserDto>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
-        else if (resultUsuario.IsFailure)
-            return resultUsuario.SetResult<PhotoUserDto>();
+        else if (resultUser.IsFailure)
+            return resultUser.SetResult<PhotoUserDto>();
 
         Result<Photo> result = await photoService.AddPhotoAsync(request.File);
 
@@ -26,14 +26,14 @@ public class UploadPhotoUserUseCase(IUserRepository usuarioRepository, IPhotoSer
 
         Photo photo = result.Data!;
 
-        Domain.Entities.User user = resultUsuario.Data!;
+        Domain.Entities.User user = resultUser.Data!;
 
         user.Photos.Add(photo);
 
-        Result<bool> updateResult = await usuarioRepository.UpdateAsync(user, cancellationToken);
+        Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
 
         return updateResult.IsSuccess
-            ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.IsMain, photo.PublicId, photo.UserId)
+            ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.PublicId, photo.UserId)
             : Result<PhotoUserDto>.Failure("Error adding user photo.");
     }
 }

@@ -39,5 +39,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.City).HasColumnName("city").HasMaxLength(200);
         builder.Property(u => u.Country).HasColumnName("country").HasMaxLength(50);
         builder.Property(u => u.Gender).HasColumnName("gender").HasMaxLength(50);
+        builder.Property(u => u.ImageUrl).HasColumnName("imageUrl").HasMaxLength(500);
     }
 }

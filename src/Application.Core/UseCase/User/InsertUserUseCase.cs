@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.User;
 
 public class InsertUserUseCase(
-    IUserRepository usuarioRepository,
+    IUserRepository userRepository,
     ITokenService tokenService
 ) : IRequestHandler<InsertUserModel, Result<LoginDto>>
 {
@@ -17,26 +17,26 @@ public class InsertUserUseCase(
         CancellationToken cancellationToken = default
     )
     {
-        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
+        Result<Domain.Entities.User?> resultUser = await userRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
 
-        if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
+        if (resultUser.IsSuccess && resultUser.Data is not null)
             return Result<LoginDto>.Failure("E-mail already exists");
-        else if (resultUsuario.IsFailure)
-            return Result<LoginDto>.Failure(resultUsuario.Errors);
+        else if (resultUser.IsFailure)
+            return Result<LoginDto>.Failure(resultUser.Errors);
 
-        Domain.Entities.User usuario = request.MapUsuario();
+        Domain.Entities.User user = request.MapUsuario();
 
         PasswordHasher<Domain.Entities.User> hasher = new();
 
-        usuario.SetPassword(hasher.HashPassword(usuario, request.Password));
+        user.SetPassword(hasher.HashPassword(user, request.Password));
 
-        Result<bool> resultInsert = await usuarioRepository.InsertAsync(usuario, cancellationToken);
+        Result<bool> resultInsert = await userRepository.InsertAsync(user, cancellationToken);
 
         return resultInsert.IsSuccess
-            ? Result<LoginDto>.Success(new LoginDto(usuario.Id, usuario.UserName, usuario.Email, await tokenService.GerarToken(usuario), usuario.Photos?.FirstOrDefault(x => x.IsMain)?.Url))
+            ? Result<LoginDto>.Success(new LoginDto(user.Id, user.UserName, user.Email, await tokenService.GerarToken(user), user.ImageUrl))
             : Result<LoginDto>.Failure(resultInsert.Errors);
     }
 }

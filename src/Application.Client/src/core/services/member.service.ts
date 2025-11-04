@@ -12,6 +12,18 @@ export class MemberService {
   editMode = signal(false);
   member = signal<Member | null>(null);
 
+  enableEditMode() {
+    this.setEditMode(true);
+  }
+
+  disableEditMode() {
+    this.setEditMode(false);
+  }
+
+  setEditMode(value: boolean) {
+    this.editMode.set(value);
+  }
+
   async getAll(): Promise<Member[]> {
     return await this.httpService.get<Member[]>('user');
   }
@@ -34,5 +46,11 @@ export class MemberService {
 
   async getMemberPhotoById(id: number): Promise<Photo[]> {
     return await this.httpService.get<Photo[]>('user/' + id + '/photos');
+  }
+
+  async uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return await this.httpService.post<Photo>('user/add-photo', formData);
   }
 }

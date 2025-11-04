@@ -16,21 +16,21 @@ public record UserDto : ComumDto
     public string? PhotoUrl { get; set; }
     public DateTime LastActive { get; set; }
 
-    public static UserDto Map(Domain.Entities.User usuario) => new()
+    public static UserDto Map(Domain.Entities.User user) => new()
     {
-        Email = usuario.Email,
-        Name = usuario.UserName,
-        Id = usuario.Id,
-        Created = usuario.Created,
-        DateOfBirth = usuario.DateOfBirth,
-        Introduction = usuario.Introduction,
-        City = usuario.City,
-        Country = usuario.Country,
-        LastActive = usuario.LastActive,
-        Gender = usuario.Gender,
-        Interests = usuario.Interests,
-        KnowAs = usuario.KnowAs,
-        LookingFor = usuario.LookingFor,
-        PhotoUrl = usuario.Photos?.FirstOrDefault(x => x.IsMain)?.Url
+        Email = user.Email,
+        Name = user.UserName,
+        Id = user.Id,
+        Created = user.Created,
+        DateOfBirth = user.DateOfBirth,
+        Introduction = user.Introduction,
+        City = user.City,
+        Country = user.Country,
+        LastActive = user.LastActive,
+        Gender = user.Gender,
+        Interests = user.Interests,
+        KnowAs = user.KnowAs,
+        LookingFor = user.LookingFor,
+        PhotoUrl = user.ImageUrl
     };
 }

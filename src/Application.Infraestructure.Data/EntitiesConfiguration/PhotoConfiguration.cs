@@ -16,7 +16,6 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
 
         builder.Property(u => u.Id).HasColumnName("id");
         builder.Property(u => u.Url).HasColumnName("url").HasMaxLength(500);
-        builder.Property(u => u.IsMain).HasColumnName("is_main");
         builder.Property(u => u.UserId).HasColumnName("user_id");
         builder.Property(u => u.PublicId).HasColumnName("public_id").HasMaxLength(500);
 
