@@ -58,7 +58,7 @@ export class MemberService {
     return this.httpService.put('user/set-main-photo/' + photo.id, {});
   }
 
-  async deletePhoto(photo: Photo) {
-    return this.httpService.delete('user/photo/' + photo.id);
+  async deletePhoto(photoId: number) {
+    return this.httpService.delete('user/photo/' + photoId);
   }
 }

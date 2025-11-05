@@ -55,4 +55,9 @@ export class MemberPhotosComponent implements OnInit {
       );
     }
   }
+
+  async deletePhoto(photoId: number) {
+    await this.memberService.deletePhoto(photoId);
+    this.photos.update((photos) => photos.filter((x) => x.id !== photoId));
+  }
 }
