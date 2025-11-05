@@ -2,4 +2,4 @@
 
 namespace Application.Core.Model;
 
-public record PhotoUploadModel(IFormFile File, string UserName);
+public record PhotoUploadModel(int UserId, IFormFile File);

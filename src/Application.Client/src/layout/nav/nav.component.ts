@@ -32,13 +32,11 @@ export class NavComponent implements OnInit {
     if (elem) elem.blur();
   }
 
-  login() {
-    this.accountService.login(this.creds).subscribe({
-      next: (_) => {
-        this.router.navigateByUrl('/members');
-        this.creds = { email: '', password: '' };
-      },
-    });
+  async login() {
+    await this.accountService.login(this.creds);
+
+    this.creds = { email: '', password: '' };
+    this.router.navigateByUrl('/members');
   }
 
   logout() {

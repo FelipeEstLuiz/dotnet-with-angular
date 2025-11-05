@@ -12,7 +12,7 @@ public class UploadPhotoUserUseCase(IUserRepository userRepository, IPhotoServic
 {
     public async Task<Result<PhotoUserDto>> Handle(PhotoUploadModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.User?> resultUser = await userRepository.GetByNameAsync(request.UserName, cancellationToken: cancellationToken);
+        Result<Domain.Entities.User?> resultUser = await userRepository.GetByIdAsync(request.UserId, cancellationToken: cancellationToken);
 
         if (resultUser.IsSuccess && resultUser.Data is null)
             return Result<PhotoUserDto>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);

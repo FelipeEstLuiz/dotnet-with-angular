@@ -66,7 +66,7 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<PhotoUserDto>))]
     public async Task<IActionResult> AddPhoto(IFormFile file) => HandlerResponse(
         HttpStatusCode.OK,
-        await dispatcher.Dispatch<PhotoUploadModel, Result<PhotoUserDto>>(new PhotoUploadModel(file, User.GetUserName()))
+        await dispatcher.Dispatch<PhotoUploadModel, Result<PhotoUserDto>>(new PhotoUploadModel(User.GetUserId(), file))
     );
 
     [HttpPut("set-main-photo/{photoId}")]
@@ -74,4 +74,10 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
         HttpStatusCode.NoContent,
         await dispatcher.Dispatch<UpdatePhotoMainModel, Result<bool>>(new UpdatePhotoMainModel(User.GetUserId(), photoId))
     );
+
+    [HttpDelete("photo/{photoId}")]
+    public async Task<IActionResult> DeletePhotoAsync(int photoId) => HandlerResponse(
+       HttpStatusCode.NoContent,
+       await dispatcher.Dispatch<DeletePhotoModel, Result<bool>>(new DeletePhotoModel(User.GetUserId(), photoId))
+   );
 }

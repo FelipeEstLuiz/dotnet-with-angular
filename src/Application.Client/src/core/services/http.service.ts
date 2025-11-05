@@ -30,4 +30,8 @@ export class HttpService {
   async put(url: string, body: any) {
     return await lastValueFrom(this.http.put<void>(this.baseUrl + url, body));
   }
+
+  async delete(url: string) {
+    return await lastValueFrom(this.http.delete<void>(this.baseUrl + url));
+  }
 }

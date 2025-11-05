@@ -53,4 +53,12 @@ export class MemberService {
     formData.append('file', file);
     return await this.httpService.post<Photo>('user/add-photo', formData);
   }
+
+  async setMainPhoto(photo: Photo) {
+    return this.httpService.put('user/set-main-photo/' + photo.id, {});
+  }
+
+  async deletePhoto(photo: Photo) {
+    return this.httpService.delete('user/photo/' + photo.id);
+  }
 }

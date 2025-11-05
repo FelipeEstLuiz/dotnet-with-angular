@@ -28,7 +28,7 @@ export class RegisterComponent {
   cancelRegister = output<boolean>();
   passwordStrength: string = '';
 
-  register(form: NgForm) {
+  async register(form: NgForm) {
     if (!form.valid || this.model.password !== this.model.passwordConfirmed) {
       form.control.markAllAsTouched();
       return;
@@ -44,10 +44,8 @@ export class RegisterComponent {
       return;
     }
 
-    this.accountService.register(this.model).subscribe({
-      next: (_) => this.cancel(),
-      error: (error) => this.alertService.error(error),
-    });
+    await this.accountService.register(this.model);
+    this.cancel();
   }
 
   onPasswordChange(): void {

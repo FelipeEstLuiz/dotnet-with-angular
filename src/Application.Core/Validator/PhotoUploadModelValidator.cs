@@ -14,9 +14,5 @@ public class PhotoUploadModelValidator : AbstractValidator<PhotoUploadModel>
             .Must(f => f.Length > 0).WithMessage("The file must be empty.")
             .Must(f => f.ContentType.StartsWith("image/"))
             .WithMessage("The file must be an image..");
-
-        RuleFor(x => x.UserName)
-            .NotEmpty().WithMessage("Required.")
-            .MaximumLength(100);
     }
 }

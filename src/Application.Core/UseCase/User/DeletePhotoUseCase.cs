@@ -4,16 +4,14 @@ using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
+using CloudinaryDotNet.Actions;
 
 namespace Application.Core.UseCase.User;
 
-public class UpdatePhotoMainUseCase(IUserRepository userRepository)
-    : IRequestHandler<UpdatePhotoMainModel, Result<bool>>
+public class DeletePhotoUseCase(IUserRepository userRepository, IPhotoService photoService)
+    : IRequestHandler<DeletePhotoModel, Result<bool>>
 {
-    public async Task<Result<bool>> Handle(
-        UpdatePhotoMainModel request,
-        CancellationToken cancellationToken = default
-    )
+    public async Task<Result<bool>> Handle(DeletePhotoModel request, CancellationToken cancellationToken = default)
     {
         Result<Domain.Entities.User?> resultUser = await userRepository.GetByIdAsync(
             request.UserId,
@@ -32,14 +30,24 @@ public class UpdatePhotoMainUseCase(IUserRepository userRepository)
         if (photo is null)
             return Result<bool>.Failure("Photo not found.");
         else if (user.ImageUrl == photo.Url)
-            return Result<bool>.Success(true);
+            return Result<bool>.Failure("The main photo cannot be removed.");
 
-        user.ImageUrl = photo.Url;
+        if (!string.IsNullOrWhiteSpace(photo.PublicId))
+        {
+            Result<DeletionResult> resultDeletePhotoPublic = await photoService.DeletePhotoAsync(photo.PublicId);
+
+            if (resultDeletePhotoPublic.IsFailure)
+                return Result<bool>.Failure(resultDeletePhotoPublic.Errors);
+            else if (resultDeletePhotoPublic.Data is not null && resultDeletePhotoPublic.Data.Error is not null)
+                return Result<bool>.Failure(resultDeletePhotoPublic.Data.Error.Message);
+        }
+
+        user.Photos.Remove(photo);
 
         Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
 
         return updateResult.IsSuccess
             ? Result<bool>.Success(true)
-            : Result<bool>.Failure("Error to set main photo.");
+            : Result<bool>.Failure("Error to remove photo.");
     }
 }

@@ -2,7 +2,18 @@
 0){
 <div class="grid grid-cols-4 auto-rows-min gap-3 p-5 h-[65vh] overflow-auto">
   @for(photo of photos; track photo.id){
-  <img src="{{ photo.url }}" alt="photo of member" class="w-full rounded-lg" />
+  <div class="relative">
+    <img
+      src="{{ photo.url }}"
+      alt="photo of member"
+      class="w-full rounded-lg"
+    />
+    <app-star-button
+      [disable]="photo.url === memberService.member()?.photoUrl"
+      [selected]="photo.url === memberService.member()?.photoUrl"
+      (clickEvent)="setMainPhoto(photo)"
+    />
+  </div>
   }
 </div>
 } @else {
