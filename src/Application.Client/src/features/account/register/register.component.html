@@ -5,60 +5,19 @@
 
   <div class="card-body w-full">
     <form
-      #registerForm="ngForm"
-      (ngSubmit)="register(registerForm)"
+      [formGroup]="registerForm"
+      (ngSubmit)="register()"
       autocomplete="off"
       class="flex flex-col gap-2 w-full"
     >
       <!-- Name -->
-      <div>
-        <input
-          type="text"
-          name="name"
-          minlength="3"
-          maxlength="100"
-          required
-          [(ngModel)]="model.name"
-          #name="ngModel"
-          placeholder="Name"
-          class="input input-bordered w-full"
-          [class.input-error]="name.invalid && name.touched"
-        />
-        @if(registerForm.submitted && name.invalid){
-        <div class="text-error text-sm mt-1">
-          @if(name.errors?.['required']){
-          <div>Name is required.</div>
-          } @else if(name.errors?.['minlength']){
-          <div>Name must be at least 3 characters.</div>
-          } @else if(name.errors?.['maxlength']){
-          <div>Name must be at most 100 characters.</div>
-          }
-        </div>
-        }
-      </div>
+      <app-text-input label="Name" formControlName="name" />
 
       <!-- Email -->
-      <div>
-        <input
-          type="email"
-          name="email"
-          required
-          email
-          [(ngModel)]="model.email"
-          #email="ngModel"
-          placeholder="Email"
-          class="input input-bordered w-full"
-          [class.input-error]="email.invalid && email.touched"
-        />
-        @if(registerForm.submitted && email.invalid){
-        <div class="text-error text-sm mt-1">
-          Email is required and must be valid.
-        </div>
-        }
-      </div>
+      <app-text-input label="Email" formControlName="email" />
 
       <!-- Gender -->
-      <div>
+      <!-- <div>
         <select
           name="gender"
           [(ngModel)]="model.gender"
@@ -75,10 +34,10 @@
         @if(registerForm.submitted && gender.invalid){
         <div class="text-error text-sm mt-1">Gender is required.</div>
         }
-      </div>
+      </div> -->
 
       <!-- KnowAs -->
-      <div>
+      <!-- <div>
         <textarea
           type="text"
           name="knowAs"
@@ -102,68 +61,16 @@
           }
         </div>
         }
-      </div>
+      </div> -->
 
       <!-- City -->
-      <div class="flex gap-1">
-        <div class="flex flex-col w-full">
-          <input
-            type="text"
-            name="city"
-            minlength="3"
-            maxlength="100"
-            required
-            city
-            [(ngModel)]="model.city"
-            #city="ngModel"
-            placeholder="City"
-            class="input input-bordered w-full"
-            [class.input-error]="city.invalid && city.touched"
-          />
-          @if(registerForm.submitted && city.invalid){
-          <div class="text-error text-sm mt-1">
-            @if(city.errors?.['required']){
-            <div>City is required.</div>
-            } @else if(city.errors?.['minlength']){
-            <div>City must be at least 3 characters.</div>
-            } @else ifif(city.errors?.['maxlength']){
-            <div>City must be at most 100 characters.</div>
-            }
-          </div>
-          }
-        </div>
+      <app-text-input label="City" formControlName="city" />
 
-        <!-- Country -->
-        <div class="flex flex-col w-full">
-          <input
-            type="text"
-            name="country"
-            minlength="3"
-            maxlength="50"
-            required
-            country
-            [(ngModel)]="model.country"
-            #country="ngModel"
-            placeholder="Country"
-            class="input input-bordered w-full"
-            [class.input-error]="country.invalid && country.touched"
-          />
-          @if(registerForm.submitted && country.invalid){
-          <div class="text-error text-sm mt-1">
-            @if(country.errors?.['required']){
-            <div>Country is required.</div>
-            } @else if(country.errors?.['minlength']){
-            <div>Country must be at least 3 characters.</div>
-            } @else if(country.errors?.['maxlength']){
-            <div>Country must be at most 50 characters.</div>
-            }
-          </div>
-          }
-        </div>
-      </div>
+      <!-- Country -->
+      <app-text-input label="Country" formControlName="country" />
 
       <!-- Interests -->
-      <div>
+      <!-- <div>
         <textarea
           type="text"
           name="interests"
@@ -180,10 +87,10 @@
           Interests must be at most 1000 characters.
         </div>
         }
-      </div>
+      </div> -->
 
       <!-- Introduction -->
-      <div>
+      <!-- <div>
         <textarea
           type="text"
           name="introduction"
@@ -201,68 +108,38 @@
           Introduction must be at most 1000 characters.
         </div>
         }
-      </div>
+      </div> -->
 
       <!-- Password -->
-      <div class="flex gap-1">
-        <div class="flex flex-col w-full">
-          <input
-            type="password"
-            name="password"
-            required
-            [(ngModel)]="model.password"
-            #password="ngModel"
-            (keyup)="onPasswordChange()"
-            placeholder="Password"
-            class="input input-bordered w-full"
-            [class.input-error]="password.invalid && password.touched"
-          />
-          @if(registerForm.submitted && password.invalid){
-          <div class="text-error text-sm mt-1">Password is required.</div>
-          }
-          <small class="text-sm">
-            Password Strength:
-            <span
-              [ngClass]="{
-                'text-error': passwordStrength === 'Weak',
-                'text-warning': passwordStrength === 'Average',
-                'text-success': passwordStrength === 'Strong'
-              }"
-              >{{ passwordStrength }}</span
-            >
-          </small>
-        </div>
+      <app-text-input
+        label="Password"
+        formControlName="password"
+        type="password"
+      />
 
-        <div class="flex flex-col w-full">
-          <!-- Confirm Password -->
-          <input
-            type="password"
-            name="passwordConfirmed"
-            required
-            [(ngModel)]="model.passwordConfirmed"
-            #passwordConfirmed="ngModel"
-            placeholder="Confirm Password"
-            class="input input-bordered w-full"
-            [class.input-error]="
-              (passwordConfirmed.invalid && passwordConfirmed.touched) ||
-              (model.password !== model.passwordConfirmed &&
-                passwordConfirmed.touched)
-            "
-          />
-          @if (registerForm.submitted && passwordConfirmed.invalid) {
-          <div class="text-error text-sm mt-1">Confirmation is required.</div>
-          } @else if(registerForm.submitted && model.password !==
-          model.passwordConfirmed){
-          <div class="text-error text-sm mt-1">Passwords do not match.</div>
-          }
-        </div>
-      </div>
+      <!-- Confirm Password -->
+      <app-text-input
+        label="Confirm Password"
+        formControlName="passwordConfirmed"
+        type="password"
+      />
 
       <!-- Buttons -->
       <div class="flex justify-end gap-3 mt-4">
         <button type="button" (click)="cancel()" class="btn">Cancel</button>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!registerForm.valid"
+        >
+          Register
+        </button>
       </div>
     </form>
+  </div>
+
+  <div class="flex flex-col items-start px-3 w-full mockup-code text-lg">
+    <div>Form value: {{ registerForm.value | json }}</div>
+    <div>Form status: {{ registerForm.status | json }}</div>
   </div>
 </div>

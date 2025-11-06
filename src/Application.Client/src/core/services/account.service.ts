@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Login } from '../../types/login';
 import { User } from '../../types/user';
 import { UserRegister } from '../../types/user-register';
@@ -11,8 +9,6 @@ import { HttpService } from './http.service';
 })
 export class AccountService {
   private httpService = inject(HttpService);
-  private http = inject(HttpClient);
-  private baseUrl = environment.apiUrlV1;
   currentUser = signal<User | null>(null);
 
   async login(model: Login) {

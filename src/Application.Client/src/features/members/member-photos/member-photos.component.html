@@ -8,15 +8,15 @@
       alt="photo of member"
       class="w-full rounded-lg"
     />
-    @if(accountService.currentUser()?.id === memberService.member()?.id){
+    @if(sameUserMember){
     <app-star-button
-      [disable]="photo.url === memberService.member()?.photoUrl"
-      [selected]="photo.url === memberService.member()?.photoUrl"
+      [disable]="isSamePhoto(photo)"
+      [selected]="isSamePhoto(photo)"
       (clickEvent)="setMainPhoto(photo)"
       class="absolute top-1 right-1"
     />
     <app-delete-button
-      [disable]="photo.url === memberService.member()?.photoUrl"
+      [disable]="isSamePhoto(photo)"
       (clickEvent)="deletePhoto(photo.id)"
       class="absolute top-1 left-1"
     />

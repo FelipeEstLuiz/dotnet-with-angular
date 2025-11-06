@@ -61,4 +61,14 @@ export class MemberPhotosComponent implements OnInit {
     await this.memberService.deletePhoto(photoId);
     this.photos.update((photos) => photos.filter((x) => x.id !== photoId));
   }
+
+  isSamePhoto(photo: Photo) {
+    return photo.url === this.memberService.member()?.photoUrl;
+  }
+
+  get sameUserMember() {
+    return (
+      this.accountService.currentUser()?.id === this.memberService.member()?.id
+    );
+  }
 }
