@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, output } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { UserRegister } from '../../../types/user-register';
 import { AccountService } from '../../../core/services/account.service';
 import { AlertService } from '../../../core/services/alert.service';
 import {
   AbstractControl,
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -22,69 +23,96 @@ import {
   passwordStrengthValidator,
   uppercaseValidator,
 } from '../../../core/validators/validator-input.validator';
+import { TextareaInputComponent } from '../../../shared/textarea-input/textarea-input.component';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, CommonModule, JsonPipe, TextInputComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    JsonPipe,
+    TextInputComponent,
+    TextareaInputComponent,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit {
-  protected model: UserRegister = {
-    name: '',
-    email: '',
-    password: '',
-    passwordConfirmed: '',
-    knowAs: '',
-    city: '',
-    country: '',
-    gender: '',
-  };
+export class RegisterComponent {
   private accountService = inject(AccountService);
   private alertService = inject(AlertService);
   cancelRegister = output<boolean>();
-  passwordStrength: string = '';
 
-  protected registerForm: FormGroup = new FormGroup({});
+  private fb = inject(FormBuilder);
+  protected credentialsForm: FormGroup;
+  protected profileForm: FormGroup;
+  protected aboutForm: FormGroup;
+  protected currentStep = signal(1);
 
-  ngOnInit(): void {
-    this.InitializaForm();
-  }
-
-  InitializaForm() {
-    this.registerForm = new FormGroup({
-      name: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(100),
-        Validators.minLength(3),
-      ]),
-      email: new FormControl('', [Validators.email, Validators.required]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-        uppercaseValidator,
-        lowercaseValidator,
-        leastOneNumberValidator,
-        leastOneSpecialCharacterValidator,
-        passwordStrengthValidator,
-      ]),
-      passwordConfirmed: new FormControl('', [
-        Validators.required,
-        this.matchValues('password'),
-      ]),
-      city: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(100),
-        Validators.minLength(3),
-      ]),
-      country: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(50),
-        Validators.minLength(3),
-      ]),
+  constructor() {
+    this.credentialsForm = this.fb.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100),
+          Validators.minLength(3),
+        ],
+      ],
+      email: ['', [Validators.email, Validators.required]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          uppercaseValidator,
+          lowercaseValidator,
+          leastOneNumberValidator,
+          leastOneSpecialCharacterValidator,
+          passwordStrengthValidator,
+        ],
+      ],
+      passwordConfirmed: [
+        '',
+        [Validators.required, this.matchValues('password')],
+      ],
     });
-    this.registerForm.controls['password'].valueChanges.subscribe(() => {
-      this.registerForm.controls['passwordConfirmed'].updateValueAndValidity();
+    this.credentialsForm.controls['password'].valueChanges.subscribe(() => {
+      this.credentialsForm.controls[
+        'passwordConfirmed'
+      ].updateValueAndValidity();
+    });
+
+    this.profileForm = this.fb.group({
+      gender: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      city: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(100),
+          Validators.minLength(3),
+        ],
+      ],
+      country: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(50),
+          Validators.minLength(3),
+        ],
+      ],
+    });
+
+    this.aboutForm = this.fb.group({
+      knowAs: [
+        '',
+        Validators.required,
+        Validators.maxLength(100),
+        Validators.minLength(3),
+      ],
+      interests: ['', Validators.maxLength(1000)],
+      lookingFor: ['', Validators.maxLength(1000)],
+      introduction: ['', Validators.maxLength(2000)],
     });
   }
 
@@ -99,8 +127,33 @@ export class RegisterComponent implements OnInit {
     };
   }
 
+  nextStep() {
+    if (this.credentialsForm.valid) {
+      this.currentStep.update((prevStep) => prevStep + 1);
+    }
+  }
+
+  prevStep() {
+    this.currentStep.update((prevStep) => prevStep - 1);
+  }
+
+  getMaxDate() {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 18);
+    return today.toISOString().split('T')[0];
+  }
+
   async register() {
-    console.log(this.registerForm.value);
+    if (this.profileForm.valid && this.credentialsForm.valid) {
+      const formData = {
+        ...this.profileForm.value,
+        ...this.credentialsForm.value,
+        ...this.aboutForm.value,
+      };
+
+      console.log('formData', formData);
+    }
+
     // if (!form.valid || this.model.password !== this.model.passwordConfirmed) {
     //   form.control.markAllAsTouched();
     //   return;

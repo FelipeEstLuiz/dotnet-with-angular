@@ -1,0 +1,26 @@
+<label class="floating-label text-left">
+  <span>{{ label() }}</span>
+
+  <textarea
+    type="text"
+    [class.input-error]="control.invalid && control.touched"
+    [class.input-success]="control.valid && control.touched"
+    [formControl]="control"
+    [placeholder]="label()"
+    class="textarea w-full"
+  ></textarea>
+
+  @if(control.touched){ @if(control.hasError('required')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} is required
+  </div>
+  } @if(control.hasError('minlength')){
+  <div class="validation-hint text-error text-xs">
+    Minimum {{ control.errors?.["minlength"]?.requiredLength }} characters
+  </div>
+  } @if(control.hasError('maxlength')){
+  <div class="validation-hint text-error text-xs">
+    Minimum {{ control.errors?.["maxlength"]?.requiredLength }} characters
+  </div>
+  }}
+</label>

@@ -2,6 +2,7 @@
   <span>{{ label() }}</span>
   <input
     [type]="type()"
+    [max]="maxDate()"
     [class.input-error]="control.invalid && control.touched"
     [class.input-success]="control.valid && control.touched"
     [formControl]="control"
@@ -28,22 +29,18 @@
   <div class="validation-hint text-error text-xs">
     {{ label() }} must have at least one capital character.
   </div>
-
   } @if(control.hasError('lowercase')){
   <div class="validation-hint text-error text-xs">
     {{ label() }} must have at least one lowercase character.
   </div>
-
   } @if(control.hasError('leastOneNumber')){
   <div class="validation-hint text-error text-xs">
     {{ label() }} must have at least one number.
   </div>
-
   } @if(control.hasError('leastOneSpecialCharacter')){
   <div class="validation-hint text-error text-xs">
     {{ label() }} must have at least one special character (@#$%^&+=!).
   </div>
-
   } @if(control.hasError('passworMismatch')){
   <div class="validation-hint text-error text-xs">Passwords do not match.</div>
   } @if(control.hasError('weak')){
