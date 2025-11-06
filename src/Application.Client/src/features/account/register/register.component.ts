@@ -106,9 +106,11 @@ export class RegisterComponent {
     this.aboutForm = this.fb.group({
       knowAs: [
         '',
-        Validators.required,
-        Validators.maxLength(100),
-        Validators.minLength(3),
+        [
+          Validators.required,
+          Validators.maxLength(100),
+          Validators.minLength(3),
+        ],
       ],
       interests: ['', Validators.maxLength(1000)],
       lookingFor: ['', Validators.maxLength(1000)],

@@ -14,7 +14,7 @@ import {
 })
 export class TextareaInputComponent implements ControlValueAccessor {
   label = input<string>('');
-  maxDate = input<string>('');
+  maxCharacters = input<number>(1000);
 
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;

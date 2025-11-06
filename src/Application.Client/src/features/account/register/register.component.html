@@ -201,14 +201,22 @@
       [formGroup]="aboutForm"
       class="flex flex-col gap-4 w-full steps"
     >
+      <app-text-input label="Know As" formControlName="knowAs" class="mt-2" />
       <app-textarea-input
-        label="KnowAs"
-        formControlName="knowAs"
-        class="mt-2"
+        label="Looking For"
+        formControlName="lookingFor"
+        [maxCharacters]="1000"
       />
-      <app-textarea-input label="Looking For" formControlName="lookingFor" />
-      <app-textarea-input label="Introduction" formControlName="introduction" />
-      <app-textarea-input label="Interests" formControlName="interests" />
+      <app-textarea-input
+        label="Introduction"
+        formControlName="introduction"
+        [maxCharacters]="2000"
+      />
+      <app-textarea-input
+        label="Interests"
+        formControlName="interests"
+        [maxCharacters]="1000"
+      />
 
       <div class="flex justify-end gap-3 mt-4">
         <button type="button" (click)="prevStep()" class="btn">Back</button>
