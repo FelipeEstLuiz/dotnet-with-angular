@@ -6,16 +6,17 @@ import { ImageUploadComponent } from '../../../shared/image-upload/image-upload.
 import { AccountService } from '../../../core/services/account.service';
 import { Member } from '../../../types/member';
 import { StarButtonComponent } from '../../../shared/star-button/star-button.component';
+import { DeleteButtonComponent } from '../../../shared/delete-button/delete-button.component';
 
 @Component({
   selector: 'app-member-photos',
-  imports: [ImageUploadComponent, StarButtonComponent],
+  imports: [ImageUploadComponent, StarButtonComponent, DeleteButtonComponent],
   templateUrl: './member-photos.component.html',
   styleUrl: './member-photos.component.css',
 })
 export class MemberPhotosComponent implements OnInit {
   protected memberService = inject(MemberService);
-  private accountService = inject(AccountService);
+  protected accountService = inject(AccountService);
   private route = inject(ActivatedRoute);
   protected photos = signal<Photo[]>([]);
   protected loading = signal<boolean>(false);
