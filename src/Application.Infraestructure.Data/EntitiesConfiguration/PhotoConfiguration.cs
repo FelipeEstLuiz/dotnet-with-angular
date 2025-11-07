@@ -22,6 +22,7 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
         builder
             .HasOne(p => p.User)
             .WithMany(u => u.Photos)
-            .HasForeignKey(p => p.UserId);
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

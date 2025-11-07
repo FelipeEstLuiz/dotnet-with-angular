@@ -17,7 +17,11 @@ internal static class GenerateUser
             return DateOnly.FromDateTime(date);
         })
         .RuleFor(u => u.Introduction, f => f.Lorem.Sentence(2000))
-        .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
+        .RuleFor(u => u.Interests, f => f.Lorem.Sentence(1000))
+        .RuleFor(u => u.LookingFor, f => f.Lorem.Sentence(1000))
+        .RuleFor(u => u.City, f => f.Address.City())
+        .RuleFor(u => u.Country, f => f.Address.Country())
+        .RuleFor(u => u.Gender, f => f.PickRandom("Male", "Female", "Not informed"))
         .RuleFor(u => u.KnowAs, f => f.Name.FirstName())
         .RuleFor(u => u.Created, f => f.Date.Past(1, DateTime.UtcNow));
 }

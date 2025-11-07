@@ -1,21 +1,16 @@
-import { Component, inject, OnInit, output, signal } from '@angular/core';
-import { UserRegister } from '../../../types/user-register';
-import { AccountService } from '../../../core/services/account.service';
-import { AlertService } from '../../../core/services/alert.service';
+import { CommonModule } from '@angular/common';
+import { Component, inject, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
-  FormControl,
   FormGroup,
-  FormsModule,
-  NgForm,
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { CommonModule, JsonPipe } from '@angular/common';
-import { TextInputComponent } from '../../../shared/text-input/text-input.component';
+import { AccountService } from '../../../core/services/account.service';
+import { AlertService } from '../../../core/services/alert.service';
 import {
   leastOneNumberValidator,
   leastOneSpecialCharacterValidator,
@@ -23,14 +18,15 @@ import {
   passwordStrengthValidator,
   uppercaseValidator,
 } from '../../../core/validators/validator-input.validator';
+import { TextInputComponent } from '../../../shared/text-input/text-input.component';
 import { TextareaInputComponent } from '../../../shared/textarea-input/textarea-input.component';
+import { UserRegister } from '../../../types/user-register';
 
 @Component({
   selector: 'app-register',
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    JsonPipe,
     TextInputComponent,
     TextareaInputComponent,
   ],
@@ -151,25 +147,13 @@ export class RegisterComponent {
         ...this.profileForm.value,
         ...this.credentialsForm.value,
         ...this.aboutForm.value,
-      };
+      } as UserRegister;
 
       console.log('formData', formData);
-    }
 
-    // if (!form.valid || this.model.password !== this.model.passwordConfirmed) {
-    //   form.control.markAllAsTouched();
-    //   return;
-    // }
-    // if (this.model.password !== this.model.passwordConfirmed) {
-    //   this.alertService.warning('Password and confirmation must match!');
-    //   return;
-    // }
-    // if (this.passwordStrength === 'Weak') {
-    //   this.alertService.error('The password is too weak!');
-    //   return;
-    // }
-    // await this.accountService.register(this.model);
-    // this.cancel();
+      await this.accountService.register(formData);
+      this.cancel();
+    }
   }
 
   cancel() {

@@ -19,29 +19,16 @@ public class LoginUseCase(
             cancellationToken
         );
 
-        if (resultUser.IsSuccess)
-        {
-            Domain.Entities.User? user = resultUser.Data;
-
-            if (user is null)
-                return Result<LoginDto?>.Failure("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
-
-            Result<LoginDto?> resultLogin = await ValidarPasswordAsync(user, request.Password);
-
-            if (resultLogin.IsSuccess)
-            {
-                user.UpdateLastActive();
-                await userRepository.UpdateAsync(user, cancellationToken: cancellationToken);
-            }
-
-            return resultLogin;
-        }
-
-        return Result<LoginDto?>.Failure(resultUser.Errors);
+        return resultUser.IsSuccess
+            ? await ValidarPasswordAsync(resultUser.Data, request.Password)
+            : Result<LoginDto?>.Failure(resultUser.Errors);
     }
 
-    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User user, string senha)
+    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User? user, string senha)
     {
+        if (user is null)
+            return Result<LoginDto?>.Failure("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+
         PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
             user,
             user.PasswordHash,

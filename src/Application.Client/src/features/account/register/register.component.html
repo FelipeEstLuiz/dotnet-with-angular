@@ -17,115 +17,18 @@
       autocomplete="off"
       class="flex flex-col gap-4 w-full steps"
     >
-      <!-- Name -->
       <app-text-input class="mt-2" label="Name" formControlName="name" />
-
-      <!-- Email -->
       <app-text-input label="Email" formControlName="email" />
-
-      <!-- Gender -->
-      <!-- <div>
-        <select
-          name="gender"
-          [(ngModel)]="model.gender"
-          #gender="ngModel"
-          required
-          class="select select-bordered w-full"
-          [class.select-error]="gender.invalid && gender.touched"
-        >
-          <option value="" disabled>Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-        @if(registerForm.submitted && gender.invalid){
-        <div class="text-error text-sm mt-1">Gender is required.</div>
-        }
-      </div> -->
-
-      <!-- KnowAs -->
-      <!-- <div>
-        <textarea
-          type="text"
-          name="knowAs"
-          minlength="3"
-          maxlength="100"
-          required
-          [(ngModel)]="model.knowAs"
-          #knowAs="ngModel"
-          placeholder="Know As"
-          class="textarea textarea-bordered w-full"
-          [class.input-error]="knowAs.invalid && knowAs.touched"
-        ></textarea>
-        @if(registerForm.submitted && knowAs.invalid){
-        <div class="text-error text-sm mt-1">
-          @if(knowAs.errors?.['required']){
-          <div>Know As is required.</div>
-          } @else if(knowAs.errors?.['minlength']){
-          <div>Know As must be at least 3 characters.</div>
-          } @else if(knowAs.errors?.['maxlength']){
-          <div>Know As must be at most 100 characters.</div>
-          }
-        </div>
-        }
-      </div> -->
-
-      <!-- Interests -->
-      <!-- <div>
-        <textarea
-          type="text"
-          name="interests"
-          maxlength="1000"
-          [(ngModel)]="model.interests"
-          #interests="ngModel"
-          placeholder="Interests"
-          class="textarea textarea-bordered w-full h-auto"
-          [class.input-error]="interests.invalid && interests.touched"
-        ></textarea>
-        @if(registerForm.submitted && interests.invalid &&
-        interests.errors?.['maxlength']){
-        <div class="text-error text-sm mt-1">
-          Interests must be at most 1000 characters.
-        </div>
-        }
-      </div> -->
-
-      <!-- Introduction -->
-      <!-- <div>
-        <textarea
-          type="text"
-          name="introduction"
-          minlength="3"
-          maxlength="1000"
-          [(ngModel)]="model.introduction"
-          #introduction="ngModel"
-          placeholder="Introduction"
-          class="textarea textarea-bordered w-full"
-          [class.input-error]="introduction.invalid && introduction.touched"
-        ></textarea>
-        @if(registerForm.submitted && introduction.invalid &&
-        introduction.errors?.['maxlength']){
-        <div class="text-error text-sm mt-1">
-          Introduction must be at most 1000 characters.
-        </div>
-        }
-      </div> -->
-
-      <!-- Password -->
       <app-text-input
         label="Password"
         formControlName="password"
         type="password"
       />
-
-      <!-- Confirm Password -->
       <app-text-input
         label="Confirm Password"
         formControlName="passwordConfirmed"
         type="password"
       />
-
-      <!-- Buttons -->
       <div class="flex justify-end gap-3 mt-4">
         <button type="button" (click)="cancel()" class="btn">Cancel</button>
         <button
@@ -138,12 +41,23 @@
         </button>
       </div>
     </form>
+
     } @else if (currentStep() === 2) {
+
     <form
       autocomplete="off"
       [formGroup]="profileForm"
       class="flex flex-col gap-4 w-full steps"
     >
+      <app-text-input
+        label="Date of Birth"
+        [maxDate]="getMaxDate()"
+        formControlName="dateOfBirth"
+        type="date"
+        class="mt-2"
+      />
+      <app-text-input label="City" formControlName="city" />
+      <app-text-input label="Country" formControlName="country" />
       <div class="flex items-center gap-4">
         <div class="font-semibold">Gender:</div>
         <label class="flex gap-3 items-center">
@@ -174,15 +88,6 @@
           />
         </label>
       </div>
-      <app-text-input
-        label="Date of Birth"
-        [maxDate]="getMaxDate()"
-        formControlName="dateOfBirth"
-        type="date"
-      />
-      <app-text-input label="City" formControlName="city" />
-      <app-text-input label="Country" formControlName="country" />
-
       <div class="flex justify-end gap-3 mt-4">
         <button type="button" (click)="prevStep()" class="btn">Back</button>
         <button
@@ -195,7 +100,9 @@
         </button>
       </div>
     </form>
+
     } @else if (currentStep() === 3) {
+
     <form
       autocomplete="off"
       [formGroup]="aboutForm"
@@ -217,7 +124,6 @@
         formControlName="interests"
         [maxCharacters]="1000"
       />
-
       <div class="flex justify-end gap-3 mt-4">
         <button type="button" (click)="prevStep()" class="btn">Back</button>
         <button
@@ -230,17 +136,7 @@
         </button>
       </div>
     </form>
+
     }
-  </div>
-
-  <div class="flex flex-col items-start px-3 w-full mockup-code text-lg">
-    <div>Creds value: {{ credentialsForm.value | json }}</div>
-    <div>Creds status: {{ credentialsForm.status | json }}</div>
-
-    <div>Profile value: {{ profileForm.value | json }}</div>
-    <div>Profile status: {{ profileForm.status | json }}</div>
-
-    <div>About value: {{ aboutForm.value | json }}</div>
-    <div>About status: {{ aboutForm.status | json }}</div>
   </div>
 </div>

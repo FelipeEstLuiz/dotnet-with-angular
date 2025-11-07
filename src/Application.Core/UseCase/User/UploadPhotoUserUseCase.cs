@@ -28,11 +28,12 @@ public class UploadPhotoUserUseCase(IUserRepository userRepository, IPhotoServic
 
         Domain.Entities.User user = resultUser.Data!;
 
+        if (user.Photos.Count == 0)
+            user.ImageUrl = photo.Url;
+
         user.Photos.Add(photo);
 
-        Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
-
-        return updateResult.IsSuccess
+        return await userRepository.SaveChangesAsync(cancellationToken)
             ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.PublicId, photo.UserId)
             : Result<PhotoUserDto>.Failure("Error adding user photo.");
     }

@@ -13,7 +13,11 @@ public record InsertUserModel : BaseUserModel
         email: Email,
         knowAs: KnowAs,
         gender: Gender,
+        dateOfBirth: DateOfBirth!.Value,
         introduction: Introduction,
-        dateOfBirth: DateOfBirth!.Value
+        interests: Interests,
+        lookingFor: LookingFor,
+        city: City,
+        country: Country
     );
 }

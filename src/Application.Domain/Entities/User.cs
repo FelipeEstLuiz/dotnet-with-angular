@@ -33,8 +33,12 @@ public class User : Entity
         string email,
         string knowAs,
         string gender,
+        DateOnly dateOfBirth,
         string? introduction,
-        DateOnly dateOfBirth
+        string? interests,
+        string? lookingFor,
+        string? city,
+        string? country
     ) => new()
     {
         SecurityStamp = Guid.NewGuid().ToString(),
@@ -47,7 +51,11 @@ public class User : Entity
         UserName = name,
         NormalizedUserName = name.ToUpperInvariant(),
         NormalizedEmail = email.ToUpperInvariant(),
-        LastActive = DateTime.UtcNow
+        LastActive = DateTime.UtcNow,
+        Interests = interests,
+        LookingFor = lookingFor,
+        City = city,
+        Country = country
     };
 
     public void SetPassword(string password) => PasswordHash = password;

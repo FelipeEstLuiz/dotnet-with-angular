@@ -36,9 +36,7 @@ public class UpdatePhotoMainUseCase(IUserRepository userRepository)
 
         user.ImageUrl = photo.Url;
 
-        Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
-
-        return updateResult.IsSuccess
+        return await userRepository.SaveChangesAsync(cancellationToken)
             ? Result<bool>.Success(true)
             : Result<bool>.Failure("Error to set main photo.");
     }

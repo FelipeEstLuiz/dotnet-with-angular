@@ -10,14 +10,12 @@ namespace Application.Infraestructure.Data.Repositories;
 
 public class UserRepository(ApplicationDbContext context, IAppLogger<UserRepository> logger) : IUserRepository
 {
-    private readonly DbSet<User> _dbSet = context.Set<User>();
-
     public async Task<Result<bool>> InsertAsync(User user, CancellationToken cancellationToken)
     {
         try
         {
-            await _dbSet.AddAsync(user, cancellationToken);
-            await context.SaveChangesAsync(cancellationToken);
+            await context.Users.AddAsync(user, cancellationToken);
+            await SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);
         }
@@ -32,8 +30,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     {
         try
         {
-            _dbSet.Update(user);
-            await context.SaveChangesAsync(cancellationToken);
+            context.Entry(user).State = EntityState.Modified;
+            await SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);
         }
@@ -44,13 +42,14 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
         }
     }
 
+    public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
+
     public async Task<Result<User?>> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
-                .Include(x => x.Photos)
+            return await context
+                .Users
                 .Where(x => x.Email.ToLower() == email.ToLower())
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
@@ -65,8 +64,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
+            return await context
+                .Users
                 .Where(x => x.UserName.ToLower() == name.ToLower())
                 .FirstOrDefaultAsync(cancellationToken: cancellationToken);
         }
@@ -81,8 +80,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
+            return await context
+                .Users
                 .Include(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
@@ -97,9 +96,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
-                .Include(x => x.Photos)
+            return await context
+                .Users
                 .Where(x => x.Id == id)
                 .SelectMany(x => x.Photos)
                 .ToListAsync(cancellationToken: cancellationToken);
@@ -118,8 +116,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
+            return await context
+                .Users
                 .Include(x => x.Photos)
                 .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
         }

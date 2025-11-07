@@ -21,8 +21,12 @@ public class UserTests
             usuarioMock.Email,
             usuarioMock.KnowAs,
             usuarioMock.Gender,
+            usuarioMock.DateOfBirth,
             usuarioMock.Introduction,
-            usuarioMock.DateOfBirth
+            usuarioMock.Interests,
+            usuarioMock.LookingFor,
+            usuarioMock.City,
+            usuarioMock.Country
         );
 
         Assert.Equal(default, usuario.Id);
@@ -53,8 +57,12 @@ public class UserTests
             usuarioMock.Email,
             usuarioMock.KnowAs,
             usuarioMock.Gender,
+            usuarioMock.DateOfBirth,
             usuarioMock.Introduction,
-            usuarioMock.DateOfBirth
+            usuarioMock.Interests,
+            usuarioMock.LookingFor,
+            usuarioMock.City,
+            usuarioMock.Country
         );
         string senha = "hash123";
 

@@ -15,4 +15,5 @@ public interface IUserRepository
         QueryOptions? options = null,
         CancellationToken cancellationToken = default
     );
+    Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }

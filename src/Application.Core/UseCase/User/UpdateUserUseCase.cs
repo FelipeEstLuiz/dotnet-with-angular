@@ -34,6 +34,6 @@ public class UpdateUserUseCase(
         user.SetInterests(request.Interests);
         user.SetLookingFor(request.LookingFor);
 
-        return await userRepository.UpdateAsync(user, cancellationToken);
+        return await userRepository.SaveChangesAsync(cancellationToken);
     }
 }

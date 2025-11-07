@@ -44,9 +44,7 @@ public class DeletePhotoUseCase(IUserRepository userRepository, IPhotoService ph
 
         user.Photos.Remove(photo);
 
-        Result<bool> updateResult = await userRepository.UpdateAsync(user, cancellationToken);
-
-        return updateResult.IsSuccess
+        return await userRepository.SaveChangesAsync(cancellationToken)
             ? Result<bool>.Success(true)
             : Result<bool>.Failure("Error to remove photo.");
     }
