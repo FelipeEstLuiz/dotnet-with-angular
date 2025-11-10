@@ -10,7 +10,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { AccountService } from '../../../core/services/account.service';
-import { AlertService } from '../../../core/services/alert.service';
 import {
   leastOneNumberValidator,
   leastOneSpecialCharacterValidator,
@@ -21,6 +20,7 @@ import {
 import { TextInputComponent } from '../../../shared/text-input/text-input.component';
 import { TextareaInputComponent } from '../../../shared/textarea-input/textarea-input.component';
 import { UserRegister } from '../../../types/user-register';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -35,7 +35,7 @@ import { UserRegister } from '../../../types/user-register';
 })
 export class RegisterComponent {
   private accountService = inject(AccountService);
-  private alertService = inject(AlertService);
+  private router = inject(Router);
   cancelRegister = output<boolean>();
 
   private fb = inject(FormBuilder);
@@ -79,7 +79,7 @@ export class RegisterComponent {
     });
 
     this.profileForm = this.fb.group({
-      gender: ['', Validators.required],
+      gender: ['male', Validators.required],
       dateOfBirth: ['', Validators.required],
       city: [
         '',
@@ -149,10 +149,8 @@ export class RegisterComponent {
         ...this.aboutForm.value,
       } as UserRegister;
 
-      console.log('formData', formData);
-
       await this.accountService.register(formData);
-      this.cancel();
+      this.router.navigateByUrl('/members');
     }
   }
 

@@ -35,6 +35,8 @@ export class MemberPhotosComponent implements OnInit {
       const photo = await this.memberService.uploadFile(file);
       this.photos.update((photos) => [...photos, photo]);
       this.memberService.disableEditMode();
+
+      if (!this.memberService.member()?.photoUrl) this.setMainLocalPhoto(photo);
     } finally {
       this.loading.set(false);
     }
@@ -42,8 +44,11 @@ export class MemberPhotosComponent implements OnInit {
 
   async setMainPhoto(photo: Photo) {
     await this.memberService.setMainPhoto(photo);
-    const currentUser = this.accountService.currentUser();
+    this.setMainLocalPhoto(photo);
+  }
 
+  private setMainLocalPhoto(photo: Photo) {
+    const currentUser = this.accountService.currentUser();
     if (currentUser) {
       currentUser.imageUrl = photo.url;
       this.accountService.setCurrentUser(currentUser);
