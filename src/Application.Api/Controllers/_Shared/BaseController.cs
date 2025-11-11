@@ -21,7 +21,11 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
             response = statusCode != HttpStatusCode.NoContent ? Util.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
-                statusCode: statusCode
+                statusCode: statusCode,
+                totalItems: result.TotalItems,
+                currentPage: result.CurrentPage,
+                totalPages: result.TotalPages,
+                pageSize: result.PageSize
             ) : null;
         }
         else

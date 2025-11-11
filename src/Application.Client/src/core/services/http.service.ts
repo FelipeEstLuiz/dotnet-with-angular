@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, lastValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -16,6 +16,22 @@ export class HttpService {
       this.http
         .get<ApiResponse<T>>(this.baseUrl + url)
         .pipe(map((response) => response.data!))
+    );
+  }
+
+  getApiResult<T>(
+    url: string,
+    pageNumber = 1,
+    pageSize = 5
+  ): Promise<ApiResponse<T>> {
+    let params = new HttpParams()
+      .append('pageNumber', pageNumber)
+      .append('pageSize', pageSize);
+
+    return firstValueFrom(
+      this.http
+        .get<ApiResponse<T>>(this.baseUrl + url, { params: params })
+        .pipe(map((response) => response))
     );
   }
 

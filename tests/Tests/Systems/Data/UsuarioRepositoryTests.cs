@@ -90,27 +90,6 @@ public class UsuarioRepositoryTests
         Assert.Equal(usuario.UserName, result.Data.UserName);
     }
 
-    //[Fact]
-    //public async Task GetByEmailAsync_DeveRetornarUsuario_QuandoErroAoConsultar()
-    //{
-    //    User usuario = _faker.Generate();
-    //    DbContextOptions<ApplicationDbContext> contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-    //        .UseInMemoryDatabase("ErroConsultaDb").Options;
-
-    //    using ApplicationDbContext context = new(contextOptions);
-
-    //    IAppLogger<UserRepository> logger = Substitute.For<IAppLogger<UserRepository>>();
-    //    UserRepository repository = new(context, logger);
-
-    //    repository.GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-    //      .Throws(new Exception("Erro ao obter usuario"));
-
-    //    Result<User?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
-
-    //    Assert.True(result.IsFailure);
-    //    Assert.Contains("Erro ao obter usuario", result.Errors);
-    //}
-
     [Fact]
     public async Task GetByIdAsync_DeveRetornarUsuario_QuandoIdExistir()
     {
@@ -131,24 +110,6 @@ public class UsuarioRepositoryTests
         Assert.Equal(usuario.UserName, result.Data.UserName);
     }
 
-    //[Fact]
-    //public async Task GetByIdAsync_DeveRetornarUsuario_QuandoErroAoConsultar()
-    //{
-    //    User usuario = _faker.Generate();
-
-    //    using IServiceScope scope = _server.Host.Services.CreateScope();
-    //    ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    //    IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
-    //    UserRepository repository = new(context, logger);
-
-    //    await context.DisposeAsync();
-
-    //    Result<User?> result = await repository.GetByIdAsync(usuario.Id, CancellationToken.None);
-
-    //    Assert.True(result.IsFailure);
-    //    Assert.Contains("Erro ao obter usuario", result.Errors);
-    //}
-
     [Fact]
     public async Task GetAllAsync_DeveRetornarUsuarios_QuandoExistiremUsuarios()
     {
@@ -167,10 +128,6 @@ public class UsuarioRepositoryTests
 #pragma warning disable CS8602
         Assert.Equal(2, result.Data.Count);
 #pragma warning restore CS8602
-
-        Assert.Null(result.PaginaAtual);
-        Assert.Null(result.TotalPaginas);
-        Assert.Null(result.TotalItens);
     }
 
     [Fact]
@@ -192,8 +149,8 @@ public class UsuarioRepositoryTests
         Result<List<User>> result = await repository.GetAllAsync(
             new QueryOptions()
             {
-                Pagina = 1,
-                TamanhoPagina = 10
+                PageNumber = 1,
+                PageSize = 10
             },
             cancellationToken: CancellationToken.None
         );
@@ -202,30 +159,11 @@ public class UsuarioRepositoryTests
 #pragma warning disable CS8602
         Assert.Equal(10, result.Data.Count);
 #pragma warning restore CS8602
-        Assert.Equal(12, result.TotalItens);
-        Assert.Equal(2, result.TotalPaginas);
-        Assert.Equal(1, result.PaginaAtual);
-
-        Assert.NotNull(result.PaginaAtual);
-        Assert.NotNull(result.TotalPaginas);
-        Assert.NotNull(result.TotalItens);
+        Assert.Equal(12, result.TotalItems);
+        Assert.Equal(2, result.TotalPages);
+        Assert.Equal(1, result.CurrentPage);
+        Assert.Equal(10, result.PageSize);
     }
-
-    //[Fact]
-    //public async Task GetAllAsync_DeveRetornarUsuario_QuandoErroAoConsultar()
-    //{
-    //    using IServiceScope scope = _server.Host.Services.CreateScope();
-    //    ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    //    IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
-    //    UserRepository repository = new(context, logger);
-
-    //    await context.DisposeAsync();
-
-    //    Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
-
-    //    Assert.True(result.IsFailure);
-    //    Assert.Contains("Erro ao obter usuarios", result.Errors);
-    //}
 
     public sealed class FakeDbContext : ApplicationDbContext
     {

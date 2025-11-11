@@ -1,8 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpService } from './http.service';
-import { Photo } from '../../types/photo';
 import { Member } from '../../types/member';
 import { MemberUpdate } from '../../types/member-update';
+import { Photo } from '../../types/photo';
+import { ApiResponse } from './../../types/api-response';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,12 @@ export class MemberService {
     this.editMode.set(value);
   }
 
-  async getAll(): Promise<Member[]> {
-    return await this.httpService.get<Member[]>('user');
+  async getAll(pageNumber = 1, pageSize = 5): Promise<ApiResponse<Member[]>> {
+    return await this.httpService.getApiResult<Member[]>(
+      'user',
+      pageNumber,
+      pageSize
+    );
   }
 
   async getByName(username: string): Promise<Member> {

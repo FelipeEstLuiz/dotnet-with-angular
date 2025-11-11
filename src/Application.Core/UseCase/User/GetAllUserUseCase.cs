@@ -18,6 +18,15 @@ public class GetAllUserUseCase(IUserRepository userRepository)
             options: request,
             cancellationToken: cancellationToken
         );
-        return users.SetResult(data => data.Select(x => UserDto.Map(x)));
+
+        return users.IsFailure
+            ? Result<IEnumerable<UserDto>>.Failure(users.Errors)
+            : Result<IEnumerable<UserDto>>.Success(
+                users.Data!.Select(UserDto.Map),
+                users.TotalItems,
+                users.CurrentPage,
+                users.TotalPages,
+                users.PageSize
+            );
     }
 }

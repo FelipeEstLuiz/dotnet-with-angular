@@ -23,20 +23,69 @@ public struct Response
     [SwaggerSchema(ReadOnly = true, Description = "Operation protocol identifier.")]
     public string Protocol { get; private set; }
 
-    private Response(object? data, string protocol, HttpStatusCode statusCode)
-        : this(protocol, statusCode: statusCode) => Data = data;
+    [SwaggerSchema(ReadOnly = true, Description = "Total items.")]
+    public int TotalItems { get; set; }
 
-    private Response(string protocol, HttpStatusCode statusCode)
+    [SwaggerSchema(ReadOnly = true, Description = "Current page.")]
+    public int CurrentPage { get; set; }
+
+    [SwaggerSchema(ReadOnly = true, Description = "Total pages.")]
+    public int TotalPages { get; set; }
+
+    [SwaggerSchema(ReadOnly = true, Description = "Page size.")]
+    public int PageSize { get; set; }
+
+    private Response(
+        object? data,
+        string protocol,
+        HttpStatusCode statusCode,
+        int totalItems = 0,
+        int currentPage = 0,
+        int totalPages = 0,
+        int pageSize = 0
+    ) : this(
+        protocol: protocol,
+        statusCode: statusCode,
+        totalItems: totalItems,
+        currentPage: currentPage,
+        totalPages: totalPages,
+        pageSize: pageSize
+    ) => Data = data;
+
+    private Response(
+        string protocol,
+        HttpStatusCode statusCode,
+        int totalItems = 0,
+        int currentPage = 0,
+        int totalPages = 0,
+        int pageSize = 0
+    )
     {
         Protocol = protocol;
         StatusCode = (int)statusCode;
+        TotalItems = totalItems;
+        CurrentPage = currentPage;
+        TotalPages = totalPages;
+        PageSize = pageSize;
     }
 
     public static Response ResponseSuccess(
         object? data,
         string protocol,
-        HttpStatusCode statusCode
-    ) => new(data: data, protocol: protocol, statusCode: statusCode);
+        HttpStatusCode statusCode,
+        int totalItems = 0,
+        int currentPage = 0,
+        int totalPages = 0,
+        int pageSize = 0
+    ) => new(
+        data: data,
+        protocol: protocol,
+        statusCode: statusCode,
+        totalItems: totalItems,
+        currentPage: currentPage,
+        totalPages: totalPages,
+        pageSize: pageSize
+    );
 
     public static Response Failure(
         string protocol,
@@ -78,6 +127,18 @@ public record Response<TResponse>
     public required TResponse Data { get; set; }
     public string? Protocol { get; set; }
     public int StatusCode { get; set; }
+}
+
+public record ResponseServerSide<TResponse>
+{
+    public bool Success { get; set; } = true;
+    public required TResponse Data { get; set; }
+    public string? Protocol { get; set; }
+    public int StatusCode { get; set; }
+    public int TotalItems { get; set; }
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; }
+    public int PageSize { get; set; }
 }
 
 public record ResponseError

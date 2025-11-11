@@ -15,10 +15,10 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     : BaseAuthorizationController(protocol)
 {
     [HttpGet]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
-    public async Task<IActionResult> GetAllAsync() => HandlerResponse(
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseServerSide<IEnumerable<UserDto>>))]
+    public async Task<IActionResult> GetAllAsync([FromQuery] GetAllUserModel request) => HandlerResponse(
         HttpStatusCode.OK,
-        await dispatcher.Dispatch<GetAllUserModel, Result<IEnumerable<UserDto>>>(new GetAllUserModel())
+        await dispatcher.Dispatch<GetAllUserModel, Result<IEnumerable<UserDto>>>(request)
     );
 
     [HttpGet("{id:int}")]
