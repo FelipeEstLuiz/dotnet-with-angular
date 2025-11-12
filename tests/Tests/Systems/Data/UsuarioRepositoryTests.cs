@@ -122,7 +122,7 @@ public class UsuarioRepositoryTests
         await context.Users.AddAsync(_faker.Generate());
         await context.SaveChangesAsync();
 
-        Result<List<User>> result = await repository.GetAllAsync(cancellationToken: CancellationToken.None);
+        Result<List<User>> result = await repository.GetAllAsync(new UserParams(), cancellationToken: CancellationToken.None);
 
         Assert.True(result.IsSuccess);
 #pragma warning disable CS8602
@@ -147,7 +147,7 @@ public class UsuarioRepositoryTests
         await context.SaveChangesAsync();
 
         Result<List<User>> result = await repository.GetAllAsync(
-            new QueryOptions()
+            new UserParams()
             {
                 PageNumber = 1,
                 PageSize = 10
