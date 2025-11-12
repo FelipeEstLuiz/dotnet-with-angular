@@ -16,10 +16,14 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
 {
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseServerSide<IEnumerable<UserDto>>))]
-    public async Task<IActionResult> GetAllAsync([FromQuery] GetAllUserModel request) => HandlerResponse(
-        HttpStatusCode.OK,
-        await dispatcher.Dispatch<GetAllUserModel, Result<IEnumerable<UserDto>>>(request)
-    );
+    public async Task<IActionResult> GetAllAsync([FromQuery] GetAllUserModel request)
+    {
+        request.CurrentUserId = User.GetUserId();
+        return HandlerResponse(
+            HttpStatusCode.OK,
+            await dispatcher.Dispatch<GetAllUserModel, Result<IEnumerable<UserDto>>>(request)
+        );
+    }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]

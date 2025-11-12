@@ -4,6 +4,8 @@ import { MemberUpdate } from '../../types/member-update';
 import { Photo } from '../../types/photo';
 import { ApiResponse } from './../../types/api-response';
 import { HttpService } from './http.service';
+import { MemberParams } from '../../types/member-params';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -25,12 +27,17 @@ export class MemberService {
     this.editMode.set(value);
   }
 
-  async getAll(pageNumber = 1, pageSize = 5): Promise<ApiResponse<Member[]>> {
-    return await this.httpService.getApiResult<Member[]>(
-      'user',
-      pageNumber,
-      pageSize
-    );
+  async getAll(memberParams: MemberParams): Promise<ApiResponse<Member[]>> {
+    let params = new HttpParams()
+      .append('pageNumber', memberParams.pageNumber)
+      .append('pageSize', memberParams.pageSize)
+      .append('maxAge', memberParams.maxAge)
+      .append('minAge', memberParams.minAge);
+
+    if (memberParams.gender)
+      params = params.append('gender', memberParams.gender);
+
+    return await this.httpService.getApiResult<Member[]>('user', params);
   }
 
   async getByName(username: string): Promise<Member> {

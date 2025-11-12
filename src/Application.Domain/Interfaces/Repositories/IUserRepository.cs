@@ -12,7 +12,7 @@ public interface IUserRepository
     Task<Result<User?>> GetByNameAsync(string name, CancellationToken cancellationToken);
     Task<Result<bool>> UpdateAsync(User user, CancellationToken cancellationToken);
     Task<Result<List<User>>> GetAllAsync(
-        QueryOptions? options = null,
+        UserParams userParams,
         CancellationToken cancellationToken = default
     );
     Task<bool> SaveChangesAsync(CancellationToken cancellationToken);

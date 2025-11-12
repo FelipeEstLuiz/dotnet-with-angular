@@ -2,6 +2,10 @@
 
 namespace Application.Core.Model;
 
-#pragma warning disable S2094
-public record GetAllUserModel : QueryOptions;
-#pragma warning restore S2094
+public record GetAllUserModel : QueryOptions
+{
+    public string? Gender { get; set; }
+    public int? CurrentUserId { get; set; }
+    public int MinAge { get; set; } = 18;
+    public int MaxAge { get; set; } = 100;
+}

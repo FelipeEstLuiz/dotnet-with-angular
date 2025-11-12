@@ -14,8 +14,20 @@ public class GetAllUserUseCase(IUserRepository userRepository)
         CancellationToken cancellationToken = default
     )
     {
+        UserParams userParams = new()
+        {
+            CurrentUserId = request.CurrentUserId,
+            Gender = request.Gender,
+            OrderAsc = request.OrderAsc,
+            OrderBy = request.OrderBy,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize,
+            MinAge = request.MinAge,
+            MaxAge = request.MaxAge
+        };
+
         Result<List<Domain.Entities.User>> users = await userRepository.GetAllAsync(
-            options: request,
+            userParams,
             cancellationToken: cancellationToken
         );
 

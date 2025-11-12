@@ -110,16 +110,25 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
     }
 
     public async Task<Result<List<User>>> GetAllAsync(
-        QueryOptions? options = null,
+        UserParams userParams,
         CancellationToken cancellationToken = default
     )
     {
         try
         {
-            return await context
-                .Users
-                .Include(x => x.Photos)
-                .ApplyQueryOptionsAsync(options, cancellationToken: cancellationToken);
+            IQueryable<User> query = context.Users.AsQueryable();
+
+            query = query.Where(x => x.Id != userParams.CurrentUserId);
+
+            if (!string.IsNullOrWhiteSpace(userParams.Gender))
+                query = query.Where(x => x.Gender.ToLower() == userParams.Gender.ToLower());
+
+            DateOnly minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
+            DateOnly maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
+
+            query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
+
+            return await query.ApplyQueryOptionsAsync(userParams, cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {

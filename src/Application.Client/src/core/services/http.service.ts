@@ -21,16 +21,11 @@ export class HttpService {
 
   getApiResult<T>(
     url: string,
-    pageNumber = 1,
-    pageSize = 5
+    httpParams: HttpParams
   ): Promise<ApiResponse<T>> {
-    let params = new HttpParams()
-      .append('pageNumber', pageNumber)
-      .append('pageSize', pageSize);
-
     return firstValueFrom(
       this.http
-        .get<ApiResponse<T>>(this.baseUrl + url, { params: params })
+        .get<ApiResponse<T>>(this.baseUrl + url, { params: httpParams })
         .pipe(map((response) => response))
     );
   }
