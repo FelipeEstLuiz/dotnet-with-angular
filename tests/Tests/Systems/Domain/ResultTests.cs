@@ -66,7 +66,7 @@ public class ResultTests
         Result<bool> result = Result<bool>.Success(true);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal("Success", result.ToString());
+        Assert.Equal("true", result.ToString());
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true e metodo ToString() retornando mensagem de erro")]

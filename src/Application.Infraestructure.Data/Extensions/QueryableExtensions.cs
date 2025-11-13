@@ -21,8 +21,8 @@ public static class QueryableExtensions
         // Ordenação dinâmica
         if (!string.IsNullOrWhiteSpace(options.OrderBy))
         {
-            string direcao = options.OrderAsc ? "ascending" : "descending";
-            query = query.OrderBy($"{options.OrderBy} {direcao}");
+            string direction = options.OrderAsc ? "ascending" : "descending";
+            query = query.OrderBy($"{options.OrderBy} {direction}");
         }
 
         // Paginação

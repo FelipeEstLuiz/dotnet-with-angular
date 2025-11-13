@@ -1,4 +1,5 @@
-﻿using Application.Api.Middleware;
+﻿using Application.Api.Filters;
+using Application.Api.Middleware;
 using Application.Api.Util;
 using Application.Core.Model;
 using Application.Domain.Util;
@@ -69,7 +70,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddCors();
 
-        services.AddControllers().AddNewtonsoftJson(options =>
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<LogUserActivity>();
+        }).AddNewtonsoftJson(options =>
         {
             options.SerializerSettings.ContractResolver = new DefaultContractResolver
             {

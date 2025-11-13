@@ -1,5 +1,6 @@
 ﻿using Application.Domain.Enums;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace Application.Domain.Model;
 
@@ -82,7 +83,20 @@ public class Result<TResponse>(bool isSuccess)
         return this;
     }
 
-    public override string ToString() => IsSuccess
-        ? "Success"
-        : string.Join("; ", _messages);
+    public override string ToString()
+    {
+        if (IsSuccess)
+        {
+            try
+            {
+                return JsonSerializer.Serialize(Data, options: new() { WriteIndented = false });
+            }
+            catch (System.Exception ex)
+            {
+                return $"[Serialization Error] {ex.Message}";
+            }
+        }
+
+        return string.Join("; ", _messages);
+    }
 }

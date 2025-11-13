@@ -24,6 +24,7 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<GetUserPhotoByIdModel, Result<IEnumerable<PhotoUserDto>?>>, GetPhotosByIdUseCase>();
         services.AddScoped<IRequestHandler<UpdatePhotoMainModel, Result<bool>>, UpdatePhotoMainUseCase>();
         services.AddScoped<IRequestHandler<DeletePhotoModel, Result<bool>>, DeletePhotoUseCase>();
+        services.AddScoped<IRequestHandler<UpdateUserActivityModel, Result<bool>>, UpdateUserActivityUseCase>();
 
         services.AddValidators();
 

@@ -1,5 +1,4 @@
 ﻿using Application.Api.Util;
-using Application.Core.DTO.User;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
