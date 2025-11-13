@@ -38,7 +38,12 @@ export class MemberService {
     if (memberParams.gender)
       params = params.append('gender', memberParams.gender);
 
-    return await this.httpService.getApiResult<Member[]>('user', params);
+    const result = await this.httpService.getApiResult<Member[]>(
+      'user',
+      params
+    );
+    localStorage.setItem('filters', JSON.stringify(memberParams));
+    return result;
   }
 
   async getByName(username: string): Promise<Member> {

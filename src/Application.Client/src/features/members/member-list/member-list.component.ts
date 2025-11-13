@@ -18,7 +18,18 @@ export class MemberListComponent implements OnInit {
   protected memberService = inject(MemberService);
   protected memberParams = new MemberParams();
 
+  private updateParams = new MemberParams();
+
   paginatedMember = signal<ApiResponse<Member[]> | null>(null);
+
+  constructor() {
+    const filters = localStorage.getItem('filters');
+
+    if (filters) {
+      this.memberParams = JSON.parse(filters);
+      this.updateParams = JSON.parse(filters);
+    }
+  }
 
   async ngOnInit(): Promise<void> {
     await this.loadMembers();
@@ -45,12 +56,41 @@ export class MemberListComponent implements OnInit {
   }
 
   async onFilterChange(data: MemberParams) {
-    this.memberParams = data;
+    this.memberParams = { ...data };
+    this.updateParams = { ...data };
     await this.loadMembers();
   }
 
   async resetFilters() {
     this.memberParams = new MemberParams();
+    this.updateParams = new MemberParams();
     await this.loadMembers();
+  }
+
+  get displayMessage(): string {
+    const defaultParams = new MemberParams();
+
+    const filters: string[] = [];
+
+    if (this.updateParams.gender) filters.push(this.updateParams.gender + 's');
+    else filters.push('Males', 'Females');
+
+    if (
+      this.updateParams.minAge !== defaultParams.minAge ||
+      this.updateParams.maxAge !== defaultParams.maxAge
+    )
+      filters.push(
+        ` ages ${this.updateParams.minAge}-${this.updateParams.maxAge}`
+      );
+
+    filters.push(
+      this.updateParams.orderBy === 'lastActive'
+        ? 'Recently active'
+        : 'Newest members'
+    );
+
+    return filters.length > 0
+      ? `Selected: ${filters.join('  | ')}`
+      : 'All members';
   }
 }

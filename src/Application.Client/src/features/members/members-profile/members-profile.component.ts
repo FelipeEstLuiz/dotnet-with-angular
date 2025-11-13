@@ -13,10 +13,11 @@ import { MemberService } from '../../../core/services/member.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Member } from '../../../types/member';
 import { MemberUpdate } from '../../../types/member-update';
+import { TimeAgoPipe } from '../../../core/pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-members-profile',
-  imports: [DatePipe, FormsModule, NgClass],
+  imports: [DatePipe, FormsModule, NgClass, TimeAgoPipe],
   templateUrl: './members-profile.component.html',
   styleUrl: './members-profile.component.css',
 })
