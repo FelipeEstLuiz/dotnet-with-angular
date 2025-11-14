@@ -3,10 +3,12 @@ using Application.Api.Util;
 using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.User;
 using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Extensions;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Net.Mime;
 
 namespace Application.Api.Controllers.V1;
 
@@ -15,6 +17,8 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     : BaseAuthorizationController(protocol)
 {
     [HttpGet]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseServerSide<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetAllAsync([FromQuery] GetAllUserModel request)
     {
@@ -26,6 +30,8 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     }
 
     [HttpGet("{id:int}")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetByIdAsync(int id) => HandlerResponse(
         HttpStatusCode.OK,
@@ -33,6 +39,8 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     );
 
     [HttpGet("{userName}")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetByUserNameAsync(string userName) => HandlerResponse(
         HttpStatusCode.OK,
@@ -40,6 +48,8 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     );
 
     [HttpGet("{id:int}/photos")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<IEnumerable<PhotoUserDto>?>>))]
     public async Task<IActionResult> GetPhotosByIdAsync(int id) => HandlerResponse(
        HttpStatusCode.OK,
@@ -47,6 +57,8 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
    );
 
     [HttpPut("{id:int}")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
     {
@@ -74,12 +86,16 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     );
 
     [HttpPut("set-main-photo/{photoId}")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     public async Task<IActionResult> SetMainPhotoAsync(int photoId) => HandlerResponse(
         HttpStatusCode.NoContent,
         await dispatcher.Dispatch<UpdatePhotoMainModel, Result<bool>>(new UpdatePhotoMainModel(User.GetUserId(), photoId))
     );
 
     [HttpDelete("photo/{photoId}")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces("application/json")]
     public async Task<IActionResult> DeletePhotoAsync(int photoId) => HandlerResponse(
        HttpStatusCode.NoContent,
        await dispatcher.Dispatch<DeletePhotoModel, Result<bool>>(new DeletePhotoModel(User.GetUserId(), photoId))

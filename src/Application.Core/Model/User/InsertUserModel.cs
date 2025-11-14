@@ -1,6 +1,4 @@
-﻿using Application.Domain.Entities;
-
-namespace Application.Core.Model;
+﻿namespace Application.Core.Model.User;
 
 public record InsertUserModel : BaseUserModel
 {
@@ -8,7 +6,7 @@ public record InsertUserModel : BaseUserModel
     public string Password { get; set; } = null!;
     public string PasswordConfirmed { get; set; } = null!;
 
-    public User MapUsuario() => User.Create(
+    public Domain.Entities.User MapUsuario() => Domain.Entities.User.Create(
         name: Name,
         email: Email,
         knowAs: KnowAs,

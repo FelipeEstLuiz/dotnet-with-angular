@@ -1,5 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Core.UseCase.User;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
@@ -30,11 +30,15 @@ public class CadastrarUsuarioHandlerTests
 
         _usuarioRepositoryMock
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result<User?>.Success(null)));
+            .Returns(Task.FromResult((User?)null));
 
         _usuarioRepositoryMock
-            .InsertAsync(Arg.Any<User>(), Arg.Any<CancellationToken>())
+            .AddAsync(Arg.Any<User>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<bool>.Success(true)));
+
+        _usuarioRepositoryMock
+            .SaveChangesAsync(Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
 
         _tokenServiceMock
             .GerarToken(Arg.Any<User>())
@@ -55,7 +59,7 @@ public class CadastrarUsuarioHandlerTests
 
         _usuarioRepositoryMock
             .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result<User?>.Success(usuarioMock)));
+            .Returns(Task.FromResult((User?)usuarioMock));
 
         Result<LoginDto> result = await _cadastrarUsuarioHandler.Handle(command, CancellationToken.None);
 

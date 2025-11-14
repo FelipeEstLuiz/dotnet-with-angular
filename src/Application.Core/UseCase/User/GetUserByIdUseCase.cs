@@ -1,5 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -12,13 +12,8 @@ public class GetUserByIdUseCase(IUserRepository userRepository)
 {
     public async Task<Result<UserDto?>> Handle(GetUserByIdModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.User?> user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
+        Domain.Entities.User? user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
 
-        if (user.IsSuccess && user.Data is not null)
-            return UserDto.Map(user.Data);
-        else if (user.IsFailure)
-            return Result<UserDto?>.Failure(user.Errors);
-
-        return Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
+        return user is not null ? (Result<UserDto?>)UserDto.Map(user) : Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
     }
 }

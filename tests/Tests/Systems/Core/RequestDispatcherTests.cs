@@ -1,6 +1,6 @@
 ﻿using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Core.UseCase.User;
 using Application.Core.Validator;
 using Application.Domain.Entities;
@@ -47,11 +47,15 @@ public class RequestDispatcherTests
 
         usuarioRepositoryMock
            .GetByEmailAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-           .Returns(Task.FromResult(Result<User?>.Success(null)));
+           .Returns(Task.FromResult((User?)null));
 
         usuarioRepositoryMock
-            .InsertAsync(Arg.Any<User>(), Arg.Any<CancellationToken>())
+            .AddAsync(Arg.Any<User>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<bool>.Success(true)));
+
+        usuarioRepositoryMock
+            .SaveChangesAsync(Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(true));
 
         ServiceCollection services = new();
         services.AddScoped<RequestDispatcher>();

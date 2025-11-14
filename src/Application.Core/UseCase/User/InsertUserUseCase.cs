@@ -1,5 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
@@ -17,15 +17,13 @@ public class InsertUserUseCase(
         CancellationToken cancellationToken = default
     )
     {
-        Result<Domain.Entities.User?> resultUser = await userRepository.GetByEmailAsync(
+        Domain.Entities.User? resultUser = await userRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
 
-        if (resultUser.IsSuccess && resultUser.Data is not null)
+        if (resultUser is not null)
             return Result<LoginDto>.Failure("E-mail already exists");
-        else if (resultUser.IsFailure)
-            return Result<LoginDto>.Failure(resultUser.Errors);
 
         Domain.Entities.User user = request.MapUsuario();
 
@@ -33,10 +31,10 @@ public class InsertUserUseCase(
 
         user.SetPassword(hasher.HashPassword(user, request.Password));
 
-        Result<bool> resultInsert = await userRepository.InsertAsync(user, cancellationToken);
+        await userRepository.AddAsync(user, cancellationToken);
 
-        return resultInsert.IsSuccess
+        return await userRepository.SaveChangesAsync(cancellationToken)
             ? Result<LoginDto>.Success(new LoginDto(user.Id, user.UserName, user.Email, await tokenService.GerarToken(user), user.ImageUrl))
-            : Result<LoginDto>.Failure(resultInsert.Errors);
+            : Result<LoginDto>.Failure("Error to adding new user");
     }
 }

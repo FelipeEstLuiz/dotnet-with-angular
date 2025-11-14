@@ -20,15 +20,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash).HasColumnName("password_hash");
         builder.Property(u => u.NormalizedUserName).HasColumnName("normalized_user_name").HasMaxLength(200);
         builder.Property(u => u.NormalizedEmail).HasColumnName("normalized_email").HasMaxLength(150);
-        builder.Property(u => u.EmailConfirmed).HasColumnName("email_confirmed");
-        builder.Property(u => u.SecurityStamp).HasColumnName("security_stamp");
-        builder.Property(u => u.ConcurrencyStamp).HasColumnName("concurrency_stamp");
-        builder.Property(u => u.PhoneNumber).HasColumnName("phone_number").HasMaxLength(20);
-        builder.Property(u => u.PhoneNumberConfirmed).HasColumnName("phone_number_confirmed");
-        builder.Property(u => u.TwoFactorEnabled).HasColumnName("two_factor_enabled");
-        builder.Property(u => u.LockoutEnd).HasColumnName("lockout_end");
-        builder.Property(u => u.LockoutEnabled).HasColumnName("lockout_enabled");
-        builder.Property(u => u.AccessFailedCount).HasColumnName("access_failed_count");
         builder.Property(u => u.Created).HasColumnName("created");
         builder.Property(u => u.DateOfBirth).HasColumnName("date_of_birth");
         builder.Property(u => u.KnowAs).HasColumnName("know_as").HasMaxLength(50);

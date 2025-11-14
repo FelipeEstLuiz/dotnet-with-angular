@@ -47,28 +47,13 @@ public class UsuarioRepositoryTests
         IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        Result<bool> result = await repository.InsertAsync(_faker.Generate(), CancellationToken.None);
+        await repository.AddAsync(_faker.Generate(), CancellationToken.None);
 
-        Assert.True(result.IsSuccess);
+        bool result = await repository.SaveChangesAsync(Arg.Any<CancellationToken>());
+
+        Assert.True(result);
         Assert.Equal(1, await context.Users.CountAsync());
     }
-
-    [Fact]
-    public async Task InsertAsync_DeveLancarExcecao_QuandoErroAoInserirUsuario()
-    {
-        // Arrange
-        FakeDbContext dbContext = new();
-        IAppLogger<UserRepository> logger = Substitute.For<IAppLogger<UserRepository>>();
-        UserRepository repository = new(dbContext, logger);
-
-        // Act
-        Result<bool> result = await repository.InsertAsync(_faker.Generate(), CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Contains("Insert user error", result.Errors);
-    }
-
 
     [Fact]
     public async Task GetByEmailAsync_DeveRetornarUsuario_QuandoEmailExistir()
@@ -80,14 +65,13 @@ public class UsuarioRepositoryTests
         IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
         UserRepository repository = new(context, logger);
 
-        await context.Users.AddAsync(usuario);
+        await repository.AddAsync(usuario, CancellationToken.None);
         await context.SaveChangesAsync();
 
-        Result<User?> result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
+        User? result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data);
-        Assert.Equal(usuario.UserName, result.Data.UserName);
+        Assert.NotNull(result);
+        Assert.Equal(usuario.UserName, result.UserName);
     }
 
     [Fact]

@@ -1,5 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;

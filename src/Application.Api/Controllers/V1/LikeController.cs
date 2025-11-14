@@ -1,0 +1,40 @@
+﻿using Application.Api.Controllers._Shared;
+using Application.Api.Util;
+using Application.Core.Common.Dispatcher;
+using Application.Core.DTO.User;
+using Application.Core.Model.Like;
+using Application.Domain.Extensions;
+using Application.Domain.Model;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Mime;
+
+namespace Application.Api.Controllers.V1;
+
+[ApiExplorerSettings(GroupName = "Like")]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces("application/json")]
+public class LikeController(CommunicationProtocol protocol, RequestDispatcher dispatcher)
+    : BaseAuthorizationController(protocol)
+{
+    [HttpPost("{targetUserId}")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
+    public async Task<IActionResult> ToggleLikeAsync(int targetUserId) => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<ToggleLikeModel, Result<bool>>(new ToggleLikeModel(targetUserId, User.GetUserId()))
+    );
+
+    [HttpGet("list")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IReadOnlyList<int>>))]
+    public async Task<IActionResult> GetCurrentUserLikeIdsAsync() => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<UserIdLikeModel, Result<IReadOnlyList<int>>>(new UserIdLikeModel(User.GetUserId()))
+    );
+
+    [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
+    public async Task<IActionResult> GetUserLikesAsync(string predicate) => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<GetUserLikesModel, Result<IEnumerable<UserDto>>>(new GetUserLikesModel(predicate, User.GetUserId()))
+    );
+}

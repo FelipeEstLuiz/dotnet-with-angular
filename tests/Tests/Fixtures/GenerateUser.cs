@@ -10,7 +10,9 @@ internal static class GenerateUser
     public static Faker<User> FakerUser() => new Faker<User>()
         .RuleFor(u => u.Id, (f, u) => f.IndexFaker + 1)
         .RuleFor(cmd => cmd.UserName, f => f.Person.FullName)
+        .RuleFor(cmd => cmd.NormalizedUserName, f => f.Person.FullName.ToUpperInvariant())
         .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
+        .RuleFor(cmd => cmd.NormalizedEmail, f => f.Internet.Email().ToUpperInvariant())
         .RuleFor(u => u.DateOfBirth, f =>
         {
             DateTime date = f.Date.Past(50, DateTime.Today.AddYears(-18));

@@ -1,4 +1,4 @@
-﻿using Application.Core.Model;
+﻿using Application.Core.Model.User;
 using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -13,17 +13,15 @@ public class UpdateUserActivityUseCase(IUserRepository userRepository) : IReques
         CancellationToken cancellationToken = default
     )
     {
-        Result<Domain.Entities.User?> resultUser = await userRepository.GetByIdAsync(
+        Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
             request.UserId,
             cancellationToken
         );
 
-        if (resultUser.IsSuccess && resultUser.Data is null)
+        if (resultUser is null)
             return Result<bool>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
-        else if (resultUser.IsFailure)
-            return resultUser.SetResult<bool>();
 
-        Domain.Entities.User user = resultUser.Data!;
+        Domain.Entities.User user = resultUser!;
 
         user.UpdateLastActive();
 

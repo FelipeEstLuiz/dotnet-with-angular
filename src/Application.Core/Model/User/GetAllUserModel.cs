@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Model;
 
-namespace Application.Core.Model;
+namespace Application.Core.Model.User;
 
 public record GetAllUserModel : QueryOptions
 {

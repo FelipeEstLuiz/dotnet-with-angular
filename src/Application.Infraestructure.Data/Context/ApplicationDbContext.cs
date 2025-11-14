@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Photo> Photos { get; set; }
+    public DbSet<UserLike> Likes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

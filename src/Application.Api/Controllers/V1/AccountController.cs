@@ -3,13 +3,17 @@ using Application.Api.Util;
 using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.User;
 using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Net.Mime;
 
 namespace Application.Api.Controllers.V1;
 
 [ApiExplorerSettings(GroupName = "Account")]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces("application/json")]
 public class AccountController(CommunicationProtocol protocol, RequestDispatcher dispatcher)
     : BaseApplicationController(protocol)
 {

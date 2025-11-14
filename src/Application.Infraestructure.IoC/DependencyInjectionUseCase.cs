@@ -1,5 +1,8 @@
 ﻿using Application.Core.DTO.User;
 using Application.Core.Model;
+using Application.Core.Model.Like;
+using Application.Core.Model.User;
+using Application.Core.UseCase.Like;
 using Application.Core.UseCase.Login;
 using Application.Core.UseCase.User;
 using Application.Core.Validator;
@@ -25,6 +28,9 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<UpdatePhotoMainModel, Result<bool>>, UpdatePhotoMainUseCase>();
         services.AddScoped<IRequestHandler<DeletePhotoModel, Result<bool>>, DeletePhotoUseCase>();
         services.AddScoped<IRequestHandler<UpdateUserActivityModel, Result<bool>>, UpdateUserActivityUseCase>();
+        services.AddScoped<IRequestHandler<ToggleLikeModel, Result<bool>>, ToggleLikeUseCase>();
+        services.AddScoped<IRequestHandler<UserIdLikeModel, Result<IReadOnlyList<int>>>, UserIdLikeUseCase>();
+        services.AddScoped<IRequestHandler<GetUserLikesModel, Result<IEnumerable<UserDto>>>, GetUserLikesUseCase>();
 
         services.AddValidators();
 

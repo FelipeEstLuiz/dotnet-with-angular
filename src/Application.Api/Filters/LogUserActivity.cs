@@ -1,5 +1,5 @@
 ﻿using Application.Core.Common.Dispatcher;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Extensions;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc.Filters;

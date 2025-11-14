@@ -14,14 +14,12 @@ public class LoginUseCase(
 {
     public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
-        Result<Domain.Entities.User?> resultUser = await userRepository.GetByEmailAsync(
+        Domain.Entities.User? resultUser = await userRepository.GetByEmailAsync(
             request.Email,
             cancellationToken
         );
 
-        return resultUser.IsSuccess
-            ? await ValidarPasswordAsync(resultUser.Data, request.Password)
-            : Result<LoginDto?>.Failure(resultUser.Errors);
+        return await ValidarPasswordAsync(resultUser, request.Password);
     }
 
     private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User? user, string senha)

@@ -1,5 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
 using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
@@ -15,15 +15,13 @@ public class GetPhotosByIdUseCase(IUserRepository userRepository)
         CancellationToken cancellationToken = default
     )
     {
-        Result<IEnumerable<Photo>?> result = await userRepository.GetByPhotoIdAsync(request.Id, cancellationToken);
+        IEnumerable<Photo>? photos = await userRepository.GetByPhotoIdAsync(request.Id, cancellationToken);
 
-        return result.IsSuccess
-            ? Result<IEnumerable<PhotoUserDto>?>.Success(result.Data?.Select(x => new PhotoUserDto(
-                x.Id,
-                x.Url,
-                x.PublicId,
-                x.UserId
-            )))
-            : Result<IEnumerable<PhotoUserDto>?>.Failure(result.Errors);
+        return Result<IEnumerable<PhotoUserDto>?>.Success(photos?.Select(x => new PhotoUserDto(
+            x.Id,
+            x.Url,
+            x.PublicId,
+            x.UserId
+        )));
     }
 }

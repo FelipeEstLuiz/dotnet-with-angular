@@ -34,17 +34,7 @@ public class UserTests
         Assert.Equal(nome.ToUpperInvariant(), usuario.NormalizedUserName);
         Assert.Equal(email, usuario.Email);
         Assert.Equal(email.ToUpperInvariant(), usuario.NormalizedEmail);
-        Assert.False(usuario.EmailConfirmed);
-        Assert.NotNull(usuario.SecurityStamp);
-        Assert.NotNull(usuario.ConcurrencyStamp);
-        Assert.NotEqual(default, usuario.Created);
         Assert.NotEqual(default, usuario.DateOfBirth);
-        Assert.Null(usuario.PhoneNumber);
-        Assert.False(usuario.PhoneNumberConfirmed);
-        Assert.False(usuario.TwoFactorEnabled);
-        Assert.Null(usuario.LockoutEnd);
-        Assert.False(usuario.LockoutEnabled);
-        Assert.Equal(default, usuario.AccessFailedCount);
     }
 
     [Fact]

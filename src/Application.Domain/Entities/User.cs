@@ -1,4 +1,6 @@
-﻿namespace Application.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Application.Domain.Entities;
 
 public class User : Entity
 {
@@ -6,16 +8,7 @@ public class User : Entity
     public string NormalizedUserName { get; set; } = string.Empty;
     public required string Email { get; set; }
     public string NormalizedEmail { get; set; } = string.Empty;
-    public bool EmailConfirmed { get; set; }
     public string PasswordHash { get; set; } = string.Empty;
-    public string SecurityStamp { get; set; } = string.Empty;
-    public string ConcurrencyStamp { get; set; } = string.Empty;
-    public string? PhoneNumber { get; set; }
-    public bool PhoneNumberConfirmed { get; set; }
-    public bool TwoFactorEnabled { get; set; }
-    public DateTimeOffset? LockoutEnd { get; set; }
-    public bool LockoutEnabled { get; set; }
-    public int AccessFailedCount { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public required string KnowAs { get; set; }
     public DateTime LastActive { get; set; }
@@ -26,7 +19,15 @@ public class User : Entity
     public string? City { get; set; }
     public string? Country { get; set; }
     public string? ImageUrl { get; set; }
+
+    [JsonIgnore]
     public List<Photo> Photos { get; set; } = [];
+
+    [JsonIgnore]
+    public List<UserLike> LikedUsers { get; set; } = [];
+
+    [JsonIgnore]
+    public List<UserLike> LikedByUsers { get; set; } = [];
 
     public static User Create(
         string name,
@@ -41,8 +42,6 @@ public class User : Entity
         string? country
     ) => new()
     {
-        SecurityStamp = Guid.NewGuid().ToString(),
-        ConcurrencyStamp = Guid.NewGuid().ToString(),
         KnowAs = knowAs,
         Gender = gender,
         Introduction = introduction,

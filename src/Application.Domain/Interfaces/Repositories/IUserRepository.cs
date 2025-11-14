@@ -5,12 +5,11 @@ namespace Application.Domain.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<Result<bool>> InsertAsync(User user, CancellationToken cancellationToken);
-    Task<Result<User?>> GetByEmailAsync(string email, CancellationToken cancellationToken);
-    Task<Result<User?>> GetByIdAsync(int id, CancellationToken cancellationToken);
-    Task<Result<IEnumerable<Photo>?>> GetByPhotoIdAsync(int id, CancellationToken cancellationToken);
-    Task<Result<User?>> GetByNameAsync(string name, CancellationToken cancellationToken);
-    Task<Result<bool>> UpdateAsync(User user, CancellationToken cancellationToken);
+    Task AddAsync(User user, CancellationToken cancellationToken);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken);
+    Task<IEnumerable<Photo>?> GetByPhotoIdAsync(int id, CancellationToken cancellationToken);
+    Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken);
     Task<Result<List<User>>> GetAllAsync(
         UserParams userParams,
         CancellationToken cancellationToken = default

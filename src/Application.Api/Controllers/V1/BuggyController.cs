@@ -4,10 +4,13 @@ using Application.Domain.Enums;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Net.Mime;
 
 namespace Application.Api.Controllers.V1;
 
 [ApiExplorerSettings(GroupName = "Buggy")]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces("application/json")]
 public class BuggyController(CommunicationProtocol protocol) : BaseApplicationController(protocol)
 {
     [HttpGet("auth")]

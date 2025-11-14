@@ -1,4 +1,4 @@
-﻿using Application.Core.Model;
+﻿using Application.Core.Model.User;
 using Application.Core.Validator;
 using Bogus;
 

@@ -30,8 +30,6 @@ public static class Seed
         foreach (User user in users)
         {
             user.Created = DateTime.UtcNow;
-            user.SecurityStamp = Guid.NewGuid().ToString();
-            user.ConcurrencyStamp = Guid.NewGuid().ToString();
             user.NormalizedEmail = user.Email.ToUpperInvariant();
             user.NormalizedUserName = user.UserName.ToUpperInvariant();
             user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc);
