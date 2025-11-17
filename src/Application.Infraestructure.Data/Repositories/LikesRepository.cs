@@ -1,6 +1,8 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
+using Application.Domain.Model;
 using Application.Infraestructure.Data.Context;
+using Application.Infraestructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Infraestructure.Data.Repositories;
@@ -21,30 +23,33 @@ public class LikesRepository(ApplicationDbContext context) : ILikesRepository
             .Likes
             .FindAsync([sourceUserId, targetUserId], cancellationToken: cancellationToken);
 
-    public async Task<IReadOnlyList<User>> GetUserLikesAsync(string predicate, int userId, CancellationToken cancellationToken)
+    public async Task<Result<List<User>>> GetUserLikesAsync(UserLikeParams userLikeParams, CancellationToken cancellationToken)
     {
         IQueryable<UserLike> query = context.Likes.AsQueryable();
+        IQueryable<User> result;
 
-        switch (predicate)
+        switch (userLikeParams.Predicate)
         {
             case "liked":
-                return await query
-                    .Where(x => x.SourceUserId == userId)
-                    .Select(x => x.TargetUser)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                result = query
+                    .Where(x => x.SourceUserId == userLikeParams.UserId)
+                    .Select(x => x.TargetUser);
+                break;
             case "likedBy":
-                return await query
-                    .Where(x => x.TargetUserId == userId)
-                    .Select(x => x.SourceUser)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                result = query
+                    .Where(x => x.TargetUserId == userLikeParams.UserId)
+                    .Select(x => x.SourceUser);
+                break;
             default:
-                IReadOnlyList<int> likeIds = await GetCurrentUserLikeIdAsync(userId, cancellationToken);
-                return await query
-                    .Where(x => x.TargetUserId == userId && likeIds.Contains(x.SourceUserId))
-                    .Select(x => x.SourceUser)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                IReadOnlyList<int> likeIds = await GetCurrentUserLikeIdAsync(userLikeParams.UserId, cancellationToken);
+                result = query
+                    .Where(x => x.TargetUserId == userLikeParams.UserId && likeIds.Contains(x.SourceUserId))
+                    .Select(x => x.SourceUser);
+                break;
 
         }
+
+        return await result.ApplyQueryOptionsAsync(userLikeParams, cancellationToken: cancellationToken);
     }
 
     public async Task AddAsync(UserLike userLike, CancellationToken cancellationToken) => await context.Likes.AddAsync(userLike, cancellationToken);

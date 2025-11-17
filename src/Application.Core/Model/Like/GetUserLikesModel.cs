@@ -1,3 +1,9 @@
-﻿namespace Application.Core.Model.Like;
+﻿using Application.Domain.Model;
 
-public record GetUserLikesModel(string Predicate, int UserId);
+namespace Application.Core.Model.Like;
+
+public record GetUserLikesModel : QueryOptions
+{
+    public string Predicate { get; set; } = "liked";
+    public int UserId { get; set; }
+}

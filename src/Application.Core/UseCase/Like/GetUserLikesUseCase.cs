@@ -10,7 +10,25 @@ public class GetUserLikesUseCase(ILikesRepository likesRepository) : IRequestHan
 {
     public async Task<Result<IEnumerable<UserDto>>> Handle(GetUserLikesModel request, CancellationToken cancellationToken = default)
     {
-        IReadOnlyList<Domain.Entities.User> users = await likesRepository.GetUserLikesAsync(request.Predicate, request.UserId, cancellationToken);
-        return Result<IEnumerable<UserDto>>.Success(users.Select(UserDto.Map));
+        UserLikeParams userLikeParams = new()
+        {
+            UserId = request.UserId,
+            Predicate = request.Predicate,
+            OrderAsc = request.OrderAsc,
+            OrderBy = request.OrderBy,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        };
+
+        Result<List<Domain.Entities.User>> result = await likesRepository.GetUserLikesAsync(userLikeParams, cancellationToken);
+        return result.IsFailure
+            ? Result<IEnumerable<UserDto>>.Failure(result.Errors)
+            : Result<IEnumerable<UserDto>>.Success(
+                result.Data!.Select(UserDto.Map),
+                result.TotalItems,
+                result.CurrentPage,
+                result.TotalPages,
+                result.PageSize
+            );
     }
 }

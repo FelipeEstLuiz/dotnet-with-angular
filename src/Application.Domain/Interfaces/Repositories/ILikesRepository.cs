@@ -1,11 +1,12 @@
 ﻿using Application.Domain.Entities;
+using Application.Domain.Model;
 
 namespace Application.Domain.Interfaces.Repositories;
 
 public interface ILikesRepository
 {
     Task<UserLike?> GetUserLikeAsync(int sourceUserId, int targetUserId, CancellationToken cancellationToken);
-    Task<IReadOnlyList<User>> GetUserLikesAsync(string predicate, int userId, CancellationToken cancellationToken);
+    Task<Result<List<User>>> GetUserLikesAsync(UserLikeParams userLikeParams, CancellationToken cancellationToken);
     Task<IReadOnlyList<int>> GetCurrentUserLikeIdAsync(int userId, CancellationToken cancellationToken);
     void Delete(UserLike userLike);
     Task AddAsync(UserLike userLike, CancellationToken cancellationToken);

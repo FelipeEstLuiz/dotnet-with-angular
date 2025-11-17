@@ -3,12 +3,14 @@ import { Login } from '../../types/login';
 import { User } from '../../types/user';
 import { UserRegister } from '../../types/user-register';
 import { HttpService } from './http.service';
+import { LikesService } from './likes.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
   private httpService = inject(HttpService);
+  private likeService = inject(LikesService);
   currentUser = signal<User | null>(null);
 
   async login(model: Login) {
@@ -16,6 +18,7 @@ export class AccountService {
 
     if (user) {
       this.setCurrentUser(user);
+      await this.likeService.getLikeIds();
     }
 
     return user;
@@ -34,6 +37,7 @@ export class AccountService {
   logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('filters');
+    this.likeService.clearLikeIds();
     this.currentUser.set(null);
   }
 

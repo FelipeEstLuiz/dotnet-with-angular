@@ -34,7 +34,7 @@ export const appConfig: ApplicationConfig = {
       const initService = inject(InitService);
 
       try {
-        return lastValueFrom(initService.init());
+        return lastValueFrom(await initService.init());
       } finally {
         const splash = document.getElementById('initial-splash');
         if (splash) {

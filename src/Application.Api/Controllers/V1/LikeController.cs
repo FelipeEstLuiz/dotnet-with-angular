@@ -33,8 +33,12 @@ public class LikeController(CommunicationProtocol protocol, RequestDispatcher di
 
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
-    public async Task<IActionResult> GetUserLikesAsync(string predicate) => HandlerResponse(
-        HttpStatusCode.OK,
-        await dispatcher.Dispatch<GetUserLikesModel, Result<IEnumerable<UserDto>>>(new GetUserLikesModel(predicate, User.GetUserId()))
-    );
+    public async Task<IActionResult> GetUserLikesAsync([FromQuery] GetUserLikesModel request)
+    {
+        request.UserId = User.GetUserId();
+        return HandlerResponse(
+            HttpStatusCode.OK,
+            await dispatcher.Dispatch<GetUserLikesModel, Result<IEnumerable<UserDto>>>(request)
+        );
+    }
 }
