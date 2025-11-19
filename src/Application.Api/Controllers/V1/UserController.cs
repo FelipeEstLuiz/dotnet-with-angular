@@ -44,7 +44,7 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetByUserNameAsync(string userName) => HandlerResponse(
         HttpStatusCode.OK,
-        await dispatcher.Dispatch<GetUserByUserNameModel, Result<UserDto?>>(new GetUserByUserNameModel(userName))
+        await dispatcher.Dispatch<GetUserByUserNameModel, Result<UserDto>>(new GetUserByUserNameModel(userName))
     );
 
     [HttpGet("{id:int}/photos")]

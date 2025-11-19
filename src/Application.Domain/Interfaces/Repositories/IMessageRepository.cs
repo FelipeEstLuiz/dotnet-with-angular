@@ -1,0 +1,14 @@
+﻿using Application.Domain.Entities;
+using Application.Domain.Model;
+
+namespace Application.Domain.Interfaces.Repositories;
+
+public interface IMessageRepository
+{
+    Task AddAsync(Message message, CancellationToken cancellationToken);
+    void Delete(Message message);
+    Task<Message?> GetMessageAsync(Guid id, CancellationToken cancellationToken);
+    Task<Result<List<Message>>> GetMessagesForUserAsync(MessageParams messageParams, CancellationToken cancellationToken);
+    Task<IEnumerable<Message>> GetMessagesThreadAsync(int currentUserId, int recipientId, CancellationToken cancellationToken);
+    Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken);
+}

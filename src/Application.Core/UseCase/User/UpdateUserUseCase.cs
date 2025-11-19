@@ -21,7 +21,7 @@ public class UpdateUserUseCase(
         );
 
         if (resultUser is null)
-            return Result<bool>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
+            return Result.IsFailure("User not found.", ResponseCodes.USER_NOT_FOUND);
 
         Domain.Entities.User user = resultUser!;
 

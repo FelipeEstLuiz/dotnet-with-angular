@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<User> Users { get; set; }
     public DbSet<Photo> Photos { get; set; }
     public DbSet<UserLike> Likes { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,12 +23,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
         );
 
+        ValueConverter<DateTime?, DateTime?> nullableDateTimeConverter = new(
+            v => v.HasValue ? v.Value.ToUniversalTime() : null,
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null
+        );
+
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
         {
             foreach (IMutableProperty property in entityType.GetProperties())
             {
-                if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                if (property.ClrType == typeof(DateTime))
                     property.SetValueConverter(dateTimeConverter);
+                else if (property.ClrType == typeof(DateTime?))
+                    property.SetValueConverter(nullableDateTimeConverter);
             }
         }
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

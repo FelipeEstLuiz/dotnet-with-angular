@@ -20,15 +20,7 @@ public class GetUserLikesUseCase(ILikesRepository likesRepository) : IRequestHan
             PageSize = request.PageSize
         };
 
-        Result<List<Domain.Entities.User>> result = await likesRepository.GetUserLikesAsync(userLikeParams, cancellationToken);
-        return result.IsFailure
-            ? Result<IEnumerable<UserDto>>.Failure(result.Errors)
-            : Result<IEnumerable<UserDto>>.Success(
-                result.Data!.Select(UserDto.Map),
-                result.TotalItems,
-                result.CurrentPage,
-                result.TotalPages,
-                result.PageSize
-            );
+        return (await likesRepository.GetUserLikesAsync(userLikeParams, cancellationToken))
+            .Map(result => result!.Select(UserDto.Map));
     }
 }

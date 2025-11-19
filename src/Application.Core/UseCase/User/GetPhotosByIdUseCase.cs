@@ -17,7 +17,7 @@ public class GetPhotosByIdUseCase(IUserRepository userRepository)
     {
         IEnumerable<Photo>? photos = await userRepository.GetByPhotoIdAsync(request.Id, cancellationToken);
 
-        return Result<IEnumerable<PhotoUserDto>?>.Success(photos?.Select(x => new PhotoUserDto(
+        return Result.Success(photos?.Select(x => new PhotoUserDto(
             x.Id,
             x.Url,
             x.PublicId,

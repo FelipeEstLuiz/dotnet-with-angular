@@ -10,6 +10,7 @@ internal static class DependencyInjectionRepository
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ILikesRepository, LikesRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         return services;
     }
 }

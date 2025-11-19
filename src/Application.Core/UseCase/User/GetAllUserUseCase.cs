@@ -26,19 +26,7 @@ public class GetAllUserUseCase(IUserRepository userRepository)
             MaxAge = request.MaxAge
         };
 
-        Result<List<Domain.Entities.User>> result = await userRepository.GetAllAsync(
-            userParams,
-            cancellationToken: cancellationToken
-        );
-
-        return result.IsFailure
-            ? Result<IEnumerable<UserDto>>.Failure(result.Errors)
-            : Result<IEnumerable<UserDto>>.Success(
-                result.Data!.Select(UserDto.Map),
-                result.TotalItems,
-                result.CurrentPage,
-                result.TotalPages,
-                result.PageSize
-            );
+        return (await userRepository.GetAllAsync(userParams, cancellationToken: cancellationToken))
+            .Map(result => result!.Select(UserDto.Map));
     }
 }

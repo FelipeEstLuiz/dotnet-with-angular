@@ -29,6 +29,12 @@ public class User : Entity
     [JsonIgnore]
     public List<UserLike> LikedByUsers { get; set; } = [];
 
+    [JsonIgnore]
+    public List<Message> MessagesSent { get; set; } = [];
+
+    [JsonIgnore]
+    public List<Message> MessagesReceived { get; set; } = [];
+
     public static User Create(
         string name,
         string email,

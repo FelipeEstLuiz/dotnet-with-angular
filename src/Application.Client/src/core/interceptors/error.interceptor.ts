@@ -35,18 +35,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       switch (error.status) {
         case 401:
           accountService.logout();
-          toastService.error(['Usuário não autorizado', protocolError]);
+          toastService.error(['Unauthorized user', protocolError]);
           router.navigateByUrl('/');
           break;
         case 403:
-          toastService.error(['Acesso negado', protocolError]);
-          throw modelStateErrors.flat();
+          toastService.error(['Access denied', protocolError]);
+          throw modelStateErrors?.flat() || errorMessage(error);
         case 404:
           router.navigateByUrl('/not-found');
           break;
         case 400:
           toastService.error([...errorMessage(error), protocolError]);
-          throw modelStateErrors.flat();
+          throw modelStateErrors?.flat() || errorMessage(error);
         case 500:
           const navigationExtras: NavigationExtras = {
             state: { error: error.error },
@@ -55,7 +55,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           break;
         default:
           toastService.error([...errorMessage(error), protocolError]);
-          throw modelStateErrors.flat();
+          throw modelStateErrors?.flat() || errorMessage(error);
       }
 
       throw error;

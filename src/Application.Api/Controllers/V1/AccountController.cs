@@ -27,7 +27,7 @@ public class AccountController(CommunicationProtocol protocol, RequestDispatcher
         );
 
     [HttpPost("Login")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto?>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<LoginDto>))]
     public async Task<IActionResult> LoginAsync([FromBody] LoginModel request)
         => HandlerResponse(HttpStatusCode.OK, await dispatcher.Dispatch<LoginModel, Result<LoginDto>>(request));
 }

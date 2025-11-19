@@ -44,12 +44,12 @@ public class PhotoService : IPhotoService
             ImageUploadResult result = await _cloudinary.UploadAsync(uploadParams);
 
             return result.Error is null
-                ? (Result<Photo>)new Photo()
+                ? Result.Success(new Photo()
                 {
                     Url = result.Url.AbsoluteUri,
                     PublicId = result.PublicId
-                }
-                : Result<Photo>.Failure(result.Error.Message);
+                })
+                : Result.Failure<Photo>(result.Error.Message);
         }
         catch (Exception ex)
         {
@@ -68,7 +68,7 @@ public class PhotoService : IPhotoService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error to remove image.");
-            return Result<DeletionResult>.Failure("Error to remove image.");
+            return Result.Failure<DeletionResult>("Error to remove image.");
         }
     }
 }

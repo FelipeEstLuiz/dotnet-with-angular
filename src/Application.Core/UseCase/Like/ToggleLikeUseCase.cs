@@ -28,8 +28,6 @@ public class ToggleLikeUseCase(ILikesRepository likesRepository) : IRequestHandl
         else
             likesRepository.Delete(existingLike);
 
-        return await likesRepository.SaveAllChangesAsync(cancellationToken)
-            ? Result<bool>.Success(true)
-            : Result<bool>.Failure("Failed to update like");
+        return Result.Try(await likesRepository.SaveAllChangesAsync(cancellationToken), "Failed to update like");
     }
 }

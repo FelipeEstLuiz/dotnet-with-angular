@@ -1,28 +1,12 @@
-import { HttpEvent, HttpInterceptorFn, HttpParams } from '@angular/common/http';
+import { HttpInterceptorFn, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { delay, finalize, of, tap } from 'rxjs';
+import { CacheService } from '../services/cache.service';
 import { LoadingService } from '../services/loading.service';
-
-interface CachedResponse {
-  timestamp: number;
-  response: HttpEvent<unknown>;
-}
-
-const CACHE_TTL_MINUTES = 10;
-const cache = new Map<string, CachedResponse>();
-
-setInterval(() => {
-  const now = Date.now();
-  const ttl = CACHE_TTL_MINUTES * 60 * 1000;
-  for (const [key, entry] of cache.entries()) {
-    if (now - entry.timestamp > ttl) {
-      cache.delete(key);
-    }
-  }
-}, CACHE_TTL_MINUTES * 60 * 1000);
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
+  const cacheService = inject(CacheService);
 
   const generateCacheKey = (url: string, params: HttpParams): string => {
     const paramString = params
@@ -32,28 +16,16 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return paramString ? `${url}?${paramString}` : url;
   };
 
-  const invalidateCache = (urlPattern: string) => {
-    for (const key of cache.keys()) {
-      if (key.includes(urlPattern)) cache.delete(key);
-    }
-  };
-
   const cacheKey = generateCacheKey(req.url, req.params);
 
-  if (req.method.includes('POST') && req.url.includes('/like')) {
-    invalidateCache('/like');
-  }
-
-  if (req.method === 'GET') {
-    const cachedResponse = cache.get(cacheKey);
-    if (cachedResponse) {
-      const ttl = CACHE_TTL_MINUTES * 60 * 1000;
-      if (Date.now() - cachedResponse.timestamp < ttl) {
-        return of(cachedResponse.response);
-      } else {
-        cache.delete(cacheKey);
-      }
-    }
+  if (req.method !== 'GET') {
+    // limpa somente os padrões necessários
+    const url = req.url.toLowerCase();
+    if (url.includes('/like')) cacheService.invalidateByPattern('/like');
+    if (url.includes('/message')) cacheService.invalidateByPattern('/message');
+  } else if (req.method === 'GET') {
+    const cached = cacheService.get(cacheKey);
+    if (cached) return of(cached);
   }
 
   loadingService.show();
@@ -62,7 +34,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     delay(500),
     tap((response) => {
       if (req.method === 'GET') {
-        cache.set(cacheKey, { timestamp: Date.now(), response });
+        cacheService.set(cacheKey, response);
       }
     }),
     finalize(() => {

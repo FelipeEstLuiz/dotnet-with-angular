@@ -14,6 +14,6 @@ public class GetUserByIdUseCase(IUserRepository userRepository)
     {
         Domain.Entities.User? user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
 
-        return user is not null ? (Result<UserDto?>)UserDto.Map(user) : Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
+        return user is not null ? Result.Success<UserDto?>(UserDto.Map(user)) : Result.Failure<UserDto?>("User not found.", ResponseCodes.NOT_FOUND);
     }
 }

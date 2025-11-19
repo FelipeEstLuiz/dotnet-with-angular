@@ -1,12 +1,11 @@
 ﻿using Application.Domain.Model;
 
-namespace Application.Core.Model.Like;
+namespace Application.Core.Model.Message;
 
-public record GetUserLikesModel : QueryOptions
+public record GetMessageModel : QueryOptions
 {
-    public string Predicate { get; set; } = "liked";
-
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
     public int UserId { get; set; }
+    public string Container { get; set; } = "Inbox";
 }

@@ -1,9 +1,12 @@
-﻿using Application.Core.DTO.User;
+﻿using Application.Core.DTO.Message;
+using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Core.Model.Like;
+using Application.Core.Model.Message;
 using Application.Core.Model.User;
 using Application.Core.UseCase.Like;
 using Application.Core.UseCase.Login;
+using Application.Core.UseCase.Message;
 using Application.Core.UseCase.User;
 using Application.Core.Validator;
 using Application.Domain.Interfaces.Services;
@@ -18,9 +21,9 @@ internal static class DependencyInjectionUseCase
     internal static IServiceCollection AddUseCase(this IServiceCollection services)
     {
         services.AddScoped<IRequestHandler<InsertUserModel, Result<LoginDto>>, InsertUserUseCase>();
-        services.AddScoped<IRequestHandler<LoginModel, Result<LoginDto?>>, LoginUseCase>();
+        services.AddScoped<IRequestHandler<LoginModel, Result<LoginDto>>, LoginUseCase>();
         services.AddScoped<IRequestHandler<GetAllUserModel, Result<IEnumerable<UserDto>>>, GetAllUserUseCase>();
-        services.AddScoped<IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>, GetUserByUserNameUseCase>();
+        services.AddScoped<IRequestHandler<GetUserByUserNameModel, Result<UserDto>>, GetUserByUserNameUseCase>();
         services.AddScoped<IRequestHandler<GetUserByIdModel, Result<UserDto?>>, GetUserByIdUseCase>();
         services.AddScoped<IRequestHandler<UpdateUserModel, Result<bool>>, UpdateUserUseCase>();
         services.AddScoped<IRequestHandler<PhotoUploadModel, Result<PhotoUserDto>>, UploadPhotoUserUseCase>();
@@ -31,6 +34,10 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<ToggleLikeModel, Result<bool>>, ToggleLikeUseCase>();
         services.AddScoped<IRequestHandler<UserIdLikeModel, Result<IReadOnlyList<int>>>, UserIdLikeUseCase>();
         services.AddScoped<IRequestHandler<GetUserLikesModel, Result<IEnumerable<UserDto>>>, GetUserLikesUseCase>();
+        services.AddScoped<IRequestHandler<CreateMessageModel, Result<MessageDto>>, CreateMessageUseCase>();
+        services.AddScoped<IRequestHandler<GetMessageModel, Result<IEnumerable<MessageDto>>>, GetMessagesUseCase>();
+        services.AddScoped<IRequestHandler<GetMessageThreadModel, Result<IEnumerable<MessageDto>>>, GetMessageThreadUseCase>();
+        services.AddScoped<IRequestHandler<DeleteMessageModel, Result<bool>>, DeleteMessageUseCase>();
 
         services.AddValidators();
 

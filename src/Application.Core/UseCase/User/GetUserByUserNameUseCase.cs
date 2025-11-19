@@ -8,12 +8,11 @@ using Application.Domain.Model;
 namespace Application.Core.UseCase.User;
 
 public class GetUserByUserNameUseCase(IUserRepository userRepository)
-    : IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>
+    : IRequestHandler<GetUserByUserNameModel, Result<UserDto>>
 {
-    public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
+    public async Task<Result<UserDto>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
     {
         Domain.Entities.User? user = await userRepository.GetByNameAsync(request.UserName, cancellationToken);
-
-        return user is not null ? (Result<UserDto?>)UserDto.Map(user) : Result<UserDto?>.Failure("User not found.", ResponseCodes.NOT_FOUND);
+        return user is not null ? Result.Success(UserDto.Map(user)) : Result.Failure<UserDto>("User not found.", ResponseCodes.NOT_FOUND);
     }
 }

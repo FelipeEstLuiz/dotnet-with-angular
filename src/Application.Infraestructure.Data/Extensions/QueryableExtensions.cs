@@ -13,7 +13,7 @@ public static class QueryableExtensions
     )
     {
         if (options is null)
-            return Result<List<T>>.Success(await query.ToListAsync(cancellationToken));
+            return Result.Success(await query.ToListAsync(cancellationToken));
 
         // Total antes da paginação
         int totalItens = await query.CountAsync(cancellationToken);
@@ -32,7 +32,7 @@ public static class QueryableExtensions
 
         List<T> data = await query.ToListAsync(cancellationToken);
 
-        return Result<List<T>>.Success(
+        return Result.Success(
             data: data,
             totalItems: totalItens,
             currentPage: options.PageNumber,

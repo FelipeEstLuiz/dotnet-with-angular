@@ -10,9 +10,9 @@ namespace Application.Core.UseCase.Login;
 public class LoginUseCase(
     IUserRepository userRepository,
     ITokenService tokenService
-) : IRequestHandler<LoginModel, Result<LoginDto?>>
+) : IRequestHandler<LoginModel, Result<LoginDto>>
 {
-    public async Task<Result<LoginDto?>> Handle(LoginModel request, CancellationToken cancellationToken = default)
+    public async Task<Result<LoginDto>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
         Domain.Entities.User? resultUser = await userRepository.GetByEmailAsync(
             request.Email,
@@ -22,10 +22,10 @@ public class LoginUseCase(
         return await ValidarPasswordAsync(resultUser, request.Password);
     }
 
-    private async Task<Result<LoginDto?>> ValidarPasswordAsync(Domain.Entities.User? user, string senha)
+    private async Task<Result<LoginDto>> ValidarPasswordAsync(Domain.Entities.User? user, string senha)
     {
         if (user is null)
-            return Result<LoginDto?>.Failure("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+            return Result.Failure<LoginDto>("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
 
         PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
             user,
@@ -34,8 +34,8 @@ public class LoginUseCase(
         );
 
         return resultado == PasswordVerificationResult.Failed
-            ? Result<LoginDto?>.Failure("Invalid password", Domain.Enums.ResponseCodes.UNAUTHORIZED)
-            : Result<LoginDto?>.Success(new LoginDto(
+            ? Result.Failure<LoginDto>("Invalid password", Domain.Enums.ResponseCodes.UNAUTHORIZED)
+            : Result.Success(new LoginDto(
                 user.Id,
                 user.UserName,
                 user.Email,

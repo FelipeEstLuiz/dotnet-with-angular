@@ -23,7 +23,7 @@ public class InsertUserUseCase(
         );
 
         if (resultUser is not null)
-            return Result<LoginDto>.Failure("E-mail already exists");
+            return Result.Failure<LoginDto>("E-mail already exists");
 
         Domain.Entities.User user = request.MapUsuario();
 
@@ -34,7 +34,7 @@ public class InsertUserUseCase(
         await userRepository.AddAsync(user, cancellationToken);
 
         return await userRepository.SaveChangesAsync(cancellationToken)
-            ? Result<LoginDto>.Success(new LoginDto(user.Id, user.UserName, user.Email, await tokenService.GerarToken(user), user.ImageUrl))
-            : Result<LoginDto>.Failure("Error to adding new user");
+            ? Result.Success(new LoginDto(user.Id, user.UserName, user.Email, await tokenService.GerarToken(user), user.ImageUrl))
+            : Result.Failure<LoginDto>("Error to adding new user");
     }
 }

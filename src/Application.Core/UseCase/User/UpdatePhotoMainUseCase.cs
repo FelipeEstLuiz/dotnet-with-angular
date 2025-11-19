@@ -21,21 +21,19 @@ public class UpdatePhotoMainUseCase(IUserRepository userRepository)
         );
 
         if (resultUser is null)
-            return Result<bool>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
+            return Result.IsFailure("User not found.", ResponseCodes.USER_NOT_FOUND);
 
         Domain.Entities.User user = resultUser!;
 
         Photo? photo = user.Photos.SingleOrDefault(x => x.Id == request.PhotoId);
 
         if (photo is null)
-            return Result<bool>.Failure("Photo not found.");
+            return Result.IsFailure("Photo not found.");
         else if (user.ImageUrl == photo.Url)
-            return Result<bool>.Success(true);
+            return Result.Success(true);
 
         user.ImageUrl = photo.Url;
 
-        return await userRepository.SaveChangesAsync(cancellationToken)
-            ? Result<bool>.Success(true)
-            : Result<bool>.Failure("Error to set main photo.");
+        return Result.Try(await userRepository.SaveChangesAsync(cancellationToken), "Error to set main photo.");
     }
 }

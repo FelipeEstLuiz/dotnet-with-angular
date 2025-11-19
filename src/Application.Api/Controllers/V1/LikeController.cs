@@ -32,7 +32,7 @@ public class LikeController(CommunicationProtocol protocol, RequestDispatcher di
     );
 
     [HttpGet]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseServerSide<IEnumerable<UserDto>>))]
     public async Task<IActionResult> GetUserLikesAsync([FromQuery] GetUserLikesModel request)
     {
         request.UserId = User.GetUserId();

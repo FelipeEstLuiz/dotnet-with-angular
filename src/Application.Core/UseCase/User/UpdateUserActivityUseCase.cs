@@ -19,14 +19,12 @@ public class UpdateUserActivityUseCase(IUserRepository userRepository) : IReques
         );
 
         if (resultUser is null)
-            return Result<bool>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
+            return Result.IsFailure("User not found.", ResponseCodes.USER_NOT_FOUND);
 
         Domain.Entities.User user = resultUser!;
 
         user.UpdateLastActive();
 
-        return await userRepository.SaveChangesAsync(cancellationToken)
-            ? Result<bool>.Success(true)
-            : Result<bool>.Failure("Error to set last activity.");
+        return Result.Try(await userRepository.SaveChangesAsync(cancellationToken),"Error to set last activity.");
     }
 }

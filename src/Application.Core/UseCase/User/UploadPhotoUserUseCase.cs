@@ -15,12 +15,12 @@ public class UploadPhotoUserUseCase(IUserRepository userRepository, IPhotoServic
         Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(request.UserId, cancellationToken: cancellationToken);
 
         if (resultUser is null)
-            return Result<PhotoUserDto>.Failure("User not found.", ResponseCodes.USER_NOT_FOUND);
+            return Result.Failure<PhotoUserDto>("User not found.", ResponseCodes.USER_NOT_FOUND);
 
         Result<Photo> result = await photoService.AddPhotoAsync(request.File);
 
         if (result.IsFailure)
-            return Result<PhotoUserDto>.Failure(result.Errors);
+            return Result.Failure<PhotoUserDto>(result.Errors);
 
         Photo photo = result.Data!;
 
@@ -32,7 +32,7 @@ public class UploadPhotoUserUseCase(IUserRepository userRepository, IPhotoServic
         user.Photos.Add(photo);
 
         return await userRepository.SaveChangesAsync(cancellationToken)
-            ? (Result<PhotoUserDto>)new PhotoUserDto(photo.Id, photo.Url, photo.PublicId, photo.UserId)
-            : Result<PhotoUserDto>.Failure("Error adding user photo.");
+            ? Result.Success(new PhotoUserDto(photo.Id, photo.Url, photo.PublicId, photo.UserId))
+            : Result.Failure<PhotoUserDto>("Error adding user photo.");
     }
 }
