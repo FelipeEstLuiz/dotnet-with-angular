@@ -8,17 +8,11 @@ public class UserTests
     [Fact]
     public void Create_DeveRetornarUsuarioComDadosCorretos()
     {
-        string nome = "joao";
-        string email = "joao@email.com";
-
         User usuarioMock = GenerateUser.Created();
-
-        usuarioMock.UserName = nome;
-        usuarioMock.Email = email;
 
         User usuario = User.Create(
             usuarioMock.FullName,
-            usuarioMock.Email,
+            usuarioMock.Email!,
             usuarioMock.Gender,
             usuarioMock.DateOfBirth,
             usuarioMock.Introduction,
@@ -28,11 +22,16 @@ public class UserTests
             usuarioMock.Country
         );
 
-        Assert.Equal(default, usuario.Id);
-        Assert.Equal(nome, usuario.UserName);
-        Assert.Equal(nome.ToUpperInvariant(), usuario.NormalizedUserName);
-        Assert.Equal(email, usuario.Email);
-        Assert.Equal(email.ToUpperInvariant(), usuario.NormalizedEmail);
-        Assert.NotEqual(default, usuario.DateOfBirth);
+        Assert.Equal(usuarioMock.FullName, usuario.FullName);
+        Assert.Equal(usuarioMock.UserName, usuario.UserName);
+        Assert.Equal(usuarioMock.Country, usuario.Country);
+        Assert.Equal(usuarioMock.City, usuario.City);
+        Assert.Equal(usuarioMock.Gender, usuario.Gender);
+        Assert.Equal(usuarioMock.Interests, usuario.Interests);
+        Assert.Equal(usuarioMock.Introduction, usuario.Introduction);
+        Assert.Equal(usuarioMock.DateOfBirth, usuario.DateOfBirth);
+        Assert.Equal(usuarioMock.LookingFor, usuario.LookingFor);
+        Assert.Equal(usuarioMock.Email, usuario.Email);
+        Assert.Equal(usuarioMock.NormalizedEmail, usuario.NormalizedEmail);
     }
 }

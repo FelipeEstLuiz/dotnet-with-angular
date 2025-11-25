@@ -1,5 +1,6 @@
 using Application.Api.Extensions;
 using Application.Api.Middleware;
+using Application.Api.SignalR;
 using Application.Infraestructure.IOC;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -81,6 +82,7 @@ app.UseAuthorization();
 app.UseResponseCompression();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("/hubs/presence");
 
 // Descomentar ao iniciar a solução sem dados
 if (app.Environment.IsDevelopment())

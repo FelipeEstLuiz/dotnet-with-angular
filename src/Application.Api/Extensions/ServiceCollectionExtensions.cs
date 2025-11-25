@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -42,8 +43,15 @@ public static class ServiceCollectionExtensions
             .AddHttpClient()
             .AddApplicationServices()
             .AddIdentityCore()
-            .AddPolicy();
+            .AddPolicy()
+            .AddSignalR();
 
+        return services;
+    }
+
+    public static IServiceCollection AddSignalR(this IServiceCollection services)
+    {
+        services.AddSignalR();
         return services;
     }
 
@@ -86,6 +94,20 @@ public static class ServiceCollectionExtensions
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ValidateLifetime = true
+            };
+
+            x.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    StringValues accessToken = context.Request.Query["access_token"];
+                    PathString path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        context.Token = accessToken;
+
+                    return Task.CompletedTask;
+                }
             };
         });
 
