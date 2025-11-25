@@ -8,5 +8,5 @@ public record GetUserLikesModel : QueryOptions
 
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public int UserId { get; set; }
+    public string UserId { get; set; } = null!;
 }

@@ -17,7 +17,7 @@
       autocomplete="off"
       class="flex flex-col gap-4 w-full steps"
     >
-      <app-text-input class="mt-2" label="Name" formControlName="name" />
+      <app-text-input class="mt-2" label="Name" formControlName="fullName" />
       <app-text-input label="Email" formControlName="email" />
       <app-text-input
         label="Password"
@@ -108,7 +108,6 @@
       [formGroup]="aboutForm"
       class="flex flex-col gap-4 w-full steps"
     >
-      <app-text-input label="Know As" formControlName="knowAs" class="mt-2" />
       <app-textarea-input
         label="Looking For"
         formControlName="lookingFor"

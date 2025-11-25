@@ -13,6 +13,8 @@ import { MessagesComponent } from '../features/messages/messages.component';
 import { TestErrorsComponent } from '../features/test-errors/test-errors.component';
 import { NotFoundComponent } from '../shared/errors/not-found/not-found.component';
 import { ServerErrorComponent } from './../shared/errors/server-error/server-error.component';
+import { AdminComponent } from '../features/admin/admin.component';
+import { adminGuard } from '../core/guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -53,6 +55,7 @@ export const routes: Routes = [
       },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+      { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
     ],
   },
   { path: 'errors', component: TestErrorsComponent },

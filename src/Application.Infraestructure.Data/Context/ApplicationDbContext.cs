@@ -1,4 +1,5 @@
 ﻿using Application.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -7,16 +8,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace Application.Infraestructure.Data.Context;
 
 [ExcludeFromCodeCoverage]
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User>(options)
 {
-    public DbSet<User> Users { get; set; }
     public DbSet<Photo> Photos { get; set; }
     public DbSet<UserLike> Likes { get; set; }
     public DbSet<Message> Messages { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
         ValueConverter<DateTime, DateTime> dateTimeConverter = new(
             v => v.ToUniversalTime(),
@@ -28,7 +28,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null
         );
 
-        foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
+        foreach (IMutableEntityType entityType in builder.Model.GetEntityTypes())
         {
             foreach (IMutableProperty property in entityType.GetProperties())
             {
@@ -38,6 +38,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     property.SetValueConverter(nullableDateTimeConverter);
             }
         }
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

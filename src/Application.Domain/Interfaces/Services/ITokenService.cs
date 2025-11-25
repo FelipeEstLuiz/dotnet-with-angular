@@ -4,5 +4,6 @@ namespace Application.Domain.Interfaces.Services;
 
 public interface ITokenService
 {
-    Task<string> GerarToken(User usuario);
+    Task<string> GerarToken(User user);
+    string GenerateRefreshToken();
 }

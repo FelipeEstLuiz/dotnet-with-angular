@@ -38,6 +38,16 @@ export class HttpService {
     );
   }
 
+  async postWithCredentials<T>(url: string, body: any): Promise<T> {
+    return await lastValueFrom(
+      this.http
+        .post<ApiResponse<T>>(this.baseUrl + url, body, {
+          withCredentials: true,
+        })
+        .pipe(map((response) => response.data!))
+    );
+  }
+
   async put(url: string, body: any) {
     return await lastValueFrom(this.http.put<void>(this.baseUrl + url, body));
   }

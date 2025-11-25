@@ -3,10 +3,10 @@
 public record MessageDto
 {
     public Guid Id { get; set; }
-    public int SenderId { get; set; }
+    public string SenderId { get; set; } = null!;
     public string SenderName { get; set; } = null!;
     public string? SenderImageUrl { get; set; }
-    public int RecipientId { get; set; }
+    public string RecipientId { get; set; } = null!;
     public string RecipientName { get; set; } = null!;
     public string? RecipientImageUrl { get; set; }
     public required string Content { get; set; }
@@ -21,9 +21,9 @@ public record MessageDto
         Id = message.Id,
         MessageSent = message.MessageSent,
         RecipientImageUrl = message.Recipient.ImageUrl,
-        RecipientName = message.Recipient.UserName,
+        RecipientName = message.Recipient.UserName!,
         SenderId = message.SenderId,
         SenderImageUrl = message.Sender.ImageUrl,
-        SenderName = message.Sender.UserName
+        SenderName = message.Sender.UserName!
     };
 }

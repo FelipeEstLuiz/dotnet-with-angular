@@ -2,9 +2,9 @@
 
 public class UserLike
 {
-    public int SourceUserId { get; set; }
+    public string SourceUserId { get; set; } = null!;
     public User SourceUser { get; set; } = null!;
 
-    public int TargetUserId { get; set; }
+    public string TargetUserId { get; set; } = null!;
     public User TargetUser { get; set; } = null!;
 }

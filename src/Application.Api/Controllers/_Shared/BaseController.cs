@@ -18,6 +18,12 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
 
         if (result.IsSuccess)
         {
+            statusCode = result.ResponseCode switch
+            {
+                ResponseCodes.NO_CONTENT => HttpStatusCode.NoContent,
+                _ => statusCode,
+            };
+
             response = statusCode != HttpStatusCode.NoContent ? Util.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),

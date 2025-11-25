@@ -9,5 +9,5 @@ public record UserParams : QueryOptions
 
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public int? CurrentUserId { get; set; }
+    public string? CurrentUserId { get; set; }
 }

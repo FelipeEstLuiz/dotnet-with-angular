@@ -17,9 +17,8 @@ public class UserTests
         usuarioMock.Email = email;
 
         User usuario = User.Create(
-            usuarioMock.UserName,
+            usuarioMock.FullName,
             usuarioMock.Email,
-            usuarioMock.KnowAs,
             usuarioMock.Gender,
             usuarioMock.DateOfBirth,
             usuarioMock.Introduction,
@@ -35,29 +34,5 @@ public class UserTests
         Assert.Equal(email, usuario.Email);
         Assert.Equal(email.ToUpperInvariant(), usuario.NormalizedEmail);
         Assert.NotEqual(default, usuario.DateOfBirth);
-    }
-
-    [Fact]
-    public void SetPassword_DeveAtribuirPasswordHash()
-    {
-        User usuarioMock = GenerateUser.Created();
-
-        User usuario = User.Create(
-            usuarioMock.UserName,
-            usuarioMock.Email,
-            usuarioMock.KnowAs,
-            usuarioMock.Gender,
-            usuarioMock.DateOfBirth,
-            usuarioMock.Introduction,
-            usuarioMock.Interests,
-            usuarioMock.LookingFor,
-            usuarioMock.City,
-            usuarioMock.Country
-        );
-        string senha = "hash123";
-
-        usuario.SetPassword(senha);
-
-        Assert.Equal(senha, usuario.PasswordHash);
     }
 }

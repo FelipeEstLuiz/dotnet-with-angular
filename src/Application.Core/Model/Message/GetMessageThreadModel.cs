@@ -1,3 +1,3 @@
 ﻿namespace Application.Core.Model.Message;
 
-public record GetMessageThreadModel(int UserId, int RecipientId);
+public record GetMessageThreadModel(string UserId, string RecipientId);

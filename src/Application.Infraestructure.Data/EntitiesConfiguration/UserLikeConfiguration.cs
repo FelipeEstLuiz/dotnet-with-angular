@@ -8,8 +8,6 @@ public class UserLikeConfiguration : IEntityTypeConfiguration<UserLike>
 {
     public void Configure(EntityTypeBuilder<UserLike> builder)
     {
-        builder.ToTable("user_like");
-
         builder.HasKey(u => new { u.SourceUserId, u.TargetUserId });
 
         builder

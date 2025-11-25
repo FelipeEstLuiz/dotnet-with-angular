@@ -2,10 +2,10 @@
 
 public record CreateMessageModel
 {
-    public int RecipientId { get; set; }
+    public string RecipientId { get; set; } = null!;
     public required string Content { get; set; }
 
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public int UserId { get; set; }
+    public string UserId { get; set; } = null!;
 }

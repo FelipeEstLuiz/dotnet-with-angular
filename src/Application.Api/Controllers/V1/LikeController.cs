@@ -19,16 +19,16 @@ public class LikeController(CommunicationProtocol protocol, RequestDispatcher di
 {
     [HttpPost("{targetUserId}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
-    public async Task<IActionResult> ToggleLikeAsync(int targetUserId) => HandlerResponse(
+    public async Task<IActionResult> ToggleLikeAsync(string targetUserId) => HandlerResponse(
         HttpStatusCode.OK,
         await dispatcher.Dispatch<ToggleLikeModel, Result<bool>>(new ToggleLikeModel(targetUserId, User.GetUserId()))
     );
 
     [HttpGet("list")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IReadOnlyList<int>>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IReadOnlyList<string>>))]
     public async Task<IActionResult> GetCurrentUserLikeIdsAsync() => HandlerResponse(
         HttpStatusCode.OK,
-        await dispatcher.Dispatch<UserIdLikeModel, Result<IReadOnlyList<int>>>(new UserIdLikeModel(User.GetUserId()))
+        await dispatcher.Dispatch<UserIdLikeModel, Result<IReadOnlyList<string>>>(new UserIdLikeModel(User.GetUserId()))
     );
 
     [HttpGet]

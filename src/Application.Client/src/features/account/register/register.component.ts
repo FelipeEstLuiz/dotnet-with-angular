@@ -46,7 +46,7 @@ export class RegisterComponent {
 
   constructor() {
     this.credentialsForm = this.fb.group({
-      name: [
+      fullName: [
         '',
         [
           Validators.required,
@@ -86,7 +86,7 @@ export class RegisterComponent {
         [
           Validators.required,
           Validators.maxLength(100),
-          Validators.minLength(3),
+          Validators.minLength(2),
         ],
       ],
       country: [
@@ -94,20 +94,12 @@ export class RegisterComponent {
         [
           Validators.required,
           Validators.maxLength(50),
-          Validators.minLength(3),
+          Validators.minLength(2),
         ],
       ],
     });
 
     this.aboutForm = this.fb.group({
-      knowAs: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(100),
-          Validators.minLength(3),
-        ],
-      ],
       interests: ['', Validators.maxLength(1000)],
       lookingFor: ['', Validators.maxLength(1000)],
       introduction: ['', Validators.maxLength(2000)],

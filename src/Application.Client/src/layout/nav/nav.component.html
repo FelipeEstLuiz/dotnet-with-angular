@@ -32,7 +32,9 @@
       >
       <a routerLink="/lists" routerLinkActive="text-accent">Lists</a>
       <a routerLink="/messages" routerLinkActive="text-accent">Messages</a>
-      }
+      @if(accountService.isAdmin() || accountService.isModerator()){
+      <a routerLink="/admin" routerLinkActive="text-accent">Admin</a>
+      } }
       <a routerLink="/errors" routerLinkActive="text-accent">Errors</a>
     </nav>
 

@@ -9,6 +9,6 @@ public interface IMessageRepository
     void Delete(Message message);
     Task<Message?> GetMessageAsync(Guid id, CancellationToken cancellationToken);
     Task<Result<List<Message>>> GetMessagesForUserAsync(MessageParams messageParams, CancellationToken cancellationToken);
-    Task<IEnumerable<Message>> GetMessagesThreadAsync(int currentUserId, int recipientId, CancellationToken cancellationToken);
+    Task<IEnumerable<Message>> GetMessagesThreadAsync(string currentUserId, string recipientId, CancellationToken cancellationToken);
     Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken);
 }

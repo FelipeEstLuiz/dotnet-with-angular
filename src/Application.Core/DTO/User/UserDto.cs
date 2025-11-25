@@ -3,10 +3,9 @@
 public record UserDto : ComumDto
 {
     public string Name { get; set; } = null!;
-    public string UserName { get; set; } = null!;
+    public string FullName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public DateOnly DateOfBirth { get; set; }
-    public string KnowAs { get; set; } = null!;
     public string Gender { get; set; } = null!;
     public string? Introduction { get; set; }
     public string? Interests { get; set; }
@@ -18,8 +17,9 @@ public record UserDto : ComumDto
 
     public static UserDto Map(Domain.Entities.User user) => new()
     {
-        Email = user.Email,
-        Name = user.UserName,
+        Email = user.Email!,
+        Name = user.UserName!,
+        FullName = user.FullName,
         Id = user.Id,
         Created = user.Created,
         DateOfBirth = user.DateOfBirth,
@@ -29,7 +29,6 @@ public record UserDto : ComumDto
         LastActive = user.LastActive,
         Gender = user.Gender,
         Interests = user.Interests,
-        KnowAs = user.KnowAs,
         LookingFor = user.LookingFor,
         PhotoUrl = user.ImageUrl
     };

@@ -1,3 +1,3 @@
 ﻿namespace Application.Core.Model.Message;
 
-public record DeleteMessageModel(int UserId, Guid MessageId);
+public record DeleteMessageModel(string UserId, Guid MessageId);

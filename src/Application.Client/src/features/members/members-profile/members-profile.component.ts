@@ -33,7 +33,7 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
   private accountService = inject(AccountService);
 
   protected editableMember: MemberUpdate = {
-    name: '',
+    fullName: '',
     city: '',
     country: '',
     interests: '',
@@ -43,7 +43,7 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.editableMember = {
-      name: this.memberService.member()?.name || '',
+      fullName: this.memberService.member()?.fullName || '',
       city: this.memberService.member()?.city || '',
       country: this.memberService.member()?.country || '',
       interests: this.memberService.member()?.interests,
@@ -78,7 +78,7 @@ export class MembersProfileComponent implements OnInit, OnDestroy {
     const currentUser = this.accountService.currentUser();
 
     if (currentUser && updateMember.name !== currentUser?.name) {
-      currentUser.name = updateMember.name;
+      currentUser.name = updateMember.fullName;
       this.accountService.setCurrentUser(currentUser);
     }
 

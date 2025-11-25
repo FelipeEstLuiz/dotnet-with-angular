@@ -14,24 +14,52 @@ export class AccountService {
   currentUser = signal<User | null>(null);
 
   async login(model: Login) {
-    const user = await this.httpService.post<User>('Account/Login', model);
+    const user = await this.httpService.postWithCredentials<User>(
+      'Account/Login',
+      model
+    );
 
     if (user) {
-      this.setCurrentUser(user);
-      await this.likeService.getLikeIds();
+      await this.setCurrentUser(user);
+      await this.startTokenRefreshInterval();
     }
 
     return user;
   }
 
   async register(model: UserRegister) {
-    const user = await this.httpService.post<User>('Account', model);
+    const user = await this.httpService.postWithCredentials<User>(
+      'Account',
+      model
+    );
 
     if (user) {
-      this.setCurrentUser(user);
+      await this.setCurrentUser(user);
+      await this.startTokenRefreshInterval();
     }
 
     return user;
+  }
+
+  async refreshToken() {
+    return await this.httpService.postWithCredentials<User>(
+      'Account/refresh-token',
+      {}
+    );
+  }
+
+  async startTokenRefreshInterval() {
+    setInterval(async () => {
+      try {
+        const user = await this.refreshToken();
+        if (user) {
+          await this.setCurrentUser(user);
+        }
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+        this.logout();
+      }
+    }, 5 * 60 * 1000); //5 minutes
   }
 
   logout() {
@@ -41,8 +69,30 @@ export class AccountService {
     this.currentUser.set(null);
   }
 
-  setCurrentUser(user: User) {
-    localStorage.setItem('user', JSON.stringify(user));
+  async setCurrentUser(user: User) {
+    user.roles = this.getRolesFromToken(user);
     this.currentUser.set(user);
+    await this.likeService.getLikeIds();
+  }
+
+  private getRolesFromToken(user: User): string[] {
+    const payload = user.token.split('.')[1];
+    const decode = atob(payload);
+    const jasonPayload = JSON.parse(decode);
+    return Array.isArray(jasonPayload.role)
+      ? jasonPayload.role
+      : [jasonPayload.role];
+  }
+
+  isAdmin(): boolean {
+    return this.isRole('Admin');
+  }
+
+  isModerator(): boolean {
+    return this.isRole('Moderator');
+  }
+
+  private isRole(role: string): boolean {
+    return this.currentUser()?.roles?.includes(role) ?? false;
   }
 }

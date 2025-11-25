@@ -56,25 +56,6 @@ public class UsuarioRepositoryTests
     }
 
     [Fact]
-    public async Task GetByEmailAsync_DeveRetornarUsuario_QuandoEmailExistir()
-    {
-        User usuario = _faker.Generate();
-
-        using IServiceScope scope = _server.Host.Services.CreateScope();
-        ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        IAppLogger<UserRepository> logger = scope.ServiceProvider.GetRequiredService<IAppLogger<UserRepository>>();
-        UserRepository repository = new(context, logger);
-
-        await repository.AddAsync(usuario, CancellationToken.None);
-        await context.SaveChangesAsync();
-
-        User? result = await repository.GetByEmailAsync(usuario.Email, CancellationToken.None);
-
-        Assert.NotNull(result);
-        Assert.Equal(usuario.UserName, result.UserName);
-    }
-
-    [Fact]
     public async Task GetByIdAsync_DeveRetornarUsuario_QuandoIdExistir()
     {
         User usuario = _faker.Generate();

@@ -2,9 +2,12 @@
 using Application.Api.Middleware;
 using Application.Api.Util;
 using Application.Core.Model;
+using Application.Domain.Entities;
 using Application.Domain.Util;
+using Application.Infraestructure.Data.Context;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
@@ -25,6 +28,8 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration
     )
     {
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
         services
             .AddCommunicationProtocol()
             .ConfigureJwt(configuration)
@@ -35,9 +40,30 @@ public static class ServiceCollectionExtensions
             .AddVersioning()
             .AddGlobalExceptionMiddleware()
             .AddHttpClient()
-            .AddApplicationServices();
+            .AddApplicationServices()
+            .AddIdentityCore()
+            .AddPolicy();
 
-        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+        return services;
+    }
+
+    private static IServiceCollection AddIdentityCore(this IServiceCollection services)
+    {
+        services.AddIdentityCore<User>(opt =>
+        {
+            opt.User.RequireUniqueEmail = true;
+        })
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
+            .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
 
         return services;
     }

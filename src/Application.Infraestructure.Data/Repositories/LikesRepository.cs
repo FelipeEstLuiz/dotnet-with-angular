@@ -11,14 +11,14 @@ public class LikesRepository(ApplicationDbContext context) : ILikesRepository
 {
     public void Delete(UserLike userLike) => context.Remove(userLike);
 
-    public async Task<IReadOnlyList<int>> GetCurrentUserLikeIdAsync(int userId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<string>> GetCurrentUserLikeIdAsync(string userId, CancellationToken cancellationToken)
         => await context
             .Likes
             .Where(x => x.SourceUserId == userId)
             .Select(x => x.TargetUserId)
             .ToListAsync(cancellationToken: cancellationToken);
 
-    public async Task<UserLike?> GetUserLikeAsync(int sourceUserId, int targetUserId, CancellationToken cancellationToken)
+    public async Task<UserLike?> GetUserLikeAsync(string sourceUserId, string targetUserId, CancellationToken cancellationToken)
         => await context
             .Likes
             .FindAsync([sourceUserId, targetUserId], cancellationToken: cancellationToken);
@@ -41,7 +41,7 @@ public class LikesRepository(ApplicationDbContext context) : ILikesRepository
                     .Select(x => x.SourceUser);
                 break;
             default:
-                IReadOnlyList<int> likeIds = await GetCurrentUserLikeIdAsync(userLikeParams.UserId, cancellationToken);
+                IReadOnlyList<string> likeIds = await GetCurrentUserLikeIdAsync(userLikeParams.UserId, cancellationToken);
                 result = query
                     .Where(x => x.TargetUserId == userLikeParams.UserId && likeIds.Contains(x.SourceUserId))
                     .Select(x => x.SourceUser);

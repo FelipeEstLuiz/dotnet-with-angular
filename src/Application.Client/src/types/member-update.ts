@@ -1,5 +1,5 @@
 export interface MemberUpdate {
-  name: string;
+  fullName: string;
   introduction?: string | null;
   interests?: string | null;
   lookingFor?: string | null;

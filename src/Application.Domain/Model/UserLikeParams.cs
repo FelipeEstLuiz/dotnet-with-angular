@@ -3,5 +3,5 @@
 public record UserLikeParams : QueryOptions
 {
     public string Predicate { get; set; } = "liked";
-    public int UserId { get; set; }
+    public string UserId { get; set; } = null!;
 }

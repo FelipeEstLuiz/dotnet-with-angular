@@ -9,8 +9,8 @@ public class Message
     public bool RecipientDeleted { get; set; }
     public DateTime MessageSent { get; set; } = DateTime.UtcNow;
 
-    public int SenderId { get; set; }
+    public string SenderId { get; set; } = null!;
     public User Sender { get; set; } = null!;
-    public int RecipientId { get; set; }
+    public string RecipientId { get; set; } = null!;
     public User Recipient { get; set; } = null!;
 }

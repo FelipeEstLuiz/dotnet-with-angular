@@ -1,6 +1,5 @@
 ﻿using Application.Core.DTO.User;
 using Application.Core.Model;
-using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Identity;
@@ -8,39 +7,33 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.Login;
 
 public class LoginUseCase(
-    IUserRepository userRepository,
+    UserManager<Domain.Entities.User> userManager,
     ITokenService tokenService
-) : IRequestHandler<LoginModel, Result<LoginDto>>
+) : IRequestHandler<LoginModel, Result<UserLoginDto>>
 {
-    public async Task<Result<LoginDto>> Handle(LoginModel request, CancellationToken cancellationToken = default)
+    public async Task<Result<UserLoginDto>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByEmailAsync(
-            request.Email,
-            cancellationToken
-        );
+        Domain.Entities.User? resultUser = await userManager.FindByEmailAsync(request.Email);
 
-        return await ValidarPasswordAsync(resultUser, request.Password);
+        return resultUser is not null
+            ? await ValidarPasswordAsync(resultUser, request.Password)
+            : Result.Failure<UserLoginDto>("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
     }
 
-    private async Task<Result<LoginDto>> ValidarPasswordAsync(Domain.Entities.User? user, string senha)
+    private async Task<Result<UserLoginDto>> ValidarPasswordAsync(Domain.Entities.User user, string password)
     {
-        if (user is null)
-            return Result.Failure<LoginDto>("Invalid user", Domain.Enums.ResponseCodes.USER_NOT_FOUND);
+        if (await userManager.CheckPasswordAsync(user, password))
+        {
+            string token = await tokenService.GerarToken(user);
+            string refreshToken = tokenService.GenerateRefreshToken();
 
-        PasswordVerificationResult resultado = new PasswordHasher<Domain.Entities.User>().VerifyHashedPassword(
-            user,
-            user.PasswordHash,
-            senha
-        );
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            await userManager.UpdateAsync(user);
 
-        return resultado == PasswordVerificationResult.Failed
-            ? Result.Failure<LoginDto>("Invalid password", Domain.Enums.ResponseCodes.UNAUTHORIZED)
-            : Result.Success(new LoginDto(
-                user.Id,
-                user.UserName,
-                user.Email,
-                await tokenService.GerarToken(user),
-                user.ImageUrl
-            ));
+            return Result.Success(new UserLoginDto(LoginDto.Map(user, token), refreshToken));
+        }
+
+        return Result.Failure<UserLoginDto>("Invalid password", Domain.Enums.ResponseCodes.UNAUTHORIZED);
     }
 }

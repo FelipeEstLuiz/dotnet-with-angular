@@ -11,7 +11,7 @@ public class CadastrarUsuarioValidatorTests
     public CadastrarUsuarioValidatorTests()
     {
         Faker<InsertUserModel> faker = new Faker<InsertUserModel>()
-            .RuleFor(cmd => cmd.Name, f => f.Name.FullName())
+            .RuleFor(cmd => cmd.FullName, f => f.Name.FullName())
             .RuleFor(cmd => cmd.Email, f => f.Internet.Email())
             .RuleFor(cmd => cmd.Password, f => f.Internet.Password(8))
             .RuleFor(cmd => cmd.PasswordConfirmed, (f, cmd) => cmd.Password)
@@ -22,7 +22,8 @@ public class CadastrarUsuarioValidatorTests
             })
             .RuleFor(u => u.Introduction, f => f.Lorem.Sentence())
             .RuleFor(u => u.Gender, f => f.PickRandom("Masculino", "Feminino", "Outro"))
-            .RuleFor(u => u.KnowAs, f => f.Name.FirstName());
+            .RuleFor(u => u.City, f => f.Address.City())
+            .RuleFor(u => u.Country, f => f.Address.Country());
 
         _command = faker.Generate();
     }
@@ -33,7 +34,7 @@ public class CadastrarUsuarioValidatorTests
         InsertUserValidator validator = new();
         InsertUserModel command = new()
         {
-            Name = "",
+            FullName = "",
             Email = "invalido",
             Password = "abc",
             PasswordConfirmed = "diferente"
@@ -42,7 +43,7 @@ public class CadastrarUsuarioValidatorTests
         FluentValidation.Results.ValidationResult result = validator.Validate(command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Name" && e.ErrorMessage.Contains("Required"));
+        Assert.Contains(result.Errors, e => e.PropertyName == "FullName" && e.ErrorMessage.Contains("Required"));
         Assert.Contains(result.Errors, e => e.PropertyName == "Email" && e.ErrorMessage.Contains("Invalid"));
         Assert.Contains(result.Errors, e => e.PropertyName == "Password" && e.ErrorMessage.Contains("It must have at least 8 characters."));
         Assert.Contains(result.Errors, e => e.PropertyName == "PasswordConfirmed" && e.ErrorMessage.Contains("The password confirmation does not match the password"));
@@ -73,12 +74,12 @@ public class CadastrarUsuarioValidatorTests
     {
         InsertUserValidator validator = new();
 
-        _command.Name = nome;
+        _command.FullName = nome;
 
         FluentValidation.Results.ValidationResult result = validator.Validate(_command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, e => e.PropertyName == "Name");
+        Assert.Contains(result.Errors, e => e.PropertyName == "FullName");
     }
 
     [Fact]

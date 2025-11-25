@@ -4,5 +4,5 @@ public record PhotoUserDto(
     int Id,
     string Url,
     string? PublicId,
-    int? MemberId
+    string? MemberId
 );

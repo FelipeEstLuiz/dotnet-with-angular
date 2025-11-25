@@ -7,9 +7,8 @@ public record InsertUserModel : BaseUserModel
     public string PasswordConfirmed { get; set; } = null!;
 
     public Domain.Entities.User MapUsuario() => Domain.Entities.User.Create(
-        name: Name,
+        fullName: FullName,
         email: Email,
-        knowAs: KnowAs,
         gender: Gender,
         dateOfBirth: DateOfBirth!.Value,
         introduction: Introduction,

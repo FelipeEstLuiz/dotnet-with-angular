@@ -14,5 +14,5 @@ export const memberResolver: ResolveFn<Member> = (route, state) => {
     return EMPTY;
   }
 
-  return memberService.getById(parseInt(memberId));
+  return memberService.getById(memberId);
 };

@@ -23,11 +23,11 @@ export class MessageService {
     return await this.httpService.getApiResult<Message[]>('message', params);
   }
 
-  async getMessageThread(userId: number) {
+  async getMessageThread(userId: string) {
     return await this.httpService.get<Message[]>('message/thread/' + userId);
   }
 
-  async sendMessage(recipientId: number, content: string) {
+  async sendMessage(recipientId: string, content: string) {
     return await this.httpService.post<Message>('message', {
       recipientId,
       content,

@@ -29,40 +29,31 @@ public class UserController(CommunicationProtocol protocol, RequestDispatcher di
         );
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id}")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
-    public async Task<IActionResult> GetByIdAsync(int id) => HandlerResponse(
+    public async Task<IActionResult> GetByIdAsync(string id) => HandlerResponse(
         HttpStatusCode.OK,
         await dispatcher.Dispatch<GetUserByIdModel, Result<UserDto?>>(new GetUserByIdModel(id))
     );
 
-    [HttpGet("{userName}")]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [Produces("application/json")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<UserDto>>))]
-    public async Task<IActionResult> GetByUserNameAsync(string userName) => HandlerResponse(
-        HttpStatusCode.OK,
-        await dispatcher.Dispatch<GetUserByUserNameModel, Result<UserDto>>(new GetUserByUserNameModel(userName))
-    );
-
-    [HttpGet("{id:int}/photos")]
+    [HttpGet("{id}/photos")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<IEnumerable<PhotoUserDto>?>>))]
-    public async Task<IActionResult> GetPhotosByIdAsync(int id) => HandlerResponse(
+    public async Task<IActionResult> GetPhotosByIdAsync(string id) => HandlerResponse(
        HttpStatusCode.OK,
        await dispatcher.Dispatch<GetUserPhotoByIdModel, Result<IEnumerable<PhotoUserDto>?>>(new GetUserPhotoByIdModel(id))
    );
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id}")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces("application/json")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] UpdateUserModel request)
+    public async Task<IActionResult> UpdateAsync(string id, [FromBody] UpdateUserModel request)
     {
-        int userId = User.GetUserId();
+        string userId = User.GetUserId();
 
         if (id != userId)
             return HandlerResponse(

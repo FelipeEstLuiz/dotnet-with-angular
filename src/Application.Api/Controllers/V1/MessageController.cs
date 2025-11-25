@@ -41,7 +41,7 @@ public class MessageController(CommunicationProtocol protocol, RequestDispatcher
 
     [HttpGet("thread/{recipientId}")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<MessageDto>>))]
-    public async Task<IActionResult> GetMessageThreadAsync(int recipientId)
+    public async Task<IActionResult> GetMessageThreadAsync(string recipientId)
         => HandlerResponse(
             HttpStatusCode.OK,
             await dispatcher.Dispatch<GetMessageThreadModel, Result<IEnumerable<MessageDto>>>(new GetMessageThreadModel(User.GetUserId(), recipientId))

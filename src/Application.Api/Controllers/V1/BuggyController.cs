@@ -2,6 +2,7 @@
 using Application.Api.Util;
 using Application.Domain.Enums;
 using Application.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mime;
@@ -27,6 +28,13 @@ public class BuggyController(CommunicationProtocol protocol) : BaseApplicationCo
 
     [HttpGet("bad-request")]
     public IActionResult GetBadRequest() => GetError(HttpStatusCode.BadRequest, ResponseCodes.BAD_REQUEST);
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin-secret")]
+    public IActionResult GetAdminSecret() => HandlerResponse(
+        HttpStatusCode.OK,
+        Result<string>.Success("Only admins should see this")
+    );
 
     private IActionResult GetError(HttpStatusCode httpStatusCode, ResponseCodes responseCodes)
        => HandlerResponse(httpStatusCode, Result<string>.Failure(["Bug test response API", httpStatusCode.ToString()], responseCodes));

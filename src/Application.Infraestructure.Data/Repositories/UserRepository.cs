@@ -14,25 +14,18 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
 
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
 
-    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
-        => await context
-            .Users
-            .Where(x => x.Email.ToLower() == email.ToLower())
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-
-
     public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
         => await context
             .Users
-            .Where(x => x.UserName.ToLower() == name.ToLower())
+            .Where(x => x.UserName!.ToLower() == name.ToLower() || x.FullName.ToLower() == name.ToLower())
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken) => await context
+    public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken) => await context
         .Users
         .Include(x => x.Photos)
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
 
-    public async Task<IEnumerable<Photo>?> GetByPhotoIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Photo>?> GetByPhotoIdAsync(string id, CancellationToken cancellationToken)
         => await context
             .Users
             .Where(x => x.Id == id)

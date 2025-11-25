@@ -11,11 +11,13 @@ export class InitService {
   private likeService = inject(LikesService);
 
   async init(): Promise<Observable<null>> {
-    const userString = localStorage.getItem('user');
-    if (!userString) return of(null);
-    const user = JSON.parse(userString);
-    this.accountService.currentUser.set(user);
-    await this.likeService.getLikeIds();
+    const user = await this.accountService.refreshToken();
+
+    if (user) {
+      this.accountService.currentUser.set(user);
+      await this.likeService.getLikeIds();
+      await this.accountService.startTokenRefreshInterval();
+    }
     return of(null);
   }
 }

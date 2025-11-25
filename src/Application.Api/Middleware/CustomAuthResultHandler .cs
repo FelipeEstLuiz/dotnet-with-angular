@@ -21,7 +21,7 @@ public class CustomAuthResultHandler(IAppLogger<CustomAuthResultHandler> logger)
             context.Response.StatusCode = 403;
             await context.Response.WriteAsJsonAsync(Response.Failure(
                 GetProtocol(context),
-                ["Acesso negado"],
+                ["Access denied"],
                 System.Net.HttpStatusCode.Forbidden
             ));
             return;

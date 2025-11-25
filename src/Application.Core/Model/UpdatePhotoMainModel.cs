@@ -1,3 +1,3 @@
 ﻿namespace Application.Core.Model;
 
-public record UpdatePhotoMainModel(int UserId, int PhotoId);
+public record UpdatePhotoMainModel(string UserId, int PhotoId);

@@ -68,7 +68,12 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors("AllowAll");
+app.UseCors(x => x
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")
+);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -78,22 +83,24 @@ app.UseResponseCompression();
 app.MapControllers();
 
 // Descomentar ao iniciar a solução sem dados
-//if (app.Environment.IsDevelopment())
-//{
-//    using IServiceScope scope = app.Services.CreateScope();
-//    IServiceProvider services = scope.ServiceProvider;
+if (app.Environment.IsDevelopment())
+{
+    using IServiceScope scope = app.Services.CreateScope();
+    IServiceProvider services = scope.ServiceProvider;
 
-//    try
-//    {
-//        ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-//        await context.Database.MigrateAsync();
-//        await Seed.SeedUsers(context);
-//    }
-//    catch (Exception ex)
-//    {
-//        ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "An error occurred while seeding the database.");
-//    }
-//}
+    try
+    {
+        var context = services.GetRequiredService<Application.Infraestructure.Data.Context.ApplicationDbContext>();
+        var userManager = services
+            .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Application.Domain.Entities.User>>();
+        await context.Database.MigrateAsync();
+        await Application.Infraestructure.Data.SeedData.Seed.SeedUsers(userManager);
+    }
+    catch (Exception ex)
+    {
+        ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 await app.RunAsync();

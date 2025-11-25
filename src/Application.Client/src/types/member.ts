@@ -1,9 +1,9 @@
 export interface Member {
-  id: number;
+  id: string;
   name: string;
+  fullName: string;
   email: string;
   dateOfBirth: string;
-  knowAs: string;
   gender: string;
   introduction?: string | null;
   interests?: string | null;

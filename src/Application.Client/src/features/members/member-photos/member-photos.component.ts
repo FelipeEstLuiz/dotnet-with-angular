@@ -24,9 +24,7 @@ export class MemberPhotosComponent implements OnInit {
   async ngOnInit() {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
     if (memberId)
-      this.photos.set(
-        await this.memberService.getMemberPhotoById(parseInt(memberId))
-      );
+      this.photos.set(await this.memberService.getMemberPhotoById(memberId));
   }
 
   async uploadImage(file: File) {

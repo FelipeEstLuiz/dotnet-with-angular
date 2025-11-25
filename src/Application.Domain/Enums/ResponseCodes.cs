@@ -23,5 +23,6 @@ public enum ResponseCodes
     INVALID_LENGTH,
     USER_NOT_HAVE_PERMISSION,
     NOT_FOUND,
-    SERVER_ERROR
+    SERVER_ERROR,
+    NO_CONTENT,
 }

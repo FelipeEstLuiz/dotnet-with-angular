@@ -1,5 +1,4 @@
 ﻿using Application.Domain.Enums;
-using CloudinaryDotNet.Actions;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -13,13 +12,15 @@ public static class Result
         int totalItems = 0,
         int currentPage = 0,
         int totalPages = 0,
-        int pageSize = 0
+        int pageSize = 0,
+        ResponseCodes responseCode = ResponseCodes.NONE
     ) => Result<T>.Success(
         data,
         totalItems: totalItems,
         currentPage: currentPage,
         totalPages: totalPages,
-        pageSize: pageSize
+        pageSize: pageSize,
+        responseCode: responseCode
     );
     public static Result<T> Failure<T>(string message, ResponseCodes responseCode = ResponseCodes.NONE)
         => Result<T>.Failure(message, responseCode);
@@ -62,14 +63,16 @@ public class Result<TResponse>(bool isSuccess)
         int totalItems = 0,
         int currentPage = 0,
         int totalPages = 0,
-        int pageSize = 0
+        int pageSize = 0,
+        ResponseCodes responseCode = ResponseCodes.NONE
     ) => new(true)
     {
         Data = data,
         TotalItems = totalItems,
         CurrentPage = currentPage,
         TotalPages = totalPages,
-        PageSize = pageSize
+        PageSize = pageSize,
+        ResponseCode = responseCode
     };
 
     // ---------------------

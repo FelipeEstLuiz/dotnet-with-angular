@@ -1,6 +1,5 @@
 ﻿using Application.Core.DTO.User;
 using Application.Core.Model.User;
-using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Identity;
@@ -8,33 +7,31 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.User;
 
 public class InsertUserUseCase(
-    IUserRepository userRepository,
+    UserManager<Domain.Entities.User> userManager,
     ITokenService tokenService
-) : IRequestHandler<InsertUserModel, Result<LoginDto>>
+) : IRequestHandler<InsertUserModel, Result<UserLoginDto>>
 {
-    public async Task<Result<LoginDto>> Handle(
+    public async Task<Result<UserLoginDto>> Handle(
         InsertUserModel request,
         CancellationToken cancellationToken = default
     )
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByEmailAsync(
-            request.Email,
-            cancellationToken
-        );
-
-        if (resultUser is not null)
-            return Result.Failure<LoginDto>("E-mail already exists");
-
         Domain.Entities.User user = request.MapUsuario();
 
-        PasswordHasher<Domain.Entities.User> hasher = new();
+        IdentityResult result = await userManager.CreateAsync(user, request.Password);
 
-        user.SetPassword(hasher.HashPassword(user, request.Password));
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, "Member");
+            string token = await tokenService.GerarToken(user);
+            string refreshToken = tokenService.GenerateRefreshToken();
 
-        await userRepository.AddAsync(user, cancellationToken);
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            await userManager.UpdateAsync(user);
+            return Result.Success(new UserLoginDto(LoginDto.Map(user, token), refreshToken));
+        }
 
-        return await userRepository.SaveChangesAsync(cancellationToken)
-            ? Result.Success(new LoginDto(user.Id, user.UserName, user.Email, await tokenService.GerarToken(user), user.ImageUrl))
-            : Result.Failure<LoginDto>("Error to adding new user");
+        return Result.Failure<UserLoginDto>(result.Errors.Select(x => x.Description));
     }
 }

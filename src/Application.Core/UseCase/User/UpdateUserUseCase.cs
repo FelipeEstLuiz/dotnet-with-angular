@@ -16,7 +16,7 @@ public class UpdateUserUseCase(
     )
     {
         Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
-            request.Id,
+            request.Id!,
             cancellationToken
         );
 
@@ -25,7 +25,7 @@ public class UpdateUserUseCase(
 
         Domain.Entities.User user = resultUser!;
 
-        user.SetName(request.Name);
+        user.SetName(request.FullName);
         user.SetCountry(request.Country);
         user.SetCity(request.City);
         user.SetIntroduction(request.Introduction);

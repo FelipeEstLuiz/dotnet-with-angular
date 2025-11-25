@@ -46,23 +46,17 @@ export class MemberService {
     return result;
   }
 
-  async getByName(username: string): Promise<Member> {
-    const member = await this.httpService.get<Member>('user/' + username);
-    this.member.set(member);
-    return member;
-  }
-
-  async getById(id: number): Promise<Member> {
+  async getById(id: string): Promise<Member> {
     const member = await this.httpService.get<Member>('user/' + id);
     this.member.set(member);
     return member;
   }
 
-  async updateById(id: number, member: MemberUpdate) {
+  async updateById(id: string, member: MemberUpdate) {
     await this.httpService.put('user/' + id, member);
   }
 
-  async getMemberPhotoById(id: number): Promise<Photo[]> {
+  async getMemberPhotoById(id: string): Promise<Photo[]> {
     return await this.httpService.get<Photo[]>('user/' + id + '/photos');
   }
 

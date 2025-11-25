@@ -8,10 +8,10 @@ import { HttpParams } from '@angular/common/http';
 })
 export class LikesService {
   private httpService = inject(HttpService);
-  likeIds = signal<number[]>([]);
+  likeIds = signal<string[]>([]);
 
-  async toggleLike(targetUserId: number) {
-    return await this.httpService.post<number[]>('like/' + targetUserId, {});
+  async toggleLike(targetUserId: string) {
+    return await this.httpService.post<string[]>('like/' + targetUserId, {});
   }
 
   async getLikes(predicate: string, pageNumber: number, pageSize: number) {
@@ -24,7 +24,7 @@ export class LikesService {
   }
 
   async getLikeIds() {
-    const ids = await this.httpService.get<number[]>('like/list');
+    const ids = await this.httpService.get<string[]>('like/list');
     this.likeIds.set(ids);
     return ids;
   }

@@ -33,7 +33,7 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         return await query.ApplyQueryOptionsAsync(messageParams, cancellationToken: cancellationToken);
     }
 
-    public async Task<IEnumerable<Message>> GetMessagesThreadAsync(int currentUserId, int recipientId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Message>> GetMessagesThreadAsync(string currentUserId, string recipientId, CancellationToken cancellationToken)
     {
         await context
             .Messages

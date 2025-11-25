@@ -6,6 +6,6 @@ public record GetMessageModel : QueryOptions
 {
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public int UserId { get; set; }
+    public string UserId { get; set; } = null!;
     public string Container { get; set; } = "Inbox";
 }

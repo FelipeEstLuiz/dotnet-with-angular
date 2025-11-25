@@ -21,20 +21,20 @@
       <input
         [ngClass]="{
           'border-red-500':
-            editForm.controls['name']?.invalid &&
-            (editForm.controls['name']?.dirty ||
-              editForm.controls['name']?.touched)
+            editForm.controls['fullName']?.invalid &&
+            (editForm.controls['fullName']?.dirty ||
+              editForm.controls['fullName']?.touched)
         }"
         class="border rounded p-2 w-full input"
-        name="name"
-        [(ngModel)]="editableMember.name"
+        name="fullName"
+        [(ngModel)]="editableMember.fullName"
         placeholder="Name"
         maxlength="100"
         minlength="3"
         required
       />
-      @let name = editForm.controls['name']; @if (name?.invalid && (name?.dirty
-      || name?.touched)) {
+      @let name = editForm.controls['fullName']; @if (name?.invalid &&
+      (name?.dirty || name?.touched)) {
       <span class="text-error text-sm">
         @if (name?.errors?.['required']) { Name is required. } @if
         (name?.errors?.['minlength']) { Minimum 3 characters. }
@@ -83,7 +83,7 @@
         [(ngModel)]="editableMember.city"
         placeholder="City"
         maxlength="200"
-        minlength="3"
+        minlength="2"
         required
         [ngClass]="{
           'border-red-500':
@@ -97,7 +97,7 @@
       || city?.touched)) {
       <span class="text-error text-sm">
         @if (city?.errors?.['required']) { City is required. } @if
-        (city?.errors?.['minlength']) { Minimum 3 characters. }
+        (city?.errors?.['minlength']) { Minimum 2 characters. }
       </span>
       }
     </label>
@@ -109,7 +109,7 @@
         [(ngModel)]="editableMember.country"
         placeholder="Country"
         maxlength="50"
-        minlength="3"
+        minlength="2"
         required
         [ngClass]="{
           'border-red-500':
@@ -123,7 +123,7 @@
       (country?.dirty || country?.touched)) {
       <span class="text-error text-sm">
         @if (country?.errors?.['required']) { Country is required. } @if
-        (country?.errors?.['minlength']) { Minimum 3 characters. }
+        (country?.errors?.['minlength']) { Minimum 2 characters. }
       </span>
       }
     </label>

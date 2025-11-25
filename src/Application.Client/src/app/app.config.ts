@@ -5,15 +5,12 @@ import {
   provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withViewTransitions } from '@angular/router';
-import { provideToastr } from 'ngx-toastr';
-import { lastValueFrom } from 'rxjs';
 import { errorInterceptor } from '../core/interceptors/error.interceptor';
+import { jwtInterceptor } from '../core/interceptors/jwt.interceptor';
 import { loadingInterceptor } from '../core/interceptors/loading.interceptor';
 import { InitService } from '../core/services/init.service';
 import { routes } from './app.routes';
-import { jwtInterceptor } from '../core/interceptors/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,19 +19,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor])
     ),
-    provideAnimations(),
-    provideToastr({
-      positionClass: 'toast-bottom-right',
-      timeOut: 3000,
-      preventDuplicates: true,
-      closeButton: true,
-      progressBar: true,
-    }),
     provideAppInitializer(async () => {
       const initService = inject(InitService);
 
       try {
-        return lastValueFrom(await initService.init());
+        await initService.init();
       } finally {
         const splash = document.getElementById('initial-splash');
         if (splash) {

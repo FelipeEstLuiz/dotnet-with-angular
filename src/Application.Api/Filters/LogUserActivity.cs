@@ -17,7 +17,7 @@ public class LogUserActivity : IAsyncActionFilter
 
         if (context.HttpContext.User.Identity?.IsAuthenticated != true) return;
 
-        int userId = resultContext.HttpContext.User.GetUserId();
+        string userId = resultContext.HttpContext.User.GetUserId();
 
         _ = Task.Run(async () =>
         {
