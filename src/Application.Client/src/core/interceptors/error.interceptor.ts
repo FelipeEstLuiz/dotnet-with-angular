@@ -34,7 +34,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       switch (error.status) {
         case 401:
-          accountService.logout();
+          accountService.logout().then(() => {});
           toastService.error(['Unauthorized user', protocolError]);
           router.navigateByUrl('/');
           break;

@@ -23,6 +23,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     const url = req.url.toLowerCase();
     if (url.includes('/like')) cacheService.invalidateByPattern('/like');
     if (url.includes('/message')) cacheService.invalidateByPattern('/message');
+    if (url.includes('/logout')) cacheService.clear();
   } else if (req.method === 'GET') {
     const cached = cacheService.get(cacheKey);
     if (cached) return of(cached);

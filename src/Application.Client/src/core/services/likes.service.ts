@@ -11,7 +11,18 @@ export class LikesService {
   likeIds = signal<string[]>([]);
 
   async toggleLike(targetUserId: string) {
-    return await this.httpService.post<string[]>('like/' + targetUserId, {});
+    const response = await this.httpService.post<string[]>(
+      'like/' + targetUserId,
+      {}
+    );
+
+    if (this.likeIds().includes(targetUserId)) {
+      this.likeIds.update((ids) => ids.filter((x) => x !== targetUserId));
+    } else {
+      this.likeIds.update((ids) => [...ids, targetUserId]);
+    }
+
+    return response;
   }
 
   async getLikes(predicate: string, pageNumber: number, pageSize: number) {

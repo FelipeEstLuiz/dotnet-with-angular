@@ -4,6 +4,7 @@ using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.User;
 using Application.Core.Model;
 using Application.Core.Model.User;
+using Application.Domain.Extensions;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -44,6 +45,18 @@ public class AccountController(CommunicationProtocol protocol, RequestDispatcher
             await SetRefreshToken(response.Data!.RefreshToken);
             return HandlerResponse(HttpStatusCode.OK, Result<LoginDto>.Success(response.Data!.Login));
         }
+
+        return HandlerResponse(HttpStatusCode.OK, response);
+    }
+
+    [HttpPost("Logout")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
+    public async Task<IActionResult> Logout()
+    {
+        Result<bool> response = await dispatcher.Dispatch<LogoutModel, Result<bool>>(new LogoutModel(User.GetUserId()));
+
+        if (response.IsSuccess)
+            Response.Cookies.Delete("refreshToken");
 
         return HandlerResponse(HttpStatusCode.OK, response);
     }

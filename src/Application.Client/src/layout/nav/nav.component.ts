@@ -13,6 +13,7 @@ import { themes } from '../theme';
 })
 export class NavComponent implements OnInit {
   protected accountService = inject(AccountService);
+  protected loading = signal(false);
   private router = inject(Router);
   protected creds: Login = { email: '', password: '' };
   protected selectTheme = signal<string>(
@@ -32,11 +33,23 @@ export class NavComponent implements OnInit {
     if (elem) elem.blur();
   }
 
-  async login() {
-    await this.accountService.login(this.creds);
+  handleSelectUserItem() {
+    const elem = document.activeElement as HTMLDivElement;
+    if (elem) elem.blur();
+  }
 
-    this.creds = { email: '', password: '' };
-    this.router.navigateByUrl('/members');
+  async login() {
+    if (!this.creds.email?.trim() || !this.creds.password?.trim()) return;
+
+    this.loading.set(true);
+
+    try {
+      await this.accountService.login(this.creds);
+      this.creds = { email: '', password: '' };
+      this.router.navigateByUrl('/members');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   logout() {

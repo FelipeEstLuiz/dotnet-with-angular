@@ -9,6 +9,7 @@ using Application.Core.Model.User;
 using Application.Core.UseCase.Admin;
 using Application.Core.UseCase.Like;
 using Application.Core.UseCase.Login;
+using Application.Core.UseCase.Logout;
 using Application.Core.UseCase.Message;
 using Application.Core.UseCase.User;
 using Application.Core.Validator;
@@ -47,6 +48,7 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<AddGroupModel, Result<bool>>, AddGroupUseCase>();
         services.AddScoped<IRequestHandler<RemoveGroupModel, Result<bool>>, RemoveGroupUseCase>();
         services.AddScoped<IRequestHandler<GetGroupModel, Result<GroupDto?>>, GetGroupUseCase>();
+        services.AddScoped<IRequestHandler<LogoutModel, Result<bool>>, LogoutUseCase>();
 
         services.AddValidators();
 

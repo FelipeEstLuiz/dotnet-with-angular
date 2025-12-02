@@ -64,12 +64,13 @@ export class AccountService {
         }
       } catch (error) {
         console.error('Error refreshing token:', error);
-        this.logout();
+        await this.logout();
       }
     }, 5 * 60 * 1000); //5 minutes
   }
 
-  logout() {
+  async logout() {
+    await this.httpService.postWithCredentials('Account/logout', {});
     localStorage.removeItem('user');
     localStorage.removeItem('filters');
     this.likeService.clearLikeIds();
