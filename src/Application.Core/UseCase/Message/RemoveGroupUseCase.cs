@@ -5,11 +5,11 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class RemoveGroupUseCase(IMessageRepository messageRepository) : IRequestHandler<RemoveGroupModel, Result<bool>>
+public class RemoveGroupUseCase(IUnitOfWork unitOfWork) : IRequestHandler<RemoveGroupModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(RemoveGroupModel request, CancellationToken cancellationToken = default)
     {
-        await messageRepository.RemoveConnectionAsync(request.ConnectionId, cancellationToken);
+        await unitOfWork.MessageRepository.RemoveConnectionAsync(request.ConnectionId, cancellationToken);
         return Result.IsSuccess();
     }
 }

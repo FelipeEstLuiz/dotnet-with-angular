@@ -5,11 +5,11 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class DeleteMessageUseCase(IMessageRepository messageRepository) : IRequestHandler<DeleteMessageModel, Result<bool>>
+public class DeleteMessageUseCase(IUnitOfWork unitOfWork) : IRequestHandler<DeleteMessageModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeleteMessageModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.Message? message = await messageRepository.GetMessageAsync(request.MessageId, cancellationToken);
+        Domain.Entities.Message? message = await unitOfWork.MessageRepository.GetMessageAsync(request.MessageId, cancellationToken);
 
         if (message is null)
             return Result.IsFailure("Cannot delete this message");
@@ -20,8 +20,8 @@ public class DeleteMessageUseCase(IMessageRepository messageRepository) : IReque
         if (message.RecipientId == request.UserId) message.RecipientDeleted = true;
 
         if (message is { RecipientDeleted: true, SenderDeleted: true })
-            messageRepository.Delete(message);
+            unitOfWork.MessageRepository.Delete(message);
 
-        return Result.Try(await messageRepository.SaveAllChangesAsync(cancellationToken), "Failed to delete the message");
+        return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Failed to delete the message");
     }
 }

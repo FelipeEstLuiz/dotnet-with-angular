@@ -8,12 +8,12 @@ using CloudinaryDotNet.Actions;
 
 namespace Application.Core.UseCase.User;
 
-public class DeletePhotoUseCase(IUserRepository userRepository, IPhotoService photoService)
+public class DeletePhotoUseCase(IUnitOfWork unitOfWork, IPhotoService photoService)
     : IRequestHandler<DeletePhotoModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(DeletePhotoModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
+        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(
             request.UserId,
             cancellationToken
         );
@@ -42,6 +42,6 @@ public class DeletePhotoUseCase(IUserRepository userRepository, IPhotoService ph
 
         user.Photos.Remove(photo);
 
-        return Result.Try(await userRepository.SaveChangesAsync(cancellationToken), "Error to remove photo.");
+        return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Error to remove photo.");
     }
 }

@@ -6,7 +6,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Like;
 
-public class GetUserLikesUseCase(ILikesRepository likesRepository) : IRequestHandler<GetUserLikesModel, Result<IEnumerable<UserDto>>>
+public class GetUserLikesUseCase(IUnitOfWork unitOfWork) : IRequestHandler<GetUserLikesModel, Result<IEnumerable<UserDto>>>
 {
     public async Task<Result<IEnumerable<UserDto>>> Handle(GetUserLikesModel request, CancellationToken cancellationToken = default)
     {
@@ -20,7 +20,7 @@ public class GetUserLikesUseCase(ILikesRepository likesRepository) : IRequestHan
             PageSize = request.PageSize
         };
 
-        return (await likesRepository.GetUserLikesAsync(userLikeParams, cancellationToken))
+        return (await unitOfWork.LikesRepository.GetUserLikesAsync(userLikeParams, cancellationToken))
             .Map(result => result!.Select(UserDto.Map));
     }
 }

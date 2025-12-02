@@ -7,19 +7,16 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class CreateMessageUseCase(
-    IUserRepository userRepository,
-    IMessageRepository messageRepository
-) : IRequestHandler<CreateMessageModel, Result<MessageDto>>
+public class CreateMessageUseCase(IUnitOfWork unitOfWork) : IRequestHandler<CreateMessageModel, Result<MessageDto>>
 {
     public async Task<Result<MessageDto>> Handle(CreateMessageModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.User? sender = await userRepository.GetByIdAsync(
+        Domain.Entities.User? sender = await unitOfWork.UserRepository.GetByIdAsync(
            request.UserId,
            cancellationToken
         );
 
-        Domain.Entities.User? recipient = await userRepository.GetByIdAsync(
+        Domain.Entities.User? recipient = await unitOfWork.UserRepository.GetByIdAsync(
            request.RecipientId,
            cancellationToken
         );
@@ -37,9 +34,9 @@ public class CreateMessageUseCase(
             DateRead = request.DateRead
         };
 
-        await messageRepository.AddAsync(message, cancellationToken);
+        await unitOfWork.MessageRepository.AddAsync(message, cancellationToken);
 
-        return await messageRepository.SaveAllChangesAsync(cancellationToken)
+        return await unitOfWork.SaveAllChangesAsync(cancellationToken)
             ? Result.Success(MessageDto.Map(message))
             : Result.Failure<MessageDto>("Failed to send message");
     }

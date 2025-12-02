@@ -13,5 +13,4 @@ public interface IUserRepository
         UserParams userParams,
         CancellationToken cancellationToken = default
     );
-    Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
 }

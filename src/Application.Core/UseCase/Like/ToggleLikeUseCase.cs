@@ -6,14 +6,14 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Like;
 
-public class ToggleLikeUseCase(ILikesRepository likesRepository) : IRequestHandler<ToggleLikeModel, Result<bool>>
+public class ToggleLikeUseCase(IUnitOfWork unitOfWork) : IRequestHandler<ToggleLikeModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(ToggleLikeModel request, CancellationToken cancellationToken = default)
     {
         if (request.SourceUserId == request.TargetUserId)
             return Result<bool>.Failure("You cannot like yourself");
 
-        UserLike? existingLike = await likesRepository.GetUserLikeAsync(request.SourceUserId, request.TargetUserId, cancellationToken);
+        UserLike? existingLike = await unitOfWork.LikesRepository.GetUserLikeAsync(request.SourceUserId, request.TargetUserId, cancellationToken);
 
         if (existingLike is null)
         {
@@ -23,11 +23,11 @@ public class ToggleLikeUseCase(ILikesRepository likesRepository) : IRequestHandl
                 SourceUserId = request.SourceUserId
             };
 
-            await likesRepository.AddAsync(like, cancellationToken);
+            await unitOfWork.LikesRepository.AddAsync(like, cancellationToken);
         }
         else
-            likesRepository.Delete(existingLike);
+            unitOfWork.LikesRepository.Delete(existingLike);
 
-        return Result.Try(await likesRepository.SaveAllChangesAsync(cancellationToken), "Failed to update like");
+        return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Failed to update like");
     }
 }

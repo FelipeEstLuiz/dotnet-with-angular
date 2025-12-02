@@ -46,4 +46,8 @@
 	  <ProjectReference Include="..\..\src\Application.Domain\Application.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Systems\Data\" />
+	</ItemGroup>
+
 </Project>

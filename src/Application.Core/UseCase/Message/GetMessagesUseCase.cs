@@ -6,7 +6,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class GetMessagesUseCase(IMessageRepository messageRepository) : IRequestHandler<GetMessageModel, Result<IEnumerable<MessageDto>>>
+public class GetMessagesUseCase(IUnitOfWork unitOfWork) : IRequestHandler<GetMessageModel, Result<IEnumerable<MessageDto>>>
 {
     public async Task<Result<IEnumerable<MessageDto>>> Handle(GetMessageModel request, CancellationToken cancellationToken = default)
     {
@@ -20,7 +20,7 @@ public class GetMessagesUseCase(IMessageRepository messageRepository) : IRequest
             Container = request.Container
         };
 
-        return (await messageRepository.GetMessagesForUserAsync(messageParams, cancellationToken))
+        return (await unitOfWork.MessageRepository.GetMessagesForUserAsync(messageParams, cancellationToken))
             .Map(result => result!.Select(MessageDto.Map));
     }
 }

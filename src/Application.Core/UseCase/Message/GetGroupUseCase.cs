@@ -7,11 +7,11 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class GetGroupUseCase(IMessageRepository messageRepository) : IRequestHandler<GetGroupModel, Result<GroupDto?>>
+public class GetGroupUseCase(IUnitOfWork unitOfWork) : IRequestHandler<GetGroupModel, Result<GroupDto?>>
 {
     public async Task<Result<GroupDto?>> Handle(GetGroupModel request, CancellationToken cancellationToken = default)
     {
-        Group? group = await messageRepository.GetMessageGroupAsync(request.GroupName, cancellationToken);
+        Group? group = await unitOfWork.MessageRepository.GetMessageGroupAsync(request.GroupName, cancellationToken);
         return group is null
             ? Result<GroupDto?>.Success(null)
             : (Result<GroupDto?>)new GroupDto()

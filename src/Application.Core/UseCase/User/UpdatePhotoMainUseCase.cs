@@ -7,7 +7,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class UpdatePhotoMainUseCase(IUserRepository userRepository)
+public class UpdatePhotoMainUseCase(IUnitOfWork unitOfWork)
     : IRequestHandler<UpdatePhotoMainModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(
@@ -15,7 +15,7 @@ public class UpdatePhotoMainUseCase(IUserRepository userRepository)
         CancellationToken cancellationToken = default
     )
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
+        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(
             request.UserId,
             cancellationToken
         );
@@ -34,6 +34,6 @@ public class UpdatePhotoMainUseCase(IUserRepository userRepository)
 
         user.ImageUrl = photo.Url;
 
-        return Result.Try(await userRepository.SaveChangesAsync(cancellationToken), "Error to set main photo.");
+        return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Error to set main photo.");
     }
 }

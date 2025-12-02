@@ -7,7 +7,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class GetPhotosByIdUseCase(IUserRepository userRepository)
+public class GetPhotosByIdUseCase(IUnitOfWork unitOfWork)
     : IRequestHandler<GetUserPhotoByIdModel, Result<IEnumerable<PhotoUserDto>?>>
 {
     public async Task<Result<IEnumerable<PhotoUserDto>?>> Handle(
@@ -15,7 +15,7 @@ public class GetPhotosByIdUseCase(IUserRepository userRepository)
         CancellationToken cancellationToken = default
     )
     {
-        IEnumerable<Photo>? photos = await userRepository.GetByPhotoIdAsync(request.Id, cancellationToken);
+        IEnumerable<Photo>? photos = await unitOfWork.UserRepository.GetByPhotoIdAsync(request.Id, cancellationToken);
 
         return Result.Success(photos?.Select(x => new PhotoUserDto(
             x.Id,

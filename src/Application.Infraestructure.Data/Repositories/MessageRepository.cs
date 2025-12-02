@@ -73,6 +73,4 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
             .Connections
             .Where(c => c.ConnectionId == connectionId)
             .ExecuteDeleteAsync(cancellationToken: cancellationToken);
-
-    public async Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
 }

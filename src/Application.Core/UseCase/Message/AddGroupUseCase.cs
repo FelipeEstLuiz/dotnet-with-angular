@@ -6,20 +6,20 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class AddGroupUseCase(IMessageRepository messageRepository) : IRequestHandler<AddGroupModel, Result<bool>>
+public class AddGroupUseCase(IUnitOfWork unitOfWork) : IRequestHandler<AddGroupModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(AddGroupModel request, CancellationToken cancellationToken = default)
     {
-        Group? group = await messageRepository.GetMessageGroupAsync(request.GroupName, cancellationToken);
+        Group? group = await unitOfWork.MessageRepository.GetMessageGroupAsync(request.GroupName, cancellationToken);
 
         if (group is null)
         {
             group = new(request.GroupName);
-            await messageRepository.AddGroupAsync(group, cancellationToken);
+            await unitOfWork.MessageRepository.AddGroupAsync(group, cancellationToken);
         }
 
         group.Connections.Add(new Connection(request.ConnectionId, request.UserId));
 
-        return await messageRepository.SaveAllChangesAsync(cancellationToken);
+        return await unitOfWork.SaveAllChangesAsync(cancellationToken);
     }
 }

@@ -8,9 +8,7 @@ internal static class DependencyInjectionRepository
 {
     internal static IServiceCollection AddRepository(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ILikesRepository, LikesRepository>();
-        services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
 }

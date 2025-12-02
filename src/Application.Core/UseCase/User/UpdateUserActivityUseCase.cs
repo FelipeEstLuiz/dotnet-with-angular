@@ -6,14 +6,14 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class UpdateUserActivityUseCase(IUserRepository userRepository) : IRequestHandler<UpdateUserActivityModel, Result<bool>>
+public class UpdateUserActivityUseCase(IUnitOfWork unitOfWork) : IRequestHandler<UpdateUserActivityModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(
         UpdateUserActivityModel request,
         CancellationToken cancellationToken = default
     )
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
+        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(
             request.UserId,
             cancellationToken
         );
@@ -25,6 +25,6 @@ public class UpdateUserActivityUseCase(IUserRepository userRepository) : IReques
 
         user.UpdateLastActive();
 
-        return Result.Try(await userRepository.SaveChangesAsync(cancellationToken),"Error to set last activity.");
+        return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Error to set last activity.");
     }
 }

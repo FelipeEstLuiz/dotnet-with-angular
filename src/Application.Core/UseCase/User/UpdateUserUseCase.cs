@@ -7,7 +7,7 @@ using Application.Domain.Model;
 namespace Application.Core.UseCase.User;
 
 public class UpdateUserUseCase(
-    IUserRepository userRepository
+    IUnitOfWork unitOfWork
 ) : IRequestHandler<UpdateUserModel, Result<bool>>
 {
     public async Task<Result<bool>> Handle(
@@ -15,7 +15,7 @@ public class UpdateUserUseCase(
         CancellationToken cancellationToken = default
     )
     {
-        Domain.Entities.User? resultUser = await userRepository.GetByIdAsync(
+        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(
             request.Id!,
             cancellationToken
         );
@@ -32,6 +32,6 @@ public class UpdateUserUseCase(
         user.SetInterests(request.Interests);
         user.SetLookingFor(request.LookingFor);
 
-        return await userRepository.SaveChangesAsync(cancellationToken);
+        return await unitOfWork.SaveAllChangesAsync(cancellationToken);
     }
 }

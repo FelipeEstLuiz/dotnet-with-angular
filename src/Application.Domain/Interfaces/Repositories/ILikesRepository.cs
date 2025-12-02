@@ -10,5 +10,4 @@ public interface ILikesRepository
     Task<IReadOnlyList<string>> GetCurrentUserLikeIdAsync(string userId, CancellationToken cancellationToken);
     void Delete(UserLike userLike);
     Task AddAsync(UserLike userLike, CancellationToken cancellationToken);
-    Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken);
 }

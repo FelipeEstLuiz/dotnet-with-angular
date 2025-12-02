@@ -6,7 +6,7 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.User;
 
-public class GetAllUserUseCase(IUserRepository userRepository)
+public class GetAllUserUseCase(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllUserModel, Result<IEnumerable<UserDto>>>
 {
     public async Task<Result<IEnumerable<UserDto>>> Handle(
@@ -26,7 +26,7 @@ public class GetAllUserUseCase(IUserRepository userRepository)
             MaxAge = request.MaxAge
         };
 
-        return (await userRepository.GetAllAsync(userParams, cancellationToken: cancellationToken))
+        return (await unitOfWork.UserRepository.GetAllAsync(userParams, cancellationToken: cancellationToken))
             .Map(result => result!.Select(UserDto.Map));
     }
 }

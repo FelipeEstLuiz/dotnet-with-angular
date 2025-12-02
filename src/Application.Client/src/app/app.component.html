@@ -1,10 +1,11 @@
-<app-nav></app-nav>
-<app-loading></app-loading>
+<app-nav />
+<app-loading />
 
 <div
   [class.mt-20]="!isHomeRoute()"
   [class.container]="!isHomeRoute()"
   [class.mx-auto]="!isHomeRoute()"
 >
-  <router-outlet></router-outlet>
+  <router-outlet />
 </div>
+<app-confirm-dialog />

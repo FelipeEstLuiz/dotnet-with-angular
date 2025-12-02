@@ -5,8 +5,8 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Like;
 
-public class UserIdLikeUseCase(ILikesRepository likesRepository) : IRequestHandler<UserIdLikeModel, Result<IReadOnlyList<string>>>
+public class UserIdLikeUseCase(IUnitOfWork unitOfWork) : IRequestHandler<UserIdLikeModel, Result<IReadOnlyList<string>>>
 {
     public async Task<Result<IReadOnlyList<string>>> Handle(UserIdLikeModel request, CancellationToken cancellationToken = default)
-        => Result.Success(await likesRepository.GetCurrentUserLikeIdAsync(request.UserId, cancellationToken));
+        => Result.Success(await unitOfWork.LikesRepository.GetCurrentUserLikeIdAsync(request.UserId, cancellationToken));
 }

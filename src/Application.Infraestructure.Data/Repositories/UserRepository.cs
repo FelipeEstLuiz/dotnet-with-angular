@@ -1,6 +1,5 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Interfaces.Repositories;
-using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Application.Infraestructure.Data.Context;
 using Application.Infraestructure.Data.Extensions;
@@ -8,11 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Infraestructure.Data.Repositories;
 
-public class UserRepository(ApplicationDbContext context, IAppLogger<UserRepository> logger) : IUserRepository
+public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task AddAsync(User user, CancellationToken cancellationToken) => await context.Users.AddAsync(user, cancellationToken);
-
-    public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
 
     public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
         => await context
@@ -53,9 +50,8 @@ public class UserRepository(ApplicationDbContext context, IAppLogger<UserReposit
 
             return await query.ApplyQueryOptionsAsync(userParams, cancellationToken: cancellationToken);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            logger.LogError(ex, "Error to find users: {Message}", ex.Message);
             return Result<List<User>>.Failure("Error to find users");
         }
     }

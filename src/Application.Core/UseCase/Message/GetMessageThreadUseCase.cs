@@ -6,11 +6,11 @@ using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
 
-public class GetMessageThreadUseCase(IMessageRepository messageRepository) : IRequestHandler<GetMessageThreadModel, Result<IEnumerable<MessageDto>>>
+public class GetMessageThreadUseCase(IUnitOfWork unitOfWork) : IRequestHandler<GetMessageThreadModel, Result<IEnumerable<MessageDto>>>
 {
     public async Task<Result<IEnumerable<MessageDto>>> Handle(GetMessageThreadModel request, CancellationToken cancellationToken = default)
     {
-        IEnumerable<Domain.Entities.Message> result = await messageRepository.GetMessagesThreadAsync(request.UserId, request.RecipientId, cancellationToken);
+        IEnumerable<Domain.Entities.Message> result = await unitOfWork.MessageRepository.GetMessagesThreadAsync(request.UserId, request.RecipientId, cancellationToken);
         return Result.Success(result.Select(MessageDto.Map));
     }
 }

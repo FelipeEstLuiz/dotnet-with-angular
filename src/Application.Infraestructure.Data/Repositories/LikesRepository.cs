@@ -53,6 +53,4 @@ public class LikesRepository(ApplicationDbContext context) : ILikesRepository
     }
 
     public async Task AddAsync(UserLike userLike, CancellationToken cancellationToken) => await context.Likes.AddAsync(userLike, cancellationToken);
-
-    public async Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
 }
