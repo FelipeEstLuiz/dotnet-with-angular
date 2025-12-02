@@ -49,7 +49,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["node_modules/ngx-toastr/toastr.css", "src/styles.css"],
+            "styles": ["src/styles.css"],
             "scripts": []
           },
           "configurations": {

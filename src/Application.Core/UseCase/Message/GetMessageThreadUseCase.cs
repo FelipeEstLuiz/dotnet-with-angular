@@ -5,6 +5,7 @@ using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 
 namespace Application.Core.UseCase.Message;
+
 public class GetMessageThreadUseCase(IMessageRepository messageRepository) : IRequestHandler<GetMessageThreadModel, Result<IEnumerable<MessageDto>>>
 {
     public async Task<Result<IEnumerable<MessageDto>>> Handle(GetMessageThreadModel request, CancellationToken cancellationToken = default)

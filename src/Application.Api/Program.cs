@@ -83,6 +83,7 @@ app.UseResponseCompression();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("/hubs/presence");
+app.MapHub<MessageHub>("/hubs/message");
 
 // Descomentar ao iniciar a solução sem dados
 if (app.Environment.IsDevelopment())
@@ -96,6 +97,7 @@ if (app.Environment.IsDevelopment())
         var userManager = services
             .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Application.Domain.Entities.User>>();
         await context.Database.MigrateAsync();
+        await context.Connections.ExecuteDeleteAsync();
         await Application.Infraestructure.Data.SeedData.Seed.SeedUsers(userManager);
     }
     catch (Exception ex)

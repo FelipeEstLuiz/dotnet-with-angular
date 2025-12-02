@@ -11,10 +11,28 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
 {
     public async Task AddAsync(Message message, CancellationToken cancellationToken) => await context.Messages.AddAsync(message, cancellationToken);
 
+    public async Task AddGroupAsync(Group group, CancellationToken cancellationToken) => await context.Groups.AddAsync(group, cancellationToken);
+
     public void Delete(Message message) => context.Remove(message);
+
+    public async Task<Connection?> GetConnectionAsync(string connectionId, CancellationToken cancellationToken)
+        => await context.Connections.FindAsync([connectionId, cancellationToken], cancellationToken: cancellationToken);
 
     public async Task<Message?> GetMessageAsync(Guid id, CancellationToken cancellationToken)
         => await context.Messages.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+
+    public async Task<Group?> GetMessageGroupAsync(string groupName, CancellationToken cancellationToken)
+        => await context
+            .Groups
+            .Include(x => x.Connections)
+            .FirstOrDefaultAsync(x => x.Name == groupName, cancellationToken: cancellationToken);
+
+    public async Task<Group?> GetMessageGroupForConnectionAsync(string connectionId, CancellationToken cancellationToken)
+        => await context
+            .Groups
+            .Include(x => x.Connections)
+            .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
     public async Task<Result<List<Message>>> GetMessagesForUserAsync(MessageParams messageParams, CancellationToken cancellationToken)
     {
@@ -49,6 +67,12 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
             .OrderBy(x => x.MessageSent)
             .ToListAsync(cancellationToken: cancellationToken);
     }
+
+    public async Task RemoveConnectionAsync(string connectionId, CancellationToken cancellationToken)
+        => await context
+            .Connections
+            .Where(c => c.ConnectionId == connectionId)
+            .ExecuteDeleteAsync(cancellationToken: cancellationToken);
 
     public async Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken) => await context.SaveChangesAsync(cancellationToken) > 0;
 }

@@ -8,6 +8,9 @@
     alt="{{ member.name }} image"
     class="rounded-lg"
   />
+  @if(isOnline()){
+  <span class="status status-success status-xl absolute top-3 left-3"></span>
+  }
   <button
     class="absolute top-1 right-1 z-40 btn btn-ghost btn-circle"
     (click)="toggleLike($event)"

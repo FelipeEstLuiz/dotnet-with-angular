@@ -8,4 +8,5 @@ public record CreateMessageModel
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
     public string UserId { get; set; } = null!;
+    public DateTime? DateRead { get; set; }
 }

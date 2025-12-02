@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToastService {
+  private router = inject(Router);
+
   constructor() {
     this.createToastContainer();
   }
@@ -20,7 +23,9 @@ export class ToastService {
   private createToastElement(
     message: string | string[],
     type: 'success' | 'error' | 'info' | 'warning',
-    duration: number = 5000
+    duration: number = 5000,
+    avatar?: string,
+    route?: string
   ) {
     const toastContainer = document.getElementById('toast-container');
     if (!toastContainer) return;
@@ -56,6 +61,10 @@ export class ToastService {
         break;
     }
 
+    if (route) {
+      toast.addEventListener('click', () => this.router.navigateByUrl(route));
+    }
+
     const messageHtml = Array.isArray(message)
       ? `<ul class="list-disc ml-4">${message
           .map((m) => `<li>${m}</li>`)
@@ -63,8 +72,13 @@ export class ToastService {
       : `<span>${message}</span>`;
 
     toast.innerHTML = `
-      <div role="alert" class="alert alert-${type} relative overflow-hidden">
+      <div role="alert" class="alert alert-${type} relative overflow-hidden flex items-center gap-3 cursor-pointer">
         ${svg}
+        ${
+          avatar
+            ? `<img src="${avatar || '/user.png'}" class="w-10 h-10 rounded" />`
+            : ''
+        }
         <div class="flex flex-col gap-1">${messageHtml}</div>
         <button class="btn btn-sm btn-ghost ml-4">x</button>
         <div class="absolute bottom-0 left-0 h-1 bg-white/60 progress-bar"></div>
@@ -93,19 +107,39 @@ export class ToastService {
     setTimeout(close, duration);
   }
 
-  success(message: string | string[], duration?: number) {
-    this.createToastElement(message, 'success', duration);
+  success(
+    message: string | string[],
+    duration?: number,
+    avatar?: string,
+    route?: string
+  ) {
+    this.createToastElement(message, 'success', duration, avatar, route);
   }
 
-  error(message: string | string[], duration?: number) {
-    this.createToastElement(message, 'error', duration);
+  error(
+    message: string | string[],
+    duration?: number,
+    avatar?: string,
+    route?: string
+  ) {
+    this.createToastElement(message, 'error', duration, avatar, route);
   }
 
-  info(message: string | string[], duration?: number) {
-    this.createToastElement(message, 'info', duration);
+  info(
+    message: string | string[],
+    duration?: number,
+    avatar?: string,
+    route?: string
+  ) {
+    this.createToastElement(message, 'info', duration, avatar, route);
   }
 
-  warning(message: string | string[], duration?: number) {
-    this.createToastElement(message, 'warning', duration);
+  warning(
+    message: string | string[],
+    duration?: number,
+    avatar?: string,
+    route?: string
+  ) {
+    this.createToastElement(message, 'warning', duration, avatar, route);
   }
 }

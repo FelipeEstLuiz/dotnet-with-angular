@@ -1,17 +1,33 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Domain.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace Application.Api.SignalR;
 
 [Authorize]
-public class PresenceHub : Hub
+public class PresenceHub(PresenceTracker presenceTracker) : Hub
 {
-    public override async Task OnConnectedAsync() => await Clients.Others.SendAsync("UserOnline", Context.User?.FindFirstValue(ClaimTypes.Email));
+    public override async Task OnConnectedAsync()
+    {
+        string userId = GetUserId();
+        await presenceTracker.UserConnected(userId, Context.ConnectionId);
+        await Clients.Others.SendAsync("UserOnline", userId);
+
+        IEnumerable<string> currentUsers = await presenceTracker.GetOnlineUsers();
+        await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
+    }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        await Clients.Others.SendAsync("UserOffline", Context.User?.FindFirstValue(ClaimTypes.Email));
+        string userId = GetUserId();
+        await presenceTracker.UserDisconnected(userId, Context.ConnectionId);
+        await Clients.Others.SendAsync("UserOffline", userId);
+
+        IEnumerable<string> currentUsers = await presenceTracker.GetOnlineUsers();
+        await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
+
         await base.OnDisconnectedAsync(exception);
     }
+
+    private string GetUserId() => Context.User?.GetUserId() ?? throw new HubException("Cannot get user id");
 }

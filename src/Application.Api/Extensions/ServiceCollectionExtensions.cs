@@ -1,5 +1,6 @@
 ﻿using Application.Api.Filters;
 using Application.Api.Middleware;
+using Application.Api.SignalR;
 using Application.Api.Util;
 using Application.Core.Model;
 using Application.Domain.Entities;
@@ -44,14 +45,8 @@ public static class ServiceCollectionExtensions
             .AddApplicationServices()
             .AddIdentityCore()
             .AddPolicy()
-            .AddSignalR();
+            .AddSignalRConfiguration();
 
-        return services;
-    }
-
-    public static IServiceCollection AddSignalR(this IServiceCollection services)
-    {
-        services.AddSignalR();
         return services;
     }
 
@@ -63,6 +58,14 @@ public static class ServiceCollectionExtensions
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSignalRConfiguration(this IServiceCollection services)
+    {
+        services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
 
         return services;
     }

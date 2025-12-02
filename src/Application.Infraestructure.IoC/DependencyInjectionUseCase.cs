@@ -44,6 +44,9 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<DeleteMessageModel, Result<bool>>, DeleteMessageUseCase>();
         services.AddScoped<IRequestHandler<GetUsersRolesModel, Result<IEnumerable<UsersRolesDto>>>, GetUsersRolesUseCase>();
         services.AddScoped<IRequestHandler<EditUserRolesModel, Result<IEnumerable<string>>>, EditUserRolesUseCase>();
+        services.AddScoped<IRequestHandler<AddGroupModel, Result<bool>>, AddGroupUseCase>();
+        services.AddScoped<IRequestHandler<RemoveGroupModel, Result<bool>>, RemoveGroupUseCase>();
+        services.AddScoped<IRequestHandler<GetGroupModel, Result<GroupDto?>>, GetGroupUseCase>();
 
         services.AddValidators();
 

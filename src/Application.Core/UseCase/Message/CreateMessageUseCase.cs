@@ -34,6 +34,7 @@ public class CreateMessageUseCase(
             Content = request.Content,
             RecipientId = recipient.Id,
             SenderId = sender.Id,
+            DateRead = request.DateRead
         };
 
         await messageRepository.AddAsync(message, cancellationToken);

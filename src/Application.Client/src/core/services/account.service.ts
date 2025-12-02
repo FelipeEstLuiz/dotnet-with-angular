@@ -4,6 +4,11 @@ import { User } from '../../types/user';
 import { UserRegister } from '../../types/user-register';
 import { HttpService } from './http.service';
 import { LikesService } from './likes.service';
+import { PresenceService } from './presence.service';
+import {
+  HubConnection,
+  HubConnectionState,
+} from '@microsoft/signalr/src/HubConnection';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +16,8 @@ import { LikesService } from './likes.service';
 export class AccountService {
   private httpService = inject(HttpService);
   private likeService = inject(LikesService);
+  private presenceService = inject(PresenceService);
+
   currentUser = signal<User | null>(null);
 
   async login(model: Login) {
@@ -67,12 +74,16 @@ export class AccountService {
     localStorage.removeItem('filters');
     this.likeService.clearLikeIds();
     this.currentUser.set(null);
+    this.presenceService.stopHubConnection();
   }
 
   async setCurrentUser(user: User) {
     user.roles = this.getRolesFromToken(user);
     this.currentUser.set(user);
     await this.likeService.getLikeIds();
+
+    if (!this.presenceService.serviceConnected)
+      this.presenceService.createHubConnection(user);
   }
 
   private getRolesFromToken(user: User): string[] {

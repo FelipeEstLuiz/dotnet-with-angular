@@ -4,16 +4,19 @@ import {
   effect,
   ElementRef,
   inject,
+  OnDestroy,
   OnInit,
   signal,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { PresenceService } from 'src/core/services/presence.service';
 import { TimeAgoPipe } from '../../../core/pipes/time-ago.pipe';
+import { AccountService } from '../../../core/services/account.service';
 import { MemberService } from '../../../core/services/member.service';
 import { MessageService } from '../../../core/services/message.service';
 import { Message } from './../../../types/message';
-import { AccountService } from '../../../core/services/account.service';
 
 @Component({
   selector: 'app-member-messages',
@@ -21,18 +24,20 @@ import { AccountService } from '../../../core/services/account.service';
   templateUrl: './member-messages.component.html',
   styleUrl: './member-messages.component.css',
 })
-export class MemberMessagesComponent implements OnInit {
+export class MemberMessagesComponent implements OnInit, OnDestroy {
   @ViewChild('messageEndRef') messageEndRef!: ElementRef;
-  private messageService = inject(MessageService);
   private memberService = inject(MemberService);
-  protected accountService = inject(AccountService);
+  private route = inject(ActivatedRoute);
 
-  protected messages = signal<Message[]>([]);
+  protected messageService = inject(MessageService);
+  protected accountService = inject(AccountService);
+  protected presenceService = inject(PresenceService);
+
   protected messageContent = '';
 
   constructor() {
     effect(() => {
-      const currentMessages = this.messages();
+      const currentMessages = this.messageService.messageThread();
 
       if (currentMessages.length > 0) {
         this.scrollToBottom();
@@ -41,38 +46,18 @@ export class MemberMessagesComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.loadMessages();
-  }
-
-  async loadMessages() {
-    const userId = this.memberService.member()?.id;
-
-    if (userId) {
-      const messages = await this.messageService.getMessageThread(userId);
-
-      if (messages)
-        this.messages.set(
-          messages.map((message) => ({
-            ...message,
-            currentUserSender: message.senderId !== userId,
-          }))
-        );
-    }
+    this.route.parent?.paramMap.subscribe((params) => {
+      const otherUserId = params.get('id');
+      if (!otherUserId) throw new Error('Cannot connect to hub');
+      this.messageService.createHubConnection(otherUserId);
+    });
   }
 
   async sendMessage() {
     const recipientId = this.memberService.member()?.id;
 
     if (!recipientId) return;
-    const message = await this.messageService.sendMessage(
-      recipientId,
-      this.messageContent
-    );
-
-    this.messages.update((messages) => {
-      message.currentUserSender = true;
-      return [...messages, message];
-    });
+    await this.messageService.sendMessage(recipientId, this.messageContent);
 
     this.messageContent = '';
   }
@@ -89,5 +74,9 @@ export class MemberMessagesComponent implements OnInit {
     return (
       this.accountService.currentUser()?.id === this.memberService.member()?.id
     );
+  }
+
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
   }
 }

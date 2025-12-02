@@ -30,7 +30,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     }),
     catchError((error: HttpErrorResponse) => {
       const protocolError = getProtocolError(error);
-      const modelStateErrors = error.error?.errors;
+      const modelStateErrors = error.error?.errors ?? [...errorMessage(error)];
 
       switch (error.status) {
         case 401:
@@ -40,13 +40,13 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           break;
         case 403:
           toastService.error(['Access denied', protocolError]);
-          throw modelStateErrors?.flat() || errorMessage(error);
+          throw modelStateErrors?.flat();
         case 404:
           router.navigateByUrl('/not-found');
           break;
         case 400:
           toastService.error([...errorMessage(error), protocolError]);
-          throw modelStateErrors?.flat() || errorMessage(error);
+          throw modelStateErrors?.flat();
         case 500:
           const navigationExtras: NavigationExtras = {
             state: { error: error.error },
@@ -55,7 +55,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           break;
         default:
           toastService.error([...errorMessage(error), protocolError]);
-          throw modelStateErrors?.flat() || errorMessage(error);
+          throw modelStateErrors?.flat();
       }
 
       throw error;
@@ -66,7 +66,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 function getProtocolError(error: HttpErrorResponse) {
   const responseBody = error?.error as ApiResponse<any>;
   if (responseBody?.protocol) {
-    return `Protocol: ${responseBody?.protocol}`;
+    return `Protocol: ${responseBody.protocol}`;
   }
 
   return '';
@@ -78,5 +78,5 @@ function errorMessage(error: HttpErrorResponse) {
     return responseBody.errors || [] || 'Unknown error';
   }
 
-  return error.message || error.statusText || 'Unknown error';
+  return error?.message || error?.statusText || 'Unknown error';
 }
