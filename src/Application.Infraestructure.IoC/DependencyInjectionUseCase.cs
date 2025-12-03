@@ -49,6 +49,9 @@ internal static class DependencyInjectionUseCase
         services.AddScoped<IRequestHandler<RemoveGroupModel, Result<bool>>, RemoveGroupUseCase>();
         services.AddScoped<IRequestHandler<GetGroupModel, Result<GroupDto?>>, GetGroupUseCase>();
         services.AddScoped<IRequestHandler<LogoutModel, Result<bool>>, LogoutUseCase>();
+        services.AddScoped<IRequestHandler<ModeratePhotoRejectModel, Result<bool>>, ModeratePhotoRejectUseCase>();
+        services.AddScoped<IRequestHandler<ModeratePhotoApproveModel, Result<bool>>, ModeratePhotoApproveUseCase>();
+        services.AddScoped<IRequestHandler<GetPhotoForModerateModel, Result<IEnumerable<PhotoUserDto>>>, GetPhotoForModerateUseCase>();
 
         services.AddValidators();
 

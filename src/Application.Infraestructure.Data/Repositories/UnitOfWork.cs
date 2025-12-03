@@ -9,12 +9,15 @@ public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
     private IUserRepository? _userRepository;
     private IMessageRepository? _messageRepository;
     private ILikesRepository? _likesRepository;
+    private IPhotoRepository? _photoRepository;
 
     public IUserRepository UserRepository => _userRepository ??= new UserRepository(context);
 
     public IMessageRepository MessageRepository => _messageRepository ??= new MessageRepository(context);
 
     public ILikesRepository LikesRepository => _likesRepository ??= new LikesRepository(context);
+
+    public IPhotoRepository PhotoRepository => _photoRepository ??= new PhotoRepository(context);
 
     public async Task<bool> SaveAllChangesAsync(CancellationToken cancellationToken)
     {

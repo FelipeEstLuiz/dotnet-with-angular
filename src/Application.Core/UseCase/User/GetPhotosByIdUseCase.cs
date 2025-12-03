@@ -21,7 +21,10 @@ public class GetPhotosByIdUseCase(IUnitOfWork unitOfWork)
             x.Id,
             x.Url,
             x.PublicId,
-            x.UserId
+            x.UserId,
+            x.IsMain,
+            x.IsApproved,
+            x.User?.UserName
         )));
     }
 }

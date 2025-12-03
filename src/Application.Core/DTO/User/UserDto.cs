@@ -30,6 +30,6 @@ public record UserDto : ComumDto
         Gender = user.Gender,
         Interests = user.Interests,
         LookingFor = user.LookingFor,
-        PhotoUrl = user.ImageUrl
+        PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
     };
 }

@@ -20,10 +20,10 @@ public record MessageDto
         DateRead = message.DateRead,
         Id = message.Id,
         MessageSent = message.MessageSent,
-        RecipientImageUrl = message.Recipient.ImageUrl,
+        RecipientImageUrl = message.Recipient.Photos?.FirstOrDefault(x => x.IsMain && x.IsApproved)?.Url,
         RecipientName = message.Recipient.UserName!,
         SenderId = message.SenderId,
-        SenderImageUrl = message.Sender.ImageUrl,
+        SenderImageUrl = message.Sender.Photos?.FirstOrDefault(x => x.IsMain && x.IsApproved)?.Url,
         SenderName = message.Sender.UserName!
     };
 }

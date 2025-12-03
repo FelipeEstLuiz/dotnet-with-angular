@@ -7,7 +7,7 @@ public record LoginDto(string Id, string Name, string FullName, string Email, st
         user.UserName!,
         user.FullName,
         user.Email!,
-        user.ImageUrl,
+        user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
         token
     );
 }

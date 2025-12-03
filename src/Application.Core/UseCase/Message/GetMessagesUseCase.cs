@@ -20,7 +20,7 @@ public class GetMessagesUseCase(IUnitOfWork unitOfWork) : IRequestHandler<GetMes
             Container = request.Container
         };
 
-        return (await unitOfWork.MessageRepository.GetMessagesForUserAsync(messageParams, cancellationToken))
-            .Map(result => result!.Select(MessageDto.Map));
+        Result<List<Domain.Entities.Message>> result = await unitOfWork.MessageRepository.GetMessagesForUserAsync(messageParams, cancellationToken);
+        return result.Map(result => result!.Select(MessageDto.Map));
     }
 }

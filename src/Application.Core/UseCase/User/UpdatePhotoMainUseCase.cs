@@ -29,9 +29,12 @@ public class UpdatePhotoMainUseCase(IUnitOfWork unitOfWork)
 
         if (photo is null)
             return Result.IsFailure("Photo not found.");
-        else if (user.ImageUrl == photo.Url)
+        else if (photo.IsMain)
             return Result.Success(true);
 
+        Photo? currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+        if (currentMain is not null) currentMain.IsMain = false;
+        photo.IsMain = true;
         user.ImageUrl = photo.Url;
 
         return Result.Try(await unitOfWork.SaveAllChangesAsync(cancellationToken), "Error to set main photo.");

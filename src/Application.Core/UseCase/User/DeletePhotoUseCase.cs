@@ -27,7 +27,7 @@ public class DeletePhotoUseCase(IUnitOfWork unitOfWork, IPhotoService photoServi
 
         if (photo is null)
             return Result.IsFailure("Photo not found.");
-        else if (user.ImageUrl == photo.Url)
+        else if (photo.IsMain)
             return Result.IsFailure("The main photo cannot be removed.");
 
         if (!string.IsNullOrWhiteSpace(photo.PublicId))

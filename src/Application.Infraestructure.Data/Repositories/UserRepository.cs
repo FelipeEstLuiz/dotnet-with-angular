@@ -11,20 +11,22 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     public async Task AddAsync(User user, CancellationToken cancellationToken) => await context.Users.AddAsync(user, cancellationToken);
 
-    public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
-        => await context
-            .Users
-            .Where(x => x.UserName!.ToLower() == name.ToLower() || x.FullName.ToLower() == name.ToLower())
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+    public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken) => await context
+        .Users
+        .IgnoreQueryFilters()
+        .Where(x => x.UserName!.ToLower() == name.ToLower() || x.FullName.ToLower() == name.ToLower())
+        .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
     public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken) => await context
         .Users
         .Include(x => x.Photos)
+        .IgnoreQueryFilters()
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
 
     public async Task<IEnumerable<Photo>?> GetByPhotoIdAsync(string id, CancellationToken cancellationToken)
         => await context
             .Users
+            .IgnoreQueryFilters()
             .Where(x => x.Id == id)
             .SelectMany(x => x.Photos)
             .ToListAsync(cancellationToken: cancellationToken);
@@ -36,7 +38,10 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
         try
         {
-            IQueryable<User> query = context.Users.AsQueryable();
+            IQueryable<User> query = context
+                .Users
+                .Include(x => x.Photos)
+                .AsQueryable();
 
             query = query.Where(x => x.Id != userParams.CurrentUserId);
 
@@ -55,4 +60,11 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
             return Result<List<User>>.Failure("Error to find users");
         }
     }
+
+    public async Task<User?> GetUserByPhotoId(int photoId, CancellationToken cancellationToken) => await context
+        .Users
+        .Include(p => p.Photos)
+        .IgnoreQueryFilters()
+        .Where(p => p.Photos.Any(p => p.Id == photoId))
+        .FirstOrDefaultAsync(cancellationToken);
 }

@@ -33,10 +33,15 @@ public static class Seed
             user.SetName(user.FullName);
             user.SetEmail(user.Email);
 
-            IdentityResult result = await userManager.CreateAsync(user, user.FullName == "Felipe Estevam Luiz" ? "4389@#02Fel13" : "Pas$w0rd");
+            bool isMyUser = user.FullName == "Felipe Estevam Luiz";
+
+            IdentityResult result = await userManager.CreateAsync(user, isMyUser ? "4389@#02Fel13" : "Pas$w0rd");
 
             if (!result.Succeeded)
                 Console.WriteLine(result.Errors.First().Description);
+
+            if (isMyUser)
+                await userManager.AddToRolesAsync(user, ["Admin", "Moderator"]);
 
             await userManager.AddToRoleAsync(user, "User");
         }

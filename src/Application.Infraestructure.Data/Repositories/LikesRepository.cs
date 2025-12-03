@@ -33,17 +33,20 @@ public class LikesRepository(ApplicationDbContext context) : ILikesRepository
             case "liked":
                 result = query
                     .Where(x => x.SourceUserId == userLikeParams.UserId)
+                    .Include(x => x.TargetUser.Photos)
                     .Select(x => x.TargetUser);
                 break;
             case "likedBy":
                 result = query
                     .Where(x => x.TargetUserId == userLikeParams.UserId)
+                    .Include(x => x.SourceUser.Photos)
                     .Select(x => x.SourceUser);
                 break;
             default:
                 IReadOnlyList<string> likeIds = await GetCurrentUserLikeIdAsync(userLikeParams.UserId, cancellationToken);
                 result = query
                     .Where(x => x.TargetUserId == userLikeParams.UserId && likeIds.Contains(x.SourceUserId))
+                    .Include(x => x.SourceUser.Photos)
                     .Select(x => x.SourceUser);
                 break;
 

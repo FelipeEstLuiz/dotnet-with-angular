@@ -4,5 +4,8 @@ public record PhotoUserDto(
     int Id,
     string Url,
     string? PublicId,
-    string? MemberId
+    string? MemberId,
+    bool IsMain,
+    bool IsApproved,
+    string? UserName
 );

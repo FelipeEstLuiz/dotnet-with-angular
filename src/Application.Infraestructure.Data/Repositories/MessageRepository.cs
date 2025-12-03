@@ -39,7 +39,9 @@ public class MessageRepository(ApplicationDbContext context) : IMessageRepositor
         IQueryable<Message> query = context
             .Messages
             .Include(x => x.Sender)
+            .Include(x => x.Sender.Photos)
             .Include(x => x.Recipient)
+            .Include(x => x.Recipient.Photos)
             .AsQueryable();
 
         query = messageParams.Container switch

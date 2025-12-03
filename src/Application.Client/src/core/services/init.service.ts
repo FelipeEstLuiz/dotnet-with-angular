@@ -14,7 +14,7 @@ export class InitService {
     const user = await this.accountService.refreshToken();
 
     if (user) {
-      this.accountService.currentUser.set(user);
+      this.accountService.setCurrentUser(user);
       await this.likeService.getLikeIds();
       await this.accountService.startTokenRefreshInterval();
     }

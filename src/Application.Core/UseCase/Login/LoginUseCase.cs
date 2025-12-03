@@ -3,6 +3,7 @@ using Application.Core.Model;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Core.UseCase.Login;
 
@@ -13,7 +14,10 @@ public class LoginUseCase(
 {
     public async Task<Result<UserLoginDto>> Handle(LoginModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.User? resultUser = await userManager.FindByEmailAsync(request.Email);
+        Domain.Entities.User? resultUser = await userManager
+            .Users
+            .Include(x => x.Photos)
+            .SingleOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
 
         return resultUser is not null
             ? await ValidarPasswordAsync(resultUser, request.Password)

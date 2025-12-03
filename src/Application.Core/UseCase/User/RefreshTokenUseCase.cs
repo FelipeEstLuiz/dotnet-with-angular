@@ -18,6 +18,7 @@ public class RefreshTokenUseCase(UserManager<Domain.Entities.User> userManager, 
 
         Domain.Entities.User? user = await userManager
             .Users
+            .Include(x => x.Photos)
             .FirstOrDefaultAsync(x => x.RefreshToken == request.RefreshToken && x.RefreshTokenExpiry > DateTime.UtcNow, cancellationToken: cancellationToken);
 
         if (user is null) return Result<UserLoginDto>.Failure("UNAUTHORIZED", ResponseCodes.UNAUTHORIZED);

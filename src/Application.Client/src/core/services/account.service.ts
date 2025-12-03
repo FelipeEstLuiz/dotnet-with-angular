@@ -5,10 +5,6 @@ import { UserRegister } from '../../types/user-register';
 import { HttpService } from './http.service';
 import { LikesService } from './likes.service';
 import { PresenceService } from './presence.service';
-import {
-  HubConnection,
-  HubConnectionState,
-} from '@microsoft/signalr/src/HubConnection';
 
 @Injectable({
   providedIn: 'root',
@@ -71,7 +67,6 @@ export class AccountService {
 
   async logout() {
     await this.httpService.postWithCredentials('Account/logout', {});
-    localStorage.removeItem('user');
     localStorage.removeItem('filters');
     this.likeService.clearLikeIds();
     this.currentUser.set(null);

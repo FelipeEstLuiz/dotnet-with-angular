@@ -2,6 +2,7 @@
 using Application.Api.Util;
 using Application.Core.Common.Dispatcher;
 using Application.Core.DTO.Admin;
+using Application.Core.DTO.User;
 using Application.Core.Model.Admin;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -35,9 +36,25 @@ public class AdminController(CommunicationProtocol protocol, RequestDispatcher d
 
     [Authorize(Policy = "ModeratePhotoRole")]
     [HttpGet("photos-to-moderate")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<string>))]
-    public IActionResult GetPhotoForModeration() => HandlerResponse(
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<IEnumerable<PhotoUserDto>>))]
+    public async Task<IActionResult> GetPhotoForModeration() => HandlerResponse(
         HttpStatusCode.OK,
-        Result.Success<string>("Admins or Moderators can see this")
+        await dispatcher.Dispatch<GetPhotoForModerateModel, Result<IEnumerable<PhotoUserDto>>>(new GetPhotoForModerateModel())
+    );
+
+    [Authorize(Policy = "ModeratePhotoRole")]
+    [HttpPost("reject-photo/{photoId}")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
+    public async Task<IActionResult> RejectPhoto(int photoId) => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<ModeratePhotoRejectModel, Result<bool>>(new ModeratePhotoRejectModel(photoId))
+    );
+
+    [Authorize(Policy = "ModeratePhotoRole")]
+    [HttpPost("approve-photo/{photoId}")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Response<bool>))]
+    public async Task<IActionResult> ApprovePhoto(int photoId) => HandlerResponse(
+        HttpStatusCode.OK,
+        await dispatcher.Dispatch<ModeratePhotoApproveModel, Result<bool>>(new ModeratePhotoApproveModel(photoId))
     );
 }

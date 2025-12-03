@@ -12,6 +12,8 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
     {
         builder.HasKey(u => u.Id);
 
+        builder.HasQueryFilter(p => p.IsApproved);
+
         builder.Property(u => u.Url).HasMaxLength(500);
         builder.Property(u => u.PublicId).HasMaxLength(500);
 

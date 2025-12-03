@@ -12,7 +12,10 @@ public class UploadPhotoUserUseCase(IUnitOfWork unitOfWork, IPhotoService photoS
 {
     public async Task<Result<PhotoUserDto>> Handle(PhotoUploadModel request, CancellationToken cancellationToken = default)
     {
-        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(request.UserId, cancellationToken: cancellationToken);
+        Domain.Entities.User? resultUser = await unitOfWork.UserRepository.GetByIdAsync(
+            request.UserId,
+            cancellationToken: cancellationToken
+        );
 
         if (resultUser is null)
             return Result.Failure<PhotoUserDto>("User not found.", ResponseCodes.USER_NOT_FOUND);
@@ -32,7 +35,15 @@ public class UploadPhotoUserUseCase(IUnitOfWork unitOfWork, IPhotoService photoS
         user.Photos.Add(photo);
 
         return await unitOfWork.SaveAllChangesAsync(cancellationToken)
-            ? Result.Success(new PhotoUserDto(photo.Id, photo.Url, photo.PublicId, photo.UserId))
+            ? Result.Success(new PhotoUserDto(
+                photo.Id,
+                photo.Url,
+                photo.PublicId,
+                photo.UserId,
+                photo.IsMain,
+                photo.IsApproved,
+                user.UserName
+            ))
             : Result.Failure<PhotoUserDto>("Error adding user photo.");
     }
 }

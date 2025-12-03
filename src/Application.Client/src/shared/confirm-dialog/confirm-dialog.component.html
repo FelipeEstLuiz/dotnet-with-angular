@@ -3,8 +3,12 @@
     <h3 class="font-bold text-lg">{{ message }}</h3>
     <p class="py-2">This action cannot be undone</p>
     <div class="modal-action">
-      <button class="btn btn-outline" (click)="cancel()">Cancel</button>
-      <button class="btn btn-primary" (click)="confirm()">Confirm</button>
+      <button class="btn btn-outline" (click)="cancel()">
+        {{ btnCancelText }}
+      </button>
+      <button class="btn btn-primary" (click)="confirm()">
+        {{ btnOkText }}
+      </button>
     </div>
   </div>
 </dialog>

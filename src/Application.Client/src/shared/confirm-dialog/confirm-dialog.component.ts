@@ -9,7 +9,9 @@ import { ConfirmDialogService } from 'src/core/services/confirm-dialog.service';
 })
 export class ConfirmDialogComponent {
   @ViewChild('dialogRef') dialogRef!: ElementRef<HTMLDialogElement>;
-  message = 'Are you sure?';
+  message = '';
+  btnOkText = '';
+  btnCancelText = '';
 
   private resolver: ((result: boolean) => void) | null = null;
 
@@ -17,8 +19,14 @@ export class ConfirmDialogComponent {
     inject(ConfirmDialogService).register(this);
   }
 
-  open(message: string): Promise<boolean> {
+  open(
+    message: string,
+    btnOkText = 'Ok',
+    btnCancelText = 'Cancel'
+  ): Promise<boolean> {
     this.message = message;
+    this.btnOkText = btnOkText;
+    this.btnCancelText = btnCancelText;
     this.dialogRef.nativeElement.showModal();
     return new Promise((resolve) => (this.resolver = resolve));
   }

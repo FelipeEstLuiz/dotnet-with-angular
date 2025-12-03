@@ -11,11 +11,15 @@ export class ConfirmDialogService {
     this.dialogComponent = component;
   }
 
-  confirm(message = 'Are you sure?'): Promise<boolean> {
+  confirm(
+    message = 'Are you sure?',
+    btnOkText = 'Ok',
+    btnCancelText = 'Cancel'
+  ): Promise<boolean> {
     if (!this.dialogComponent) {
       throw new Error('Confirm dialog component is not register');
     }
 
-    return this.dialogComponent.open(message);
+    return this.dialogComponent.open(message, btnOkText, btnCancelText);
   }
 }
