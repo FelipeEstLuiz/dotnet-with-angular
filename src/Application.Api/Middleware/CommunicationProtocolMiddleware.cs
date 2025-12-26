@@ -1,4 +1,4 @@
-﻿using Application.Api.Controllers._Shared;
+﻿using Application.Api.Util;
 using Application.Domain.Util;
 using System.Reflection;
 
@@ -13,8 +13,8 @@ public class CommunicationProtocolMiddleware(RequestDelegate next)
 
         context.Response.Headers["X-Assembly-Version"] = version;
         context.Request.Headers["X-Assembly-Version"] = version;
-        context.Request.Headers["Protocolo"] = protocol.ToString();
-        context.Response.Headers["Protocolo"] = protocol.ToString();
+        context.Request.Headers["Protocol"] = protocol.ToString();
+        context.Response.Headers["Protocol"] = protocol.ToString();
         await next(context);
     }
 }

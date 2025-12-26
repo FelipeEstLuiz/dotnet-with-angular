@@ -1,10 +1,17 @@
 ﻿namespace Application.Domain.Model;
 
-public class QueryOptions
+public record QueryOptions
 {
-    public string? Filtro { get; set; }
-    public string? OrdenarPor { get; set; }
-    public bool OrdenarAsc { get; set; } = true;
-    public int Pagina { get; set; } = 1;
-    public int TamanhoPagina { get; set; } = 10;
+    private const int MaxPageSize = 50;
+
+    public string OrderBy { get; set; } = "lastActive";
+    public bool OrderAsc { get; set; }
+    public int PageNumber { get; set; } = 1;
+
+    private int _pageSize = 10;
+    public int PageSize
+    {
+        get => _pageSize;
+        set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
+    }
 }

@@ -8,13 +8,13 @@ public class ProtocolGeneratorTests
     [Fact]
     public void SetProtocol_DeveGerarProtocoloComFormatoEsperado()
     {
-        string protocolo = ProtocolGenerator.SetProtocol();
+        string protocol = ProtocolGenerator.SetProtocol();
 
-        Assert.False(string.IsNullOrWhiteSpace(protocolo));
-        Assert.Equal(22, protocolo.Length);
+        Assert.False(string.IsNullOrWhiteSpace(protocol));
+        Assert.Equal(22, protocol.Length);
 
         Regex regex = new(@"^\d{14}[a-fA-F0-9]{8}$");
-        Assert.Matches(regex, protocolo);
+        Assert.Matches(regex, protocol);
     }
 
     [Fact]

@@ -1,28 +1,35 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
-  importProvidersFrom,
+  inject,
+  provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
+import { errorInterceptor } from '../core/interceptors/error.interceptor';
+import { jwtInterceptor } from '../core/interceptors/jwt.interceptor';
+import { loadingInterceptor } from '../core/interceptors/loading.interceptor';
+import { InitService } from '../core/services/init.service';
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideToastr } from 'ngx-toastr';
-import { errorInterceptor } from './_interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideHttpClient(withInterceptors([errorInterceptor])),
-    provideAnimations(),
-    provideToastr({
-      positionClass: 'toast-top-center',
-      timeOut: 3000,
-      preventDuplicates: true,
-      closeButton: true,
-      progressBar: true,
-    })
+    provideRouter(routes, withViewTransitions()),
+    provideHttpClient(
+      withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor])
+    ),
+    provideAppInitializer(async () => {
+      const initService = inject(InitService);
+
+      try {
+        await initService.init();
+      } finally {
+        const splash = document.getElementById('initial-splash');
+        if (splash) {
+          splash.remove();
+        }
+      }
+    }),
   ],
 };
-

@@ -1,75 +1,92 @@
-﻿using Application.Domain.Extensions;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace Application.Domain.Entities;
 
-public class User : Entity
+public class User : IdentityUser
 {
-    public required string UserName { get; set; }
-    public string NormalizedUserName { get; set; } = string.Empty;
-    public required string Email { get; set; }
-    public string NormalizedEmail { get; set; } = string.Empty;
-    public bool EmailConfirmed { get; set; }
-    public string PasswordHash { get; set; } = string.Empty;
-    public string SecurityStamp { get; set; } = string.Empty;
-    public string ConcurrencyStamp { get; set; } = string.Empty;
-    public string? PhoneNumber { get; set; }
-    public bool PhoneNumberConfirmed { get; set; }
-    public bool TwoFactorEnabled { get; set; }
-    public DateTimeOffset? LockoutEnd { get; set; }
-    public bool LockoutEnabled { get; set; }
-    public int AccessFailedCount { get; set; }
+    public DateTime Created { get; set; } = DateTime.UtcNow;
     public DateOnly DateOfBirth { get; set; }
-    public required string KnowAs { get; set; }
-    public DateTime LastActive { get; set; } = DateTime.UtcNow;
+    public string FullName { get; set; } = null!;
+    public DateTime LastActive { get; set; }
     public required string Gender { get; set; }
     public string? Introduction { get; set; }
     public string? Interests { get; set; }
     public string? LookingFor { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
+    public string City { get; set; } = null!;
+    public string Country { get; set; } = null!;
+    public string? ImageUrl { get; set; }
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiry { get; set; }
+
+    [JsonIgnore]
     public List<Photo> Photos { get; set; } = [];
 
+    [JsonIgnore]
+    public List<UserLike> LikedUsers { get; set; } = [];
+
+    [JsonIgnore]
+    public List<UserLike> LikedByUsers { get; set; } = [];
+
+    [JsonIgnore]
+    public List<Message> MessagesSent { get; set; } = [];
+
+    [JsonIgnore]
+    public List<Message> MessagesReceived { get; set; } = [];
+
     public static User Create(
-        string name,
+        string fullName,
         string email,
-        string knowAs,
         string gender,
+        DateOnly dateOfBirth,
         string? introduction,
-        DateOnly dateOfBirth
-    ) => new()
+        string? interests,
+        string? lookingFor,
+        string city,
+        string country
+    )
     {
-        SecurityStamp = Guid.NewGuid().ToString(),
-        ConcurrencyStamp = Guid.NewGuid().ToString(),
-        KnowAs = knowAs,
-        Gender = gender,
-        Introduction = introduction,
-        DateOfBirth = dateOfBirth,
-        Email = email,
-        UserName = name,
-        NormalizedUserName = name.ToUpperInvariant(),
-        NormalizedEmail = email.ToUpperInvariant()
-    };
+        User user = new()
+        {
+            Gender = gender,
+            Introduction = introduction,
+            DateOfBirth = dateOfBirth,
+            LastActive = DateTime.UtcNow,
+            Interests = interests,
+            LookingFor = lookingFor,
+            City = city,
+            Country = country
+        };
+
+        user.SetName(fullName);
+        user.SetEmail(email);
+
+        return user;
+    }
 
     public void SetPassword(string password) => PasswordHash = password;
-    public int GetAge() => DateOfBirth.CalcularIdade();
     public void SetGender(string gender) => Gender = gender;
-    public void SetKowAs(string knowAs) => KnowAs = knowAs;
     public void SetIntroduction(string? introduction) => Introduction = introduction;
     public void SetInterests(string? interests) => Interests = interests;
     public void SetLookingFor(string? lookingFor) => LookingFor = lookingFor;
-    public void SetCity(string? city) => City = city;
-    public void SetCountry(string? country) => Country = country;
+    public void SetCity(string city) => City = city;
+    public void SetCountry(string country) => Country = country;
 
-    public void SetName(string name)
+    public void UpdateLastActive() => LastActive = DateTime.UtcNow;
+
+    public void SetName(string fullName)
     {
+        string[] names = fullName.Split(" ");
+        string name = names[0];
+
+        FullName = fullName;
         UserName = name;
         NormalizedUserName = name.ToUpperInvariant();
     }
 
-    public void SetEmail(string email)
+    public void SetEmail(string? email)
     {
         Email = email;
-        NormalizedEmail = email.ToUpperInvariant();
+        NormalizedEmail = email?.ToUpperInvariant();
     }
-
 }

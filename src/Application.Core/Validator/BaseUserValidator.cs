@@ -1,4 +1,4 @@
-﻿using Application.Core.Model;
+﻿using Application.Core.Model.User;
 using FluentValidation;
 
 namespace Application.Core.Validator;
@@ -7,35 +7,36 @@ public class BaseUserValidator : AbstractValidator<BaseUserModel>
 {
     public BaseUserValidator()
     {
-        RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Obrigatorio")
-            .Length(3, 100).WithMessage("Deve ter pelo entre 3 e 100 caracteres.");
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
+        RuleFor(x => x.FullName)
+            .NotEmpty().WithMessage("Required")
+            .Length(3, 100).WithMessage("Must be between 3 and 100 characters.");
 
         RuleFor(x => x.Gender)
-          .NotEmpty().WithMessage("Obrigatorio")
-          .Length(3, 50).WithMessage("Deve ter pelo entre 3 e 50 caracteres.");
-
-        RuleFor(x => x.KnowAs)
-          .NotEmpty().WithMessage("Obrigatorio")
-          .Length(3, 100).WithMessage("Deve ter pelo entre 3 e 100 caracteres.");
+            .NotEmpty().WithMessage("Required")
+            .Length(3, 50).WithMessage("Must be between 3 and 50 characters.");
 
         RuleFor(x => x.City)
-          .NotEmpty().WithMessage("Obrigatorio")
-          .Length(3, 200).WithMessage("Deve ter pelo entre 3 e 200 caracteres.");
+            .NotEmpty().WithMessage("Required")
+            .Length(2, 200).WithMessage("Must be between 3 and 200 characters.");
 
         RuleFor(x => x.Country)
-          .NotEmpty().WithMessage("Obrigatorio")
-          .Length(3, 50).WithMessage("Deve ter pelo entre 3 e 50 caracteres.");
+            .NotEmpty().WithMessage("Required")
+            .Length(2, 50).WithMessage("Must be between 3 and 50 characters.");
 
         RuleFor(x => x.Interests)
-          .MaximumLength(1000).WithMessage("Deve ter no maximo 2000 caracteres.");
+            .MaximumLength(1000).WithMessage("Can have at most 2000 characters.");
+
+        RuleFor(x => x.LookingFor)
+            .MaximumLength(1000).WithMessage("Can have at most 2000 characters.");
 
         RuleFor(x => x.Introduction)
-          .MaximumLength(2000).WithMessage("Deve ter no maximo 2000 caracteres.");
+            .MaximumLength(2000).WithMessage("Can have at most 2000 characters.");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Obrigatorio")
-            .EmailAddress().WithMessage("Invalido")
-            .MaximumLength(150).WithMessage("Pode ter no maximo 150 caracteres.");
+            .NotEmpty().WithMessage("Required")
+            .EmailAddress().WithMessage("Invalid")
+            .MaximumLength(150).WithMessage("It can have a maximum of 150 characters.");
     }
 }

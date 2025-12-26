@@ -1,6 +1,5 @@
 ﻿using Application.Core.DTO.User;
-using Application.Core.Model;
-using Application.Domain.Interfaces.Repositories;
+using Application.Core.Model.User;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Identity;
@@ -8,35 +7,31 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Core.UseCase.User;
 
 public class InsertUserUseCase(
-    IUserRepository usuarioRepository,
+    UserManager<Domain.Entities.User> userManager,
     ITokenService tokenService
-) : IRequestHandler<InsertUserModel, Result<LoginDto>>
+) : IRequestHandler<InsertUserModel, Result<UserLoginDto>>
 {
-    public async Task<Result<LoginDto>> Handle(
+    public async Task<Result<UserLoginDto>> Handle(
         InsertUserModel request,
         CancellationToken cancellationToken = default
     )
     {
-        Result<Domain.Entities.User?> resultUsuario = await usuarioRepository.GetByEmailAsync(
-            request.Email,
-            cancellationToken
-        );
+        Domain.Entities.User user = request.MapUsuario();
 
-        if (resultUsuario.IsSuccess && resultUsuario.Data is not null)
-            return Result<LoginDto>.Failure("E-mail ja cadastrado");
-        else if (resultUsuario.IsFailure)
-            return Result<LoginDto>.Failure(resultUsuario.Errors);
+        IdentityResult result = await userManager.CreateAsync(user, request.Password);
 
-        Domain.Entities.User usuario = request.MapUsuario();
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, "Member");
+            string token = await tokenService.GerarToken(user);
+            string refreshToken = tokenService.GenerateRefreshToken();
 
-        PasswordHasher<Domain.Entities.User> hasher = new();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            await userManager.UpdateAsync(user);
+            return Result.Success(new UserLoginDto(LoginDto.Map(user, token), refreshToken));
+        }
 
-        usuario.SetPassword(hasher.HashPassword(usuario, request.Password));
-
-        Result<bool> resultInsert = await usuarioRepository.InsertAsync(usuario, cancellationToken);
-
-        return resultInsert.IsSuccess
-            ? Result<LoginDto>.Success(new LoginDto(usuario.UserName, usuario.Email, await tokenService.GerarToken(usuario)))
-            : Result<LoginDto>.Failure(resultInsert.Errors);
+        return Result.Failure<UserLoginDto>(result.Errors.Select(x => x.Description));
     }
 }

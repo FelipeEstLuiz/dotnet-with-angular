@@ -1,27 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { NavComponent } from './nav/nav.component';
-import { AccountService } from './_services/account.service';
-import { AppLoadingComponent } from './shared/loading/loading.component';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { NavComponent } from '../layout/nav/nav.component';
+import { AppLoadingComponent } from '../shared/loading/loading.component';
+import { ConfirmDialogComponent } from 'src/shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavComponent, AppLoadingComponent],
+  imports: [
+    RouterOutlet,
+    NavComponent,
+    AppLoadingComponent,
+    ConfirmDialogComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  private accountService = inject(AccountService);
+export class AppComponent {
+  protected router = inject(Router);
 
-  ngOnInit(): void {
-    this.SetCurrentUser();
-  }
-
-  SetCurrentUser() {
-    const userString = localStorage.getItem('user');
-    if (!userString) return;
-    const user = JSON.parse(userString);
-    this.accountService.currentUser.set(user);
+  isHomeRoute(): boolean {
+    return this.router.url === '/';
   }
 }

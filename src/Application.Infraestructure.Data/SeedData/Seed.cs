@@ -1,5 +1,4 @@
 ﻿using Application.Domain.Entities;
-using Application.Infraestructure.Data.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -13,9 +12,9 @@ public static class Seed
         PropertyNameCaseInsensitive = true
     };
 
-    public static async Task SeedUsers(ApplicationDbContext context)
+    public static async Task SeedUsers(UserManager<User> userManager)
     {
-        if (await context.Users.AnyAsync()) return;
+        if (await userManager.Users.AnyAsync()) return;
 
         string path = Path.Combine(AppContext.BaseDirectory, @"SeedData\UserSeed.json");
 
@@ -30,17 +29,37 @@ public static class Seed
         foreach (User user in users)
         {
             user.Created = DateTime.UtcNow;
-            user.SecurityStamp = Guid.NewGuid().ToString();
-            user.ConcurrencyStamp = Guid.NewGuid().ToString();
-            user.NormalizedEmail = user.Email.ToUpperInvariant();
-            user.NormalizedUserName = user.UserName.ToUpperInvariant();
             user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc);
+            user.SetName(user.FullName);
+            user.SetEmail(user.Email);
 
-            PasswordHasher<User> hasher = new();
-            user.SetPassword(hasher.HashPassword(user, "Pas$w0rd"));
-            context.Users.Add(user);
+            bool isMyUser = user.FullName == "Felipe Estevam Luiz";
+
+            IdentityResult result = await userManager.CreateAsync(user, isMyUser ? "4389@#02Fel13" : "Pas$w0rd");
+
+            if (!result.Succeeded)
+                Console.WriteLine(result.Errors.First().Description);
+
+            if (isMyUser)
+                await userManager.AddToRolesAsync(user, ["Admin", "Moderator"]);
+
+            await userManager.AddToRoleAsync(user, "User");
         }
 
-        await context.SaveChangesAsync();
+        User admin = User.Create(
+            fullName: "admin",
+            email: "admin@admin.com",
+            gender: "admin",
+            dateOfBirth: DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-20)),
+            introduction: null,
+            interests: null,
+            lookingFor: null,
+            city: "Admin",
+            country: "Admin"
+        );
+
+        await userManager.CreateAsync(admin, "Pas$w0rd");
+
+        await userManager.AddToRolesAsync(admin, ["Admin", "Moderator"]);
     }
 }

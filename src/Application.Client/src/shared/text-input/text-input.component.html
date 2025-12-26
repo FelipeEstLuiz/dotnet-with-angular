@@ -1,0 +1,51 @@
+<label class="floating-label text-left">
+  <span>{{ label() }}</span>
+  <input
+    [type]="type()"
+    [max]="maxDate()"
+    [class.input-error]="control.invalid && control.touched"
+    [class.input-success]="control.valid && control.touched"
+    [formControl]="control"
+    [placeholder]="label()"
+    class="input w-full"
+  />
+  @if(control.touched){ @if(control.hasError('required')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} is required
+  </div>
+  } @if(control.hasError('email')){
+  <div class="validation-hint text-error text-xs">
+    Enter a valid email address.
+  </div>
+  } @if(control.hasError('minlength')){
+  <div class="validation-hint text-error text-xs">
+    Minimum {{ control.errors?.["minlength"]?.requiredLength }} characters
+  </div>
+  } @if(control.hasError('maxlength')){
+  <div class="validation-hint text-error text-xs">
+    Minimum {{ control.errors?.["maxlength"]?.requiredLength }} characters
+  </div>
+  } @if(control.hasError('uppercase')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} must have at least one capital character.
+  </div>
+  } @if(control.hasError('lowercase')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} must have at least one lowercase character.
+  </div>
+  } @if(control.hasError('leastOneNumber')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} must have at least one number.
+  </div>
+  } @if(control.hasError('leastOneSpecialCharacter')){
+  <div class="validation-hint text-error text-xs">
+    {{ label() }} must have at least one special character (@#$%^&+=!).
+  </div>
+  } @if(control.hasError('passworMismatch')){
+  <div class="validation-hint text-error text-xs">Passwords do not match.</div>
+  } @if(control.hasError('weak')){
+  <div class="validation-hint text-error text-xs">Passwords weak.</div>
+  } @if(control.hasError('average')){
+  <div class="validation-hint text-warning text-xs">Passwords average.</div>
+  } }
+</label>

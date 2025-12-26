@@ -1,10 +1,16 @@
 using Application.Api.Extensions;
-using Application.Infraestructure.Data.Context;
-using Application.Infraestructure.Data.SeedData;
+using Application.Api.Middleware;
+using Application.Api.SignalR;
 using Application.Infraestructure.IOC;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
+using Serilog;
+using System.Reflection;
+
+Assembly? assembly = Assembly.GetEntryAssembly();
+string? appName = assembly?.GetName().Name;
+string? appVersion = assembly?.GetName()?.Version?.ToString();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -19,14 +25,29 @@ builder.Services.AddCors(options =>
        });
 });
 
+KeyValuePair<string, string?> serilogIdSession = builder.Configuration.GetSection("Serilog:WriteTo").AsEnumerable().FirstOrDefault(ss => ss.Key.Contains("Args:path"));
+
+if (serilogIdSession.Key is not null)
+{
+    IConfigurationSection? serilogSection = builder.Configuration.GetSection(serilogIdSession.Key);
+
+    if (serilogSection is not null)
+        serilogSection.Value = Path.Combine(serilogSection.Value!, $"{appName}_.log");
+}
+
+// Logging
+builder.Host.UseSerilog((ctx, lc) => lc
+    .ReadFrom.Configuration(ctx.Configuration)
+    .WriteTo.Conditional(levt => Environment.UserInteractive, lsc => lsc.Console())
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Version", appVersion)
+);
+
+builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, CustomAuthResultHandler>();
+
 builder.Services.ConfigureExtensions(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("SqlServerDb"));
-
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-});
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -39,10 +60,8 @@ builder.Services.AddSwaggerGen();
 WebApplication app = builder.Build();
 
 app.UseCommunicationProtocolMiddleware();
-app.UseGlobalExceptionMiddleware();
 
-if (app.Environment.IsDevelopment())
-    app.UseDeveloperExceptionPage();
+app.UseGlobalExceptionMiddleware();
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -51,21 +70,22 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors(x => x
-    .AllowAnyOrigin()
+    .AllowAnyHeader()
     .AllowAnyMethod()
-    .AllowAnyHeader());
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")
+);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseResponseCompression();
 
-app.UseRouting()
-    .UseEndpoints(r =>
-    {
-        r.MapControllers();
-    });
+app.MapControllers();
+app.MapHub<PresenceHub>("/hubs/presence");
+app.MapHub<MessageHub>("/hubs/message");
 
+// Descomentar ao iniciar a solução sem dados
 if (app.Environment.IsDevelopment())
 {
     using IServiceScope scope = app.Services.CreateScope();
@@ -73,9 +93,12 @@ if (app.Environment.IsDevelopment())
 
     try
     {
-        ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
+        var context = services.GetRequiredService<Application.Infraestructure.Data.Context.ApplicationDbContext>();
+        var userManager = services
+            .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Application.Domain.Entities.User>>();
         await context.Database.MigrateAsync();
-        await Seed.SeedUsers(context);
+        await context.Connections.ExecuteDeleteAsync();
+        await Application.Infraestructure.Data.SeedData.Seed.SeedUsers(userManager);
     }
     catch (Exception ex)
     {

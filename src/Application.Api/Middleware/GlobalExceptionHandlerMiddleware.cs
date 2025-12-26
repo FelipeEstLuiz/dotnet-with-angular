@@ -1,5 +1,6 @@
-﻿using Application.Api.Controllers._Shared;
+﻿using Application.Api.Util;
 using Application.Domain.Exception;
+using Application.Domain.Interfaces.Services;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -7,7 +8,7 @@ namespace Application.Api.Middleware;
 
 public class GlobalExceptionHandlerMiddleware(
     CommunicationProtocol communicationProtocol,
-    ILogger<GlobalExceptionHandlerMiddleware> logger
+    IAppLogger<GlobalExceptionHandlerMiddleware> logger
 ) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -34,14 +35,14 @@ public class GlobalExceptionHandlerMiddleware(
 
             foreach (FluentValidation.Results.ValidationFailure failure in validationException.Errors)
             {
-                string message = $"{failure.PropertyName} | {failure.ErrorMessage} | Valor: {failure.AttemptedValue}";
+                string message = $"{failure.PropertyName} | {failure.ErrorMessage} |  {(failure.AttemptedValue is null ? "" : $"Value: {failure.AttemptedValue}")}";
                 erros = [.. erros, message];
             }
         }
         else if (exception is UnauthorizedAccessException)
         {
             httpStatusCode = HttpStatusCode.Unauthorized;
-            erros = ["Usuário nao autorizado"];
+            erros = ["Unauthorized user"];
         }
         else if (exception is ValidationException validacaoException)
         {
@@ -50,8 +51,8 @@ public class GlobalExceptionHandlerMiddleware(
         }
         else
         {
-            logger.LogError(exception, "Erro inesperado: {Message}", exception.Message);
-            erros = ["Erro ao processar requisição"];
+            logger.LogError(exception, "Unexpected error: {Message}", exception.Message);
+            erros = ["Error processing request"];
         }
 
         context.Response.StatusCode = (int)httpStatusCode;

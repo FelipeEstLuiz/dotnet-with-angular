@@ -1,3 +1,15 @@
 ﻿namespace Application.Core.DTO.User;
 
-public record LoginDto(string Name, string Email, string Token);
+public record LoginDto(string Id, string Name, string FullName, string Email, string? ImageUrl, string Token)
+{
+    public static LoginDto Map(Domain.Entities.User user, string token) => new(
+        user.Id,
+        user.UserName!,
+        user.FullName,
+        user.Email!,
+        user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+        token
+    );
+}
+
+public record UserLoginDto(LoginDto Login, string RefreshToken);

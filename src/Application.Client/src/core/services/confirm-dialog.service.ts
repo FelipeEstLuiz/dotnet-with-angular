@@ -1,0 +1,25 @@
+import { Injectable } from '@angular/core';
+import { ConfirmDialogComponent } from 'src/shared/confirm-dialog/confirm-dialog.component';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ConfirmDialogService {
+  private dialogComponent?: ConfirmDialogComponent;
+
+  register(component: ConfirmDialogComponent) {
+    this.dialogComponent = component;
+  }
+
+  confirm(
+    message = 'Are you sure?',
+    btnOkText = 'Ok',
+    btnCancelText = 'Cancel'
+  ): Promise<boolean> {
+    if (!this.dialogComponent) {
+      throw new Error('Confirm dialog component is not register');
+    }
+
+    return this.dialogComponent.open(message, btnOkText, btnCancelText);
+  }
+}

@@ -1,32 +1,39 @@
-﻿using Application.Domain.Enums;
+﻿using Application.Api.Util;
+using Application.Domain.Enums;
 using Application.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
-using System.Net.Mime;
 
 namespace Application.Api.Controllers._Shared;
 
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces("application/json")]
 [SwaggerResponse(200, Type = typeof(Response))]
-[SwaggerResponse(400, Type = typeof(Response))]
-[SwaggerResponse(401, Type = typeof(Response))]
-[SwaggerResponse(403, Type = typeof(Response))]
 public class BaseController(CommunicationProtocol protocol) : ControllerBase
 {
     protected readonly CommunicationProtocol _protocol = protocol;
 
     protected IActionResult HandlerResponse<T>(HttpStatusCode statusCode, Result<T> result)
     {
-        Response response;
+        Response? response;
 
         if (result.IsSuccess)
-            response = _Shared.Response.ResponseSuccess(
+        {
+            statusCode = result.ResponseCode switch
+            {
+                ResponseCodes.NO_CONTENT => HttpStatusCode.NoContent,
+                _ => statusCode,
+            };
+
+            response = statusCode != HttpStatusCode.NoContent ? Util.Response.ResponseSuccess(
                 result.Data,
                 protocol: _protocol.ToString(),
-                statusCode: statusCode
-            );
+                statusCode: statusCode,
+                totalItems: result.TotalItems,
+                currentPage: result.CurrentPage,
+                totalPages: result.TotalPages,
+                pageSize: result.PageSize
+            ) : null;
+        }
         else
         {
             statusCode = result.ResponseCode switch
@@ -34,10 +41,11 @@ public class BaseController(CommunicationProtocol protocol) : ControllerBase
                 ResponseCodes.USER_NOT_HAVE_PERMISSION => HttpStatusCode.Forbidden,
                 ResponseCodes.UNAUTHORIZED => HttpStatusCode.Unauthorized,
                 ResponseCodes.NOT_FOUND => HttpStatusCode.NotFound,
+                ResponseCodes.SERVER_ERROR => HttpStatusCode.InternalServerError,
                 _ => HttpStatusCode.BadRequest,
             };
 
-            response = _Shared.Response.Failure(
+            response = Util.Response.Failure(
                 _protocol.ToString(),
                 result.Errors,
                 statusCode: statusCode

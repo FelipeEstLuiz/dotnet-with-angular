@@ -1,0 +1,174 @@
+@if(this.memberService.member(); as member){
+<div class="flex flex-col gap-3">
+  <div class="flex gap-3">
+    <span class="font-semibold">Member since:</span>
+    <span>{{ member.created | date : "longDate" }}</span>
+  </div>
+  <div class="flex gap-3">
+    <span class="font-semibold">Last active:</span>
+    <span>{{ member.lastActive | timeAgo }}</span>
+  </div>
+  <h3 class="text-lg font-semibold text-primary">About {{ member.name }}</h3>
+  @if(memberService.editMode()){
+  <form
+    #editForm="ngForm"
+    (ngSubmit)="updateProfile()"
+    class="flex flex-col w-full gap-4"
+    autocomplete="off"
+  >
+    <label class="floating-label">
+      <span>Name</span>
+      <input
+        [ngClass]="{
+          'border-red-500':
+            editForm.controls['fullName']?.invalid &&
+            (editForm.controls['fullName']?.dirty ||
+              editForm.controls['fullName']?.touched)
+        }"
+        class="border rounded p-2 w-full input"
+        name="fullName"
+        [(ngModel)]="editableMember.fullName"
+        placeholder="Name"
+        maxlength="100"
+        minlength="3"
+        required
+      />
+      @let name = editForm.controls['fullName']; @if (name?.invalid &&
+      (name?.dirty || name?.touched)) {
+      <span class="text-error text-sm">
+        @if (name?.errors?.['required']) { Name is required. } @if
+        (name?.errors?.['minlength']) { Minimum 3 characters. }
+      </span>
+      }
+    </label>
+    <label class="floating-label">
+      <span>Introduction</span>
+      <textarea
+        class="textarea w-full"
+        name="introduction"
+        [(ngModel)]="editableMember.introduction"
+        placeholder="Introduction"
+        maxlength="2000"
+        class="w-full textarea"
+      ></textarea>
+    </label>
+    <label class="floating-label">
+      <span>Interests</span>
+      <textarea
+        class="textarea w-full"
+        name="interests"
+        [(ngModel)]="editableMember.interests"
+        placeholder="Interests"
+        maxlength="1000"
+        class="w-full textarea"
+      >
+      </textarea>
+    </label>
+    <label class="floating-label">
+      <span>lookingFor</span>
+      <textarea
+        class="textarea w-full"
+        name="Looking for"
+        [(ngModel)]="editableMember.lookingFor"
+        placeholder="Looking for"
+        maxlength="1000"
+        class="w-full textarea"
+      ></textarea>
+    </label>
+    <label class="floating-label">
+      <span>City</span>
+      <input
+        class="input w-full"
+        name="city"
+        [(ngModel)]="editableMember.city"
+        placeholder="City"
+        maxlength="200"
+        minlength="2"
+        required
+        [ngClass]="{
+          'border-red-500':
+            editForm.controls['city']?.invalid &&
+            (editForm.controls['city']?.dirty ||
+              editForm.controls['city']?.touched)
+        }"
+        class="border rounded p-2 w-full input"
+      />
+      @let city = editForm.controls['city']; @if (city?.invalid && (city?.dirty
+      || city?.touched)) {
+      <span class="text-error text-sm">
+        @if (city?.errors?.['required']) { City is required. } @if
+        (city?.errors?.['minlength']) { Minimum 2 characters. }
+      </span>
+      }
+    </label>
+    <label class="floating-label">
+      <span>Country</span>
+      <input
+        class="input w-full"
+        name="country"
+        [(ngModel)]="editableMember.country"
+        placeholder="Country"
+        maxlength="50"
+        minlength="2"
+        required
+        [ngClass]="{
+          'border-red-500':
+            editForm.controls['country']?.invalid &&
+            (editForm.controls['country']?.dirty ||
+              editForm.controls['country']?.touched)
+        }"
+        class="border rounded p-2 w-full input"
+      />
+      @let country = editForm.controls['country']; @if (country?.invalid &&
+      (country?.dirty || country?.touched)) {
+      <span class="text-error text-sm">
+        @if (country?.errors?.['required']) { Country is required. } @if
+        (country?.errors?.['minlength']) { Minimum 2 characters. }
+      </span>
+      }
+    </label>
+    <div class="flex self-end gap-3">
+      <button
+        type="button"
+        class="btn btn-warning"
+        (click)="resetForm(editForm)"
+        [disabled]="!editForm.dirty"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+          />
+        </svg>
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="!editForm.dirty || !editForm.valid"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+  } @else {
+
+  <div>{{ member.introduction }}</div>
+  <div class="flex flex-col gap-3">
+    <h3 class="text-lg font-semibold text-primary">Looking For</h3>
+    <span>{{ member.lookingFor }}</span>
+  </div>
+  <div class="flex flex-col gap-3">
+    <h3 class="text-lg font-semibold text-primary">Interests</h3>
+    <span>{{ member.interests }}</span>
+  </div>
+  }
+</div>
+}

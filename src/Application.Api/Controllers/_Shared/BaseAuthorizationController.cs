@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Api.Util;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Api.Controllers._Shared;
 

@@ -16,9 +16,9 @@ public class ResultTests
         Assert.False(result.Errors.Any());
         Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
 
-        Assert.Null(result.PaginaAtual);
-        Assert.Null(result.TotalPaginas);
-        Assert.Null(result.TotalItens);
+        Assert.Equal(0, result.CurrentPage);
+        Assert.Equal(0, result.TotalPages);
+        Assert.Equal(0, result.TotalItems);
     }
 
     [Fact(DisplayName = "Result com - IsSuccess = false, IsFailure = true, Errors array com valor, Errors com o erro informado e ResponseCode = default (None)")]
@@ -33,9 +33,9 @@ public class ResultTests
         Assert.Contains(mensagemErro, result.Errors);
         Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
 
-        Assert.Null(result.PaginaAtual);
-        Assert.Null(result.TotalPaginas);
-        Assert.Null(result.TotalItens);
+        Assert.Equal(0, result.CurrentPage);
+        Assert.Equal(0, result.TotalPages);
+        Assert.Equal(0, result.TotalItems);
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true, Errors com multiplas mensagens")]
@@ -66,7 +66,7 @@ public class ResultTests
         Result<bool> result = Result<bool>.Success(true);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal("Success", result.ToString());
+        Assert.Equal("true", result.ToString());
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true e metodo ToString() retornando mensagem de erro")]
@@ -77,7 +77,7 @@ public class ResultTests
         Result<bool> result = Result<bool>.Failure(mensagemErro);
 
         Assert.True(result.IsFailure);
-        Assert.Equal(mensagemErro, result.ToString());
+        Assert.Contains(mensagemErro, result.ToString());
     }
 
     [Fact(DisplayName = "Result com - IsFailure = true e metodo ToString() retornando mensagens dos erros")]
@@ -129,63 +129,234 @@ public class ResultTests
         Assert.True(result.Data.Idade >= 0);
     }
 
-    [Theory(DisplayName = "Result SetResult com - IsSuccess = true, Data = object")]
-    [MemberData(nameof(ObterClientes))]
-    public void Result_SetResult_Return_IsSuccess_Data_Object(Cliente cliente)
-    {
-        Result<Cliente> resultCliente = cliente;
-
-        Result<Cliente2> result = resultCliente
-            .SetResult(cliente => new Cliente2(cliente.Nome, cliente.Idade));
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data);
-        Assert.NotEmpty(result.Data.Nome);
-        Assert.True(result.Data.Idade >= 0);
-    }
-
-    [Fact(DisplayName = "Result SetResult com - IsFailure = true, Data = object e ResponseCodes = default")]
-    public void Result_SetResult_Return_IsFailure_Data()
-    {
-        string mensagemErro = "Erro";
-        Result<Cliente> resultCliente = Result<Cliente>.Failure(mensagemErro);
-
-        Result<Cliente2> result = resultCliente
-           .SetResult(cliente => new Cliente2(cliente.Nome, cliente.Idade));
-
-        Assert.True(result.IsFailure);
-        Assert.Contains(mensagemErro, result.Errors);
-        Assert.Equal(ResponseCodes.NONE, result.ResponseCode);
-    }
-
-    [Fact(DisplayName = "Result SetResult com - IsFailure = true")]
-    public void Result_SetResult_Return_IsFailure()
-    {
-        string mensagemErro = "Erro";
-        Result<Cliente> resultCliente = Result<Cliente>.Failure(mensagemErro);
-
-        Result<Cliente2> result = resultCliente.SetResult<Cliente2>();
-
-        Assert.True(result.IsFailure);
-        Assert.Contains(mensagemErro, result.Errors);
-    }
-
     [Theory(DisplayName = "Result Server Side com - IsSuccess = true, Data = object")]
     [MemberData(nameof(ObterClientes))]
     public void ResultServerSide_Return_IsSuccess_Data_Object(Cliente cliente)
     {
-        Result<Cliente> result = Result<Cliente>.Success(cliente, 1, 1, 1);
+        Result<Cliente> result = Result<Cliente>.Success(cliente, 1, 1, 1, 1);
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
 
-        Assert.Equal(1, result.TotalItens);
-        Assert.Equal(1, result.TotalPaginas);
-        Assert.Equal(1, result.PaginaAtual);
+        Assert.Equal(1, result.TotalItems);
+        Assert.Equal(1, result.TotalPages);
+        Assert.Equal(1, result.CurrentPage);
+        Assert.Equal(1, result.PageSize);
+    }
 
-        Assert.NotNull(result.PaginaAtual);
-        Assert.NotNull(result.TotalPaginas);
-        Assert.NotNull(result.TotalItens);
+    [Fact]
+    public void AddErrorIf_QuandoCondicaoForVerdadeira_DeveAdicionarErro()
+    {
+        // Dado
+        // Quando
+        Result<string> result = Result<string>.Success("ok").AddErrorIf(true, "falhou");
+
+        // Então
+        Assert.True(result.IsFailure);
+        Assert.Contains("falhou", result.Errors);
+    }
+
+    [Fact]
+    public void AddErrorIf_QuandoACordicaoForFalse_NaoDeveAdicionarErro()
+    {
+        // Dado
+        // Quando
+        Result<string> result = Result<string>.Success("ok").AddErrorIf(false, "falhou");
+
+        // Então
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+    }
+
+    [Fact]
+    public void Map_QuandoSucesso_DeveTransformarDados()
+    {
+        // Dado
+        // Quando
+        Result<int> result = Result<int>.Success(5)
+            .Map(x => x * 2);
+
+        // Então
+        Assert.True(result.IsSuccess);
+        Assert.Equal(10, result.Data);
+    }
+
+    [Fact]
+    public void Map_QuandoFalha_DevePropagarErros()
+    {
+        // Dado
+        // Quando
+        Result<int> result = Result<int>.Failure("erro").Map(x => x * 2);
+
+        // Então
+        Assert.True(result.IsFailure);
+        Assert.Contains("erro", result.Errors);
+    }
+
+    [Fact]
+    public void Map_QuandoExcecao_DeveRetornarFalhaComMensagem()
+    {
+        // Dado
+        // Quando
+        Result<int> result = Result<int>.Success(5)
+            .Map<int>(_ => throw new InvalidOperationException("falha no map"));
+
+        // Então
+        Assert.True(result.IsFailure);
+        Assert.Contains("falha no map", result.Errors.First());
+    }
+
+    [Fact]
+    public void Bind_QuandoSucesso_DeveEncadearResultado()
+    {
+        // Dado
+        // Quando
+        Result<string> result = Result<int>.Success(5)
+            .Bind(x => Result<string>.Success($"Value: {x}"));
+
+        // Então
+        Assert.True(result.IsSuccess);
+        Assert.Equal("Value: 5", result.Data);
+    }
+
+    [Fact]
+    public void Bind_QuandoFalha_DevePropagarErros()
+    {
+        // Dado
+        // Quando
+        Result<string> result = Result<int>.Failure("falhou")
+            .Bind(x => Result<string>.Success($"Value: {x}"));
+
+        // Então
+        Assert.True(result.IsFailure);
+        Assert.Contains("falhou", result.Errors);
+    }
+
+    [Fact]
+    public void Try_QuandoSemExcecao_DeveRetornarSucesso()
+    {
+        // Dado
+        // Quando
+        Result<int> result = Result<int>.Try(() => 42);
+
+        // Então
+        Assert.True(result.IsSuccess);
+        Assert.Equal(42, result.Data);
+    }
+
+    [Fact]
+    public void Try_QuandoExcecao_DeveRetornarFalha()
+    {
+        // Dado
+        // Quando
+        Result<int> result = Result<int>.Try(() => throw new Exception("falhou"));
+
+        // Então
+        Assert.True(result.IsFailure);
+        Assert.Contains("falhou", result.Errors);
+    }
+
+    [Fact]
+    public void Data_CapturarDataQuandoFalha_DeveRetornarValorDefault()
+    {
+        // Dado
+
+        // Quando
+        Result<decimal> result = Result.Failure<decimal>("falhou");
+
+        // Então
+        Assert.Equal(default, result.Data);
+    }
+
+    [Fact]
+    public void Match_QuandoSucesso_DeveExecutarOnSuccess()
+    {
+        // Dado
+        string? captured = null;
+
+        // Quando
+        Result<string> result = Result<string>.Success("ok");
+
+        result.Match(
+            onSuccess: x => captured = x,
+            onFailure: _ => captured = "fail"
+        );
+
+        // Então
+        Assert.Equal("ok", captured);
+    }
+
+    [Fact]
+    public void Match_QuandoSucesso_DeveRetornarNovoResult()
+    {
+        // Dado
+        string? captured = null;
+
+        // Quando
+        Result<string> result = Result<string>.Success("ok");
+
+        Result<bool> newResult = result.Match(
+            onSuccess: x =>
+            {
+                captured = x;
+                return Result<bool>.Success(true);
+            },
+            onFailure: errors =>
+            {
+                captured = "fail";
+                return Result<bool>.Failure(errors);
+            }
+        );
+
+        // Então
+        Assert.Equal("ok", captured);
+        Assert.True(newResult.IsSuccess);
+    }
+
+    [Fact]
+    public void Match_QuandoFalha_DeveExecutarOnFailure()
+    {
+        // Dado
+        string? captured = null;
+
+        // Quando
+        Result<string> result = Result<string>.Failure("erro");
+
+        result.Match(
+            onSuccess: _ => captured = "ok",
+            onFailure: e => captured = e.First()
+        );
+
+        // Então
+        Assert.Equal("erro", captured);
+    }
+
+    [Fact]
+    public void Match_QuandoFalha_DeveRetornarNovoResult()
+    {
+        // Dado
+        string? captured = null;
+
+        // Quando
+        Result<string> result = Result<string>.Failure("erro");
+
+        Result<bool> newResult = result.Match(
+            onSuccess: _ =>
+            {
+                captured = "ok";
+                return Result<bool>.Success(true);
+            },
+            onFailure: e =>
+            {
+                captured = e.First();
+                return Result<bool>.Failure(e);
+            }
+        );
+
+        // Então
+        Assert.Equal("erro", captured);
+        Assert.True(newResult.IsFailure);
+        Assert.Contains("erro", newResult.Errors);
     }
 
     public static IEnumerable<object[]> ObterClientes()

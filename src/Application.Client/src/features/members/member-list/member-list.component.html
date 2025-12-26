@@ -1,0 +1,42 @@
+@if(paginatedMember(); as paginatedMember){
+<div class="flex flex-col w-full">
+  <div class="flex justify-between items-center">
+    <div class="flex gap-3 items-center">
+      <button (click)="openModal()" class="btn btn-primary">
+        Select filters
+      </button>
+      <button (click)="resetFilters()" class="btn btn-neutral">
+        Reset filters
+      </button>
+      <div
+        class="text-lg bg-base-100 py-2 px-4 border rounded-lg text-primary capitalize"
+      >
+        {{ displayMessage }}
+      </div>
+    </div>
+    <app-paginator
+      [pageNumber]="paginatedMember.currentPage"
+      [totalCount]="paginatedMember.totalItems"
+      [pageSize]="paginatedMember.pageSize"
+      [totalPages]="paginatedMember.totalPages"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+  @if(paginatedMember.data; as members){
+
+  <div class="grid grid-cols-5 gap-6">
+    @for (member of members; track member.id) {
+    <app-member-card [member]="member"></app-member-card>
+    }
+  </div>
+
+  }
+</div>
+}
+
+<app-filter-modal
+  #filterModel
+  [hidden]="!paginatedMember()"
+  (closeModal)="onClose()"
+  (submitData)="onFilterChange($event)"
+/>

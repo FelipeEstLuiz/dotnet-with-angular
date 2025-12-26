@@ -1,0 +1,55 @@
+@if(photos().length > 0){
+<div class="grid grid-cols-5 gap-5">
+  @for(photo of photos(); track photo.id){
+  <div class="relative">
+    <img
+      src="{{ photo.url }}"
+      alt="photo of member"
+      class="w-full rounded-lg"
+    />
+
+    <div
+      class="card-actions z-40 absolute bottom-0 w-full px-3 py-1 rounded-b-lg bg-linear-to-t from-black via-black/75 to black/0"
+    >
+      <div class="flex flex-col text-white">
+        <span class="font-semibold">{{ photo.userName }}</span>
+        <div class="flex items-center py-2">
+          <button
+            class="btn btn-sm btn-success me-1"
+            (click)="approvePhoto(photo.id)"
+          >
+            Approve
+          </button>
+          <button class="btn btn-sm btn-error" (click)="rejectPhoto(photo.id)">
+            Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+} @else {
+<div class="text-center text-gray-500">No photos available</div>
+}
+<!--
+<div class="grid grid-cols-6 gap-4">
+  @for (photo of photos(); track photo.id) {
+  <div>
+    <img
+      src="{{ photo.url }}"
+      class="img-thumbnail w-full p-1"
+      alt="user image"
+    />
+
+    <div class="flex w-full gap-3">
+      <button class="btn btn-success grow" (click)="approvePhoto(photo.id)">
+        Approve
+      </button>
+      <button class="btn btn-error grow" (click)="rejectPhoto(photo.id)">
+        Reject
+      </button>
+    </div>
+  </div>
+  }
+</div> -->

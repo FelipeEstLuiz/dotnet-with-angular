@@ -1,13 +1,18 @@
-﻿using Application.Api.Controllers._Shared;
-using Application.Api.Filter;
+﻿using Application.Api.Filters;
 using Application.Api.Middleware;
+using Application.Api.SignalR;
 using Application.Api.Util;
+using Application.Core.Model;
+using Application.Domain.Entities;
 using Application.Domain.Util;
+using Application.Infraestructure.Data.Context;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -25,17 +30,51 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration
     )
     {
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
         services
             .AddCommunicationProtocol()
-            .ConfigureMvc()
             .ConfigureJwt(configuration)
+            .ConfigureMvc()
             .AddSwagger()
             .AddCompression()
             .AddHttpContextAccessor()
             .AddVersioning()
             .AddGlobalExceptionMiddleware()
             .AddHttpClient()
-            .AddApplicationServices(); 
+            .AddApplicationServices()
+            .AddIdentityCore()
+            .AddPolicy()
+            .AddSignalRConfiguration();
+
+        return services;
+    }
+
+    private static IServiceCollection AddIdentityCore(this IServiceCollection services)
+    {
+        services.AddIdentityCore<User>(opt =>
+        {
+            opt.User.RequireUniqueEmail = true;
+        })
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSignalRConfiguration(this IServiceCollection services)
+    {
+        services.AddSignalR();
+        services.AddSingleton<PresenceTracker>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
+            .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
 
         return services;
     }
@@ -59,6 +98,20 @@ public static class ServiceCollectionExtensions
                 ValidateAudience = false,
                 ValidateLifetime = true
             };
+
+            x.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    StringValues accessToken = context.Request.Query["access_token"];
+                    PathString path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        context.Token = accessToken;
+
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         return services;
@@ -68,11 +121,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddCors();
 
-        services.AddMvc(config =>
+        services.AddControllers(options =>
         {
-            config.EnableEndpointRouting = false;
-        })
-        .AddNewtonsoftJson(options =>
+            options.Filters.Add<LogUserActivity>();
+        }).AddNewtonsoftJson(options =>
         {
             options.SerializerSettings.ContractResolver = new DefaultContractResolver
             {
@@ -93,14 +145,9 @@ public static class ServiceCollectionExtensions
     {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
         services.AddValidatorsFromAssemblies(assemblies);
-        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
         return services;
     }
-
-    private static IServiceCollection AddFilters(this IServiceCollection services)
-       => services.AddScoped<CustomAuthorizationFilter>();
 
     private static IServiceCollection AddGlobalExceptionMiddleware(this IServiceCollection services)
         => services.AddTransient<GlobalExceptionHandlerMiddleware>();

@@ -8,7 +8,7 @@ public static class ValidationExtensions
     {
         ValidationException.When(
             obj == null,
-            $"{paramName} nao pode ser nulo."
+            $"{paramName} cannot be null."
         );
     }
 
@@ -16,7 +16,7 @@ public static class ValidationExtensions
     {
         ValidationException.When(
             string.IsNullOrWhiteSpace(str),
-            $"{paramName} nao pode ser nulo ou vazio."
+            $"{paramName} cannot be null or empty."
         );
     }
 
@@ -24,7 +24,7 @@ public static class ValidationExtensions
     {
         ValidationException.When(
             collection == null || !collection.Any(),
-            $"{paramName} nao pode ser nulo ou vazio."
+            $"{paramName} cannot be null or empty."
         );
     }
 

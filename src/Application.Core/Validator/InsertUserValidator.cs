@@ -1,4 +1,4 @@
-﻿using Application.Core.Model;
+﻿using Application.Core.Model.User;
 using FluentValidation;
 
 namespace Application.Core.Validator;
@@ -8,21 +8,23 @@ public class InsertUserValidator : AbstractValidator<InsertUserModel>
     public InsertUserValidator()
     {
         RuleFor(x => x.DateOfBirth)
-            .NotEmpty().WithMessage("Obrigatorio")
-            .LessThan(DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("Invalida");
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage("Required")
+            .LessThan(DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("Invalid");
 
         RuleFor(x => x).SetValidator(new BaseUserValidator());
 
         RuleFor(x => x.Password)
-           .NotEmpty().WithMessage("Obrigatorio")
-           .MinimumLength(8).WithMessage("Deve ter pelo menos 8 caracteres.")
-           .Matches(@"[A-Z]").WithMessage("Deve conter pelo menos uma letra maiuscula.")
-           .Matches(@"[a-z]").WithMessage("Deve conter pelo menos uma letra minuscula.")
-           .Matches(@"\d").WithMessage("Deve conter pelo menos um numero.")
-           .Matches(@"[@#$%^&+=!]").WithMessage("Deve conter pelo menos um caractere especial (@#$%^&+=!).");
+           .NotEmpty().WithMessage("Required")
+           .MinimumLength(8).WithMessage("It must have at least 8 characters.")
+           .Matches(@"[A-Z]").WithMessage("It must have at least one capital letter.")
+           .Matches(@"[a-z]").WithMessage("It must have at least one lowercase letter.")
+           .Matches(@"\d").WithMessage("It must have at least one number.")
+           .Matches(@"[@#$%^&+=!]").WithMessage("It must have at least one special character (@#$%^&+=!).");
 
         RuleFor(x => x.PasswordConfirmed)
-            .NotEmpty().WithMessage("Obrigatorio")
-            .Equal(u => u.Password).WithMessage("A confirmacao de senha nao corresponde a senha.");
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage("Required")
+            .Equal(u => u.Password).WithMessage("The password confirmation does not match the password.");
     }
 }

@@ -14,7 +14,7 @@ public class ValidationExtensionsTests
         ValidationException exception = Assert.Throws<ValidationException>(() => obj.ThrowIfNull(nameof(obj)));
 #pragma warning restore CS8634
 
-        Assert.Equal($"{nameof(obj)} nao pode ser nulo.", exception.Message);
+        Assert.Equal($"{nameof(obj)} cannot be null.", exception.Message);
         Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
     }
 
@@ -30,7 +30,7 @@ public class ValidationExtensionsTests
     {
         string? str = " ";
         ValidationException exception = Assert.Throws<ValidationException>(() => str.ThrowIfNullOrEmpty(nameof(str)));
-        Assert.Equal($"{nameof(str)} nao pode ser nulo ou vazio.", exception.Message);
+        Assert.Equal($"{nameof(str)} cannot be null or empty.", exception.Message);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class ValidationExtensionsTests
         List<string> lista = [];
 
         ValidationException exception = Assert.Throws<ValidationException>(() => lista.ThrowIfNullOrEmpty(nameof(lista)));
-        Assert.Equal($"{nameof(lista)} nao pode ser nulo ou vazio.", exception.Message);
+        Assert.Equal($"{nameof(lista)} cannot be null or empty.", exception.Message);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class ValidationExtensionsTests
 #pragma warning disable CS8604
         ValidationException exception = Assert.Throws<ValidationException>(() => lista.ThrowIfNullOrEmpty(nameof(lista)));
 #pragma warning restore CS8604
-        Assert.Equal($"{nameof(lista)} nao pode ser nulo ou vazio.", exception.Message);
+        Assert.Equal($"{nameof(lista)} cannot be null or empty.", exception.Message);
     }
 
     [Fact]

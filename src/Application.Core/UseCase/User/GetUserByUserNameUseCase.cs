@@ -1,23 +1,18 @@
 using Application.Core.DTO.User;
-using Application.Core.Model;
+using Application.Core.Model.User;
+using Application.Domain.Enums;
 using Application.Domain.Interfaces.Repositories;
 using Application.Domain.Interfaces.Services;
 using Application.Domain.Model;
-using Application.Domain.VO;
 
 namespace Application.Core.UseCase.User;
-public class GetUserByUserNameUseCase(IUserRepository usuarioRepository)
-    : IRequestHandler<GetUserByUserNameModel, Result<UserDto?>>
+
+public class GetUserByUserNameUseCase(IUnitOfWork unitOfWork)
+    : IRequestHandler<GetUserByUserNameModel, Result<UserDto>>
 {
-    public async Task<Result<UserDto?>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
+    public async Task<Result<UserDto>> Handle(GetUserByUserNameModel request, CancellationToken cancellationToken = default)
     {
-        Result<UserVo?> usuario = await usuarioRepository.GetByNameAsync(request.UserName, cancellationToken);
-
-        if (usuario.IsSuccess && usuario.Data is not null)
-            return UserDto.Map(usuario.Data);
-        else if (usuario.IsFailure)
-            return Result<UserDto?>.Failure(usuario.Errors);
-
-        return Result<UserDto?>.Failure("Usuario nao encontrado.", Domain.Enums.ResponseCodes.NOT_FOUND);
+        Domain.Entities.User? user = await unitOfWork.UserRepository.GetByNameAsync(request.UserName, cancellationToken);
+        return user is not null ? Result.Success(UserDto.Map(user)) : Result.Failure<UserDto>("User not found.", ResponseCodes.NOT_FOUND);
     }
 }
